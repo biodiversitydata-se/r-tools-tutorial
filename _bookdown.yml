@@ -1,7 +1,13 @@
-book_filename: "biodiversity-analysis-tools"
+book_filename: " r-tools-tutorial"
+repo: https://github.com/biodiversitydata-se/r-tools-tutorial
+clean: [packages.bib]
 delete_merged_file: true
 before_chapter_script: "_common.r"
 output_dir: "docs"
 language:
+  label:
+    fig: "FIGURE "
+    tab: "TABLE "
   ui:
-  chapter_name: "Chapter "
+    chapter_name: "Chapter "
+    
