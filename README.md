@@ -1,6 +1,6 @@
 Tutorial for the use of SBDI4R 
 ================
-by Carl Howe and Yihui Xie
+by Debora Arlt and Alejandro Ruete
 
 ### Presented at the launch of SDBI 2021
 
