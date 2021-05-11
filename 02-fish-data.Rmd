@@ -29,7 +29,7 @@ For references on how to use the filters see documentation at [docs](link).
 
 Using the function `occurrences()` we can the query for the observations fulfilling our filter. If you haven't specified that in the `sbdi_config()` before (see [Case 1: Example with fish data from NORS] Installation), you need to pass your email and the download reason.
 
-```{r getOcc, cache=FALSE}
+```{r getOcc, cache=TRUE}
 library(SBDI4R)
 xf <- occurrences(fq = fq_str,
                  email = "test@test.org", 
