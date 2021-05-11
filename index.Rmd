@@ -1,6 +1,6 @@
 ---
 title: "Tutorial for using SBDI4R for analysis of biodiversity primary data"
-author: "Debora Arlt, Alejandro Ruete and Charles Campbell for the Swedish Biodiversity Data Infrastructure" 
+author: "Debora Arlt and Alejandro Ruete for the Swedish Biodiversity Data Infrastructure" 
 date: "`r Sys.Date()`"
 description: "A set of examples for using SBDI4R" 
 output: bookdown::gitbook
@@ -22,7 +22,7 @@ github-repo: https://github.com/biodiversitydata-se/r-tools-tutorial
 cover-image: images/SBDI.png
 ---
 
-# Introduction
+# Introduction {-}
 
 [TO BE UPDATED] Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a workflow which answers and / or prompts the large scale questions that should be asked at each stage of the process. We point to resources, methods and facilities that may be useful in answering a particular question. We assume some knowledge of statistical inference and it limitations. The validity and appropriateness of a particular method is dependent on the individual researcher(s). This workflow is focused on the statistical programming language R, as an environment where the complete analysis workflow can take place and can be documented in a fully reproducible way. However, we also point to other tools that can be used at different stages, and ways to import and export the data from and to those tools.
 
@@ -36,7 +36,7 @@ The SBDI4R package is primarily for accessing data. It includes some filter func
 
 Please get in contact with us if you have questions regarding the use of the SBDI4R package.
 
-## Using SBDI4R
+## Using SBDI4R {-}
 
 Lets assume you have already installed the package as shown in the main [site](https://biodiversitydata-se.github.io/SBDI4R).
 
