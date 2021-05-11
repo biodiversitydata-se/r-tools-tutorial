@@ -1,7 +1,7 @@
 book_filename: "r-tools-tutorial"
 repo: https://github.com/biodiversitydata-se/r-tools-tutorial
-clean: [packages.bib]
 delete_merged_file: true
+output_dir: "docs"
 before_chapter_script: "_common.r"
 language:
   label:
@@ -19,6 +19,7 @@ rmd_files:
     "04-references.Rmd"
     ]
 bookdown::gitbook:
+  highlight: tango
   css: style.css
   config:
     toc:

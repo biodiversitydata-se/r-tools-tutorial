@@ -19,7 +19,7 @@ mainfont: Palatino
 monofont: "Source Code Pro"
 monofontoptions: "Scale=0.8"
 github-repo: https://github.com/biodiversitydata-se/r-tools-tutorial
-cover-image: images/SBDI.png
+cover-image: SBDI.png
 ---
 
 # Introduction {-}
