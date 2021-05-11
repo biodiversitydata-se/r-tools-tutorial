@@ -32,29 +32,6 @@ General description of the workflow here. Data-->Cleaning-->Fitness evaluation--
 
 `r htmltools::includeHTML("images/Workflow Overview Horizontal.html")`
 
-The SBDI4R package is primarily for accessing data. It includes some filter functions that allow you to filter prior to download. It also includes some simple summary functions, and some function for some simple data exploration. The examples also show you how you can use the data by continued exploring and analysing using other R package.
+The SBDI4R package is primarily for accessing data. It includes some filter functions that allow you to filter prior to download. It also includes some simple summary functions, and some function for some simple data exploration. The examples also show you how you can use the data by continued exploring and analyzing using other R package.
 
-Please get in contact with us if you have questions regarding the use of the SBDI4R package.
-
-## Using SBDI4R {-}
-
-Lets assume you have already installed the package as shown in the main [site](https://biodiversitydata-se.github.io/SBDI4R).
-
-The SBDI4R package must be loaded for each new R session:
-
-```{r, message=FALSE, eval=FALSE}
-library(SBDI4R)
-sbdi_config(caching="off")
-```
-
-However, the options you stored in .Rprofile if you did it so, will load automatically with the package.
-
-Then, check that we have some additional packages that we'll use in the examples, and install them if necessary.
-
-```{r, message=FALSE}
-to_install <- c("dplyr", "ggplot2", "jpeg", "leaflet","maps", "mapdata",
-                "maptools", "sp", "rgeos", "tidyr", "vegan")
-to_install <- to_install[!sapply(to_install, requireNamespace, quietly=TRUE)]
-if(length(to_install)>0)
-    install.packages(to_install, repos="http://cran.us.r-project.org")
-```
+Please get in contact with us [MAILTO] if you have questions regarding the use of the SBDI4R package.
