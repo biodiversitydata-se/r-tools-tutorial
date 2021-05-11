@@ -56,7 +56,7 @@ Note that the plot is saved to a pdf file in the current working directory. You 
 
 There are many other ways of producing spatial plots in R. The leaflet package provides a simple method of producing browser-based maps with panning, zooming, and background layers:
 
-```{r leaflet, message=FALSE, warning=FALSE}
+```{r leaflet, message=FALSE, warning=FALSE, eval=FALSE}
 library(leaflet)
 ## drop any records with missing lat/lon values
 xfl <- xf$data[!is.na(xf$data$longitude) | !is.na(xf$data$latitude),] 

@@ -1,8 +1,8 @@
-book_filename: " r-tools-tutorial"
+book_filename: "r-tools-tutorial"
 repo: https://github.com/biodiversitydata-se/r-tools-tutorial
 clean: [packages.bib]
+theme: jekyll-theme-architect
 delete_merged_file: true
-new_session: yes
 before_chapter_script: "_common.r"
 language:
   label:
