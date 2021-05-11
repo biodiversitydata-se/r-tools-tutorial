@@ -29,7 +29,7 @@ For references on how to use the filters see documentation at [docs](link).
 
 Using the function `occurrences()` we can the query for the observations fulfilling our filter. If you haven't specified that in the `sbdi_config()` before (see [Case 1: Example with fish data from NORS] Installation), you need to pass your email and the download reason.
 
-```{r getOcc, cache=TRUE}
+```{r getOcc, cache=FALSE}
 library(SBDI4R)
 xf <- occurrences(fq = fq_str,
                  email = "test@test.org", 
@@ -58,13 +58,13 @@ There are many other ways of producing spatial plots in R. The leaflet package p
 
 ```{r leaflet, message=FALSE, warning=FALSE}
 library(leaflet)
-## drop any records with missing lat/lon values
+# drop any records with missing lat/lon values
 xfl <- xf$data[!is.na(xf$data$longitude) | !is.na(xf$data$latitude),] 
 marker_colour <- rep("#d95f02", nrow(xfl))
-## blank map, with imagery background
+# blank map, with imagery background
 leaflet(width = "100%") %>% 
   addProviderTiles("Esri.WorldImagery") %>%
-  ## add markers
+  # add markers
   addCircleMarkers(xfl$longitude, xfl$latitude,  
                    radius = 1, 
                    fillOpacity =.5, 
@@ -110,7 +110,7 @@ Perhaps, you need to send this table as a .CSV file to a colleague.
 
 ```{r, eval=FALSE}
 write.csv(sppDF, "NORS species summary.csv")
-## Note, again this will be saved on your working directory
+# NOTE: again this will be saved on your working directory
 ```
 
 ## Spatial biodiversity analysis
