@@ -2,12 +2,34 @@ book_filename: " r-tools-tutorial"
 repo: https://github.com/biodiversitydata-se/r-tools-tutorial
 clean: [packages.bib]
 delete_merged_file: true
+new_session: yes
 before_chapter_script: "_common.r"
-output_dir: "docs"
 language:
   label:
     fig: "FIGURE "
     tab: "TABLE "
   ui:
     chapter_name: "Chapter "
-    
+rmd_files:
+  [
+    "index.Rmd",
+
+    "01-installation.Rmd",
+    "02-fish-data.Rmd",
+    "03-dragonflies-data.Rmd",
+    "04-references.Rmd"
+    ]
+bookdown::gitbook:
+  css: style.css
+  config:
+    toc:
+      collapse: section
+      before: |
+        <li><a href="./">R tools tutorial</a></li>
+    edit: https://github.com/biodiversitydata-se/r-tools-tutorial/edit/master/%s
+    download: yes
+    sharing:
+      facebook: no
+      twitter: no
+      github: yes
+      all: []
