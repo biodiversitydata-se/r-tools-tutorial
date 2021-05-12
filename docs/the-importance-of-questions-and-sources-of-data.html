@@ -4,24 +4,24 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3 The importance of questions and sources of data | Tutorial for using SBDI4R for analysis of biodiversity primary data</title>
+  <title>2 The importance of questions and sources of data |     Tutorial for using SBDI4R for analysis of biodiversity primary data</title>
   <meta name="description" content="A set of examples for using SBDI4R" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3 The importance of questions and sources of data | Tutorial for using SBDI4R for analysis of biodiversity primary data" />
+  <meta property="og:title" content="2 The importance of questions and sources of data |     Tutorial for using SBDI4R for analysis of biodiversity primary data" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:image" content="SBDI.png" />
+  <meta property="og:image" content="/sbdi-logo-orginal-large.png" />
   <meta property="og:description" content="A set of examples for using SBDI4R" />
   <meta name="github-repo" content="https://github.com/biodiversitydata-se/r-tools-tutorial" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3 The importance of questions and sources of data | Tutorial for using SBDI4R for analysis of biodiversity primary data" />
+  <meta name="twitter:title" content="2 The importance of questions and sources of data |     Tutorial for using SBDI4R for analysis of biodiversity primary data" />
   
   <meta name="twitter:description" content="A set of examples for using SBDI4R" />
-  <meta name="twitter:image" content="SBDI.png" />
+  <meta name="twitter:image" content="/sbdi-logo-orginal-large.png" />
 
-<meta name="author" content="Debora Arlt and Alejandro Ruete for the Swedish Biodiversity Data Infrastructure" />
+<meta name="author" content="Debora Arlt and Alejandro Ruete  for the Swedish Biodiversity Data Infrastructure" />
 
 
 <meta name="date" content="2021-05-12" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="case-1-example-with-fish-data-from-nors.html"/>
-<link rel="next" href="references.html"/>
+<link rel="prev" href="example-with-fish-data-from-nors.html"/>
+
 <script src="libs/header-attrs/header-attrs.js"></script>
 <script src="libs/jquery/jquery.min.js"></script>
 <link href="libs/gitbook/css/style.css" rel="stylesheet" />
@@ -51,6 +51,8 @@
 
 
 
+<link href="libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections/anchor-sections.js"></script>
 <script src="libs/htmlwidgets/htmlwidgets.js"></script>
 <link href="libs/leaflet/leaflet.css" rel="stylesheet" />
 <script src="libs/leaflet/leaflet.js"></script>
@@ -132,6 +134,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 </head>
 
 <body>
@@ -144,25 +147,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a></li>
-<li class="chapter" data-level="1" data-path="package-configuration.html"><a href="package-configuration.html"><i class="fa fa-check"></i><b>1</b> Package configuration</a></li>
-<li class="chapter" data-level="2" data-path="case-1-example-with-fish-data-from-nors.html"><a href="case-1-example-with-fish-data-from-nors.html"><i class="fa fa-check"></i><b>2</b> Case 1: Example with fish data from NORS</a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="case-1-example-with-fish-data-from-nors.html"><a href="case-1-example-with-fish-data-from-nors.html#plotting-data-on-a-map"><i class="fa fa-check"></i><b>2.1</b> Plotting data on a map</a></li>
-<li class="chapter" data-level="2.2" data-path="case-1-example-with-fish-data-from-nors.html"><a href="case-1-example-with-fish-data-from-nors.html#temporal-analysis"><i class="fa fa-check"></i><b>2.2</b> Temporal analysis</a></li>
-<li class="chapter" data-level="2.3" data-path="case-1-example-with-fish-data-from-nors.html"><a href="case-1-example-with-fish-data-from-nors.html#species-summary"><i class="fa fa-check"></i><b>2.3</b> Species summary</a></li>
-<li class="chapter" data-level="2.4" data-path="case-1-example-with-fish-data-from-nors.html"><a href="case-1-example-with-fish-data-from-nors.html#spatial-biodiversity-analysis"><i class="fa fa-check"></i><b>2.4</b> Spatial biodiversity analysis</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="the-importance-of-questions-and-sources-of-data.html"><a href="the-importance-of-questions-and-sources-of-data.html"><i class="fa fa-check"></i><b>3</b> The importance of questions and sources of data</a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#package-configuration"><i class="fa fa-check"></i>Package configuration</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#customizing-sbdi4r"><i class="fa fa-check"></i>Customizing SBDI4R</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="the-importance-of-questions-and-sources-of-data.html"><a href="the-importance-of-questions-and-sources-of-data.html#questions"><i class="fa fa-check"></i><b>3.1</b> Questions</a></li>
-<li class="chapter" data-level="3.2" data-path="the-importance-of-questions-and-sources-of-data.html"><a href="the-importance-of-questions-and-sources-of-data.html#taxonomies"><i class="fa fa-check"></i><b>3.2</b> Taxonomies</a></li>
-<li class="chapter" data-level="3.3" data-path="the-importance-of-questions-and-sources-of-data.html"><a href="the-importance-of-questions-and-sources-of-data.html#data-sources"><i class="fa fa-check"></i><b>3.3</b> Data Sources</a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#caching"><i class="fa fa-check"></i>Caching</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#e-mail-address"><i class="fa fa-check"></i>E-mail address</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#setting-the-download-reason"><i class="fa fa-check"></i>Setting the download reason</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#other-options"><i class="fa fa-check"></i>Other options</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#other-packages-needed"><i class="fa fa-check"></i>Other packages needed</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="example-with-fish-data-from-nors.html"><a href="example-with-fish-data-from-nors.html"><i class="fa fa-check"></i><b>1</b> Example with fish data from NORS</a>
 <ul>
-<li class="chapter" data-level="3.3.1" data-path="the-importance-of-questions-and-sources-of-data.html"><a href="the-importance-of-questions-and-sources-of-data.html#biodiversity-record-data"><i class="fa fa-check"></i><b>3.3.1</b> Biodiversity record data</a></li>
+<li class="chapter" data-level="1.1" data-path="example-with-fish-data-from-nors.html"><a href="example-with-fish-data-from-nors.html#plotting-data-on-a-map"><i class="fa fa-check"></i><b>1.1</b> Plotting data on a map</a></li>
+<li class="chapter" data-level="1.2" data-path="example-with-fish-data-from-nors.html"><a href="example-with-fish-data-from-nors.html#temporal-analysis"><i class="fa fa-check"></i><b>1.2</b> Temporal analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="example-with-fish-data-from-nors.html"><a href="example-with-fish-data-from-nors.html#species-summary"><i class="fa fa-check"></i><b>1.3</b> Species summary</a></li>
+<li class="chapter" data-level="1.4" data-path="example-with-fish-data-from-nors.html"><a href="example-with-fish-data-from-nors.html#spatial-biodiversity-analysis"><i class="fa fa-check"></i><b>1.4</b> Spatial biodiversity analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="the-importance-of-questions-and-sources-of-data.html"><a href="the-importance-of-questions-and-sources-of-data.html"><i class="fa fa-check"></i><b>2</b> The importance of questions and sources of data</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="the-importance-of-questions-and-sources-of-data.html"><a href="the-importance-of-questions-and-sources-of-data.html#questions"><i class="fa fa-check"></i><b>2.1</b> Questions</a></li>
+<li class="chapter" data-level="2.2" data-path="the-importance-of-questions-and-sources-of-data.html"><a href="the-importance-of-questions-and-sources-of-data.html#taxonomies"><i class="fa fa-check"></i><b>2.2</b> Taxonomies</a></li>
+<li class="chapter" data-level="2.3" data-path="the-importance-of-questions-and-sources-of-data.html"><a href="the-importance-of-questions-and-sources-of-data.html#data-sources"><i class="fa fa-check"></i><b>2.3</b> Data Sources</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="the-importance-of-questions-and-sources-of-data.html"><a href="the-importance-of-questions-and-sources-of-data.html#biodiversity-record-data"><i class="fa fa-check"></i><b>2.3.1</b> Biodiversity record data</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
 
       </nav>
@@ -172,7 +184,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Tutorial for using SBDI4R for analysis of biodiversity primary data</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><img src='sbdi-logo-orginal-large.png' class='cover'/> <br><br> Tutorial for using SBDI4R for analysis of biodiversity primary data</a>
           </h1>
         </div>
 
@@ -180,22 +192,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="the-importance-of-questions-and-sources-of-data" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> The importance of questions and sources of data</h1>
-<div id="questions" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> Questions</h2>
+<div id="the-importance-of-questions-and-sources-of-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> The importance of questions and sources of data</h1>
+<div id="questions" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Questions</h2>
 <p>Any question to be asked of biodiversity data should be put as simply and succinctly as possible. With the number of different subject areas and techniques used, analyses can quickly become complex.</p>
 </div>
-<div id="taxonomies" class="section level2" number="3.2">
-<h2><span class="header-section-number">3.2</span> Taxonomies</h2>
+<div id="taxonomies" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Taxonomies</h2>
 <p>It is important to be aware of likely taxonomic anomalies prior to working within a region. Checklists are very important, especially if working over several regions / countries. Whilst there are many things that will automatically look for the validity of a name they do not check for the validity of that species occurrence. For example <em>Sphagnum auriculatum</em> and <em>S. denticulatum</em> are both valid names. <em>S. auriculatum</em> is the currently accepted species in Europe but in the British Isles, Ireland and the Netherlands <em>s. denticulatum</em> is the most recorded taxa. Using data from across the European region without acknowledging this disagreement would impact the results of any research undertaken. For taxa which are known to be capable of dispersing great distances (eg birds) this becomes even more difficult especially when using community sourced data.</p>
 <p>For Sweden there is an agreed taxonomy for species accesible through [<a href="https://www.dyntaxa.se/" class="uri">https://www.dyntaxa.se/</a>] and the R library <strong>dyntaxa</strong>.</p>
 </div>
-<div id="data-sources" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> Data Sources</h2>
+<div id="data-sources" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Data Sources</h2>
 <p>Depending on what questions are being asked there are many different resources available. We focus on biodiversity data</p>
-<div id="biodiversity-record-data" class="section level3" number="3.3.1">
-<h3><span class="header-section-number">3.3.1</span> Biodiversity record data</h3>
+<div id="biodiversity-record-data" class="section level3" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Biodiversity record data</h3>
 <ul>
 <li>Artportalen [<a href="https://www.artportalen.se/" class="uri">https://www.artportalen.se/</a>] - Sweden’s data portal for biodiversity data</li>
 <li>Global Biodiversity Information Facility [<a href="http://www.gbif.org/" class="uri">http://www.gbif.org/</a>] - International organization aggregating biodiversity data. Contains data from a mixture of sources; curated collections, community science data, ecological research projects etc. <strong>rgbif, spocc</strong></li>
@@ -219,8 +231,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="case-1-example-with-fish-data-from-nors.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="example-with-fish-data-from-nors.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook/js/app.min.js"></script>
@@ -243,6 +255,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {

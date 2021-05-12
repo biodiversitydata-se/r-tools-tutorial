@@ -1,6 +1,6 @@
 ---
-title: "Tutorial for using SBDI4R for analysis of biodiversity primary data"
-author: "Debora Arlt and Alejandro Ruete for the Swedish Biodiversity Data Infrastructure" 
+title: "<img src='sbdi-logo-orginal-large.png' class='cover'/> <br><br> Tutorial for using SBDI4R for analysis of biodiversity primary data"
+author: "Debora Arlt and Alejandro Ruete <br>for the Swedish Biodiversity Data Infrastructure" 
 date: "`r Sys.Date()`"
 description: "A set of examples for using SBDI4R" 
 output: bookdown::gitbook
@@ -24,8 +24,6 @@ cover-image: sbdi-logo-orginal-large.png
 
 # Introduction {.unnumbered}
 
-<img src="sbdi-logo-orginal-large.png" class="cover"/>
-
 [TO BE UPDATED] Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a workflow which answers and / or prompts the large scale questions that should be asked at each stage of the process. We point to resources, methods and facilities that may be useful in answering a particular question. We assume some knowledge of statistical inference and it limitations. The validity and appropriateness of a particular method is dependent on the individual researcher(s). This workflow is focused on the statistical programming language R, as an environment where the complete analysis workflow can take place and can be documented in a fully reproducible way. However, we also point to other tools that can be used at different stages, and ways to import and export the data from and to those tools.
 
 Biodiversity resources are increasingly international. We focus on biodiversity data and resources from Sweden but our aim is to present considerations and methods that can be applied beyond Sweden's borders.
@@ -38,24 +36,23 @@ The SBDI4R package is primarily for accessing data. It includes some filter func
 
 Please get in contact with us via the [support center](https://docs.biodiversitydata.se/support/) if you have questions regarding the use of the SBDI4R package.
 
-## Package configuration
+## Package configuration{.unnumbered}
 
 Lets assume you have already installed the package as shown in the main [site](https://biodiversitydata-se.github.io/SBDI4R).
 
 The SBDI4R package must be loaded for each new R session:
 
-```{r, message=FALSE, eval=FALSE}
+```{r, message=FALSE, eval=TRUE}
 library(SBDI4R)
-sbdi_config(caching="off")
 ```
 
 However, the options you stored in .Rprofile if you did it so, will load automatically with the package.
 
-## Customizing SBDI4R
+## Customizing SBDI4R{.unnumbered}
 
 Various aspects of the SBDI4R package can be customized.
 
-### Caching
+### Caching{.unnumbered}
 
 SBDI4R can cache most results to local files. This means that if the
 same code is run multiple times, the second and subsequent iterations
@@ -66,13 +63,13 @@ session is ended. This behaviour can be altered so that caching is
 permanent, by setting the caching directory to a non-temporary location.
 For example, under Windows, use something like:
 
-```{r}
+```{r, eval=FALSE}
 sbdi_config(cache_directory = file.path("c:","mydata","sbdi_cache")) ## Windows
 ```
 
 or for Linux:
 
-```{r}
+```{r, eval=FALSE}
 sbdi_config(cache_directory = "~/mydata/sbdi_cache") ## Linux
 ```
 
@@ -87,7 +84,7 @@ If you change the cache_directory to a permanent location, you may wish
 to add something like this to your .Rprofile file, so that it happens
 automatically each time the SBDI4R package is loaded:
 
-```{r}
+```{r, eval=FALSE}
 setHook(packageEvent("SBDI4R", "onLoad"), 
         function(...) sbdi_config(cache_directory=file.path("~","mydata","sbdi_cache")))
 ```
@@ -104,16 +101,7 @@ long as caching is set to "refresh" — so you may wish to switch back to
 normal "on" caching behaviour once you have updated your cache with the
 data you are working on).
 
-### User-agent string
-
-Each request to SBDI servers is accompanied by a "user-agent" string
-that identifies the software making the request. This is a standard
-behaviour used by web browsers as well. The user-agent identifies the
-user requests to SBDI, helping SBDI to adapt and enhance the services
-that it provides. By default, the SBDI4R user-agent string is set to
-"SBDI4R" plus the SBDI4R version number (e.g. "SBDI4R 1.0").
-
-### E-mail address
+### E-mail address{.unnumbered}
 
 Each request to SBDI servers is also accompanied by an "e-mail address"
 string that identifies the user making the request. This is a standard
@@ -122,44 +110,34 @@ field. You can provide your e-mail address as a parameter directly to
 each call of the function occurrences(), or you can set it once per
 session specifying it in the package configuration:
 
-```{r}
+```{r, eval=FALSE}
 sbdi_config(email="your.valid@emailaddress.com")
 ```
 
-*NO* other personal identification information is sent. You can see all
-configuration settings, including the the user-agent string that is
-being used, with the command:
-
-```{r}
-sbdi_config()
-```
-
-### Debugging
-
-If things aren't working as expected, more detail (particularly about
-web requests and caching behaviour) can be obtained by setting the
-verbose configuration option:
-
-```{r}
-sbdi_config(verbose=TRUE)
-```
-
-### Setting the download reason
+### Setting the download reason{.unnumbered}
 
 SBDI requires that you provide a reason when downloading occurrence data
 (via the SBDI4R `occurrences()` function). You can provide this as a
 parameter directly to each call of `occurrences()`, or you can set it
 once per session using:
 
-```{r}
-sbdi_config(download_reason_id=your_reason_id)
+```{r, eval=FALSE}
+sbdi_config(download_reason_id = "your_reason_id")
 ```
-
 (See `sbdi_reasons()` for valid download reasons, e.g.
-download_reason_id=10 for "testing", or 7 for "ecological research", 8
-for "systematic research/taxonomy", 3 for "education")
+  * 10 for "testing", 
+  * 7 for "ecological research", 
+  * 8 for "systematic research/taxonomy", 
+  * 3 for "education")
 
-### Other options
+*NO* other personal identification information is sent. You can see all
+configuration settings, including the the user-agent string that is
+being used, with the command:
+
+```{r, eval=FALSE}
+sbdi_config()
+```
+### Other options{.unnumbered}
 
 If you make a request that returns an empty result set (e.g. an
 un-matched name), by default you will simply get an empty data structure
@@ -171,7 +149,8 @@ sbdi_config(warn_on_empty=TRUE)
 ```
 
 
-## Other packages needed for this tutorial
+## Other packages needed {.unnumbered}
+
 Then, check that we have some additional packages that we'll use in the examples, and install them if necessary.
 
 ```{r, message=FALSE}

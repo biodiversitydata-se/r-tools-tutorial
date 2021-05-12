@@ -1,5 +1,4 @@
-package-configuration
-case-1-example-with-fish-data-from-nors
+example-with-fish-data-from-nors
 plotting-data-on-a-map
 leaflet
 temporal-analysis
