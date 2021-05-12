@@ -29,7 +29,7 @@ For references on how to use the filters see documentation at [docs](link).
 
 Using the function `occurrences()` we can the query for the observations fulfilling our filter. If you haven't specified that in the `sbdi_config()` before (see [Case 1: Example with fish data from NORS] Installation), you need to pass your email and the download reason.
 
-```{r getOcc, cache=TRUE}
+```{r getOcc, cache=FALSE}
 library(SBDI4R)
 xf <- occurrences(fq = fq_str,
                  email = "test@test.org", 
@@ -134,7 +134,8 @@ grid <- Sweden_Grid_50km_Wgs84
 
 obs <- as.data.frame(xf$data)
 coordinates(obs) <- obs[,c("longitude","latitude")]
-proj4string(obs) <- CRS("+init=epsg:4326")
+wkt <- sf::st_crs(4326)[[2]]
+proj4string(obs) <- sp::CRS(wkt) #CRS("+init=epsg:4326")
 
 nObs <- nrow(obs)
 
