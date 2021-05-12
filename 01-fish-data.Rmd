@@ -1,4 +1,4 @@
-# Case 1: Example with fish data from NORS
+# Example with fish data from NORS
 
 In this example we are interested in exploring data from a specific data resource -- Sjöprovfiskedatabasen NORS (Institutionen för akvatiska resurser, SLU). This data base has 2.8 M observations starting in the 1950's.
 

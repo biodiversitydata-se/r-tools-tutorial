@@ -1,4 +1,10 @@
-Tutorial for the use of SBDI4R 
+# Tutorial for the use of SBDI4R <img src="https://github.com/biodiversitydata-se/r-tools-tutorial/raw/master/sbdi-logo-orginal-large.png" align="right" width="120"/>
+
+[![License: GPL
+v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+
 ================
 by Debora Arlt and Alejandro Ruete
 
@@ -12,5 +18,5 @@ by Debora Arlt and Alejandro Ruete
 
 -----
 
-Providing examples and tools for Swedish biodiversity data: from data access, data handling and organisation, to analysis.
+Providing examples and tools for Swedish biodiversity data: from data access, data handling and organization, to analysis.
 

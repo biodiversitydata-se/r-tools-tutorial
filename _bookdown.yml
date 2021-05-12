@@ -13,10 +13,8 @@ rmd_files:
   [
     "index.Rmd",
 
-    "01-installation.Rmd",
-    "02-fish-data.Rmd",
-    "03-dragonflies-data.Rmd",
-    "04-references.Rmd"
+    "01-fish-data.Rmd",
+    "02-dragonflies-data.Rmd"
     ]
 bookdown::gitbook:
   highlight: tango
