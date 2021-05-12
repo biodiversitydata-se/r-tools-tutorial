@@ -1,0 +1,12 @@
+package-configuration
+case-1-example-with-fish-data-from-nors
+plotting-data-on-a-map
+leaflet
+temporal-analysis
+species-summary
+spatial-biodiversity-analysis
+the-importance-of-questions-and-sources-of-data
+questions
+taxonomies
+data-sources
+biodiversity-record-data

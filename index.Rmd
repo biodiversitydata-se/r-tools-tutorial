@@ -1,6 +1,6 @@
 ---
 title: "Tutorial for using SBDI4R for analysis of biodiversity primary data"
-author: "Debora Arlt, Alejandro Ruete and Charles Campbell for the Swedish Biodiversity Data Infrastructure" 
+author: "Debora Arlt and Alejandro Ruete for the Swedish Biodiversity Data Infrastructure" 
 date: "`r Sys.Date()`"
 description: "A set of examples for using SBDI4R" 
 output: bookdown::gitbook
@@ -19,42 +19,19 @@ mainfont: Palatino
 monofont: "Source Code Pro"
 monofontoptions: "Scale=0.8"
 github-repo: https://github.com/biodiversitydata-se/r-tools-tutorial
-cover-image: images/SBDI.png
+cover-image: SBDI.png
 ---
 
-# Introduction
+# Introduction {-}
 
 [TO BE UPDATED] Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a workflow which answers and / or prompts the large scale questions that should be asked at each stage of the process. We point to resources, methods and facilities that may be useful in answering a particular question. We assume some knowledge of statistical inference and it limitations. The validity and appropriateness of a particular method is dependent on the individual researcher(s). This workflow is focused on the statistical programming language R, as an environment where the complete analysis workflow can take place and can be documented in a fully reproducible way. However, we also point to other tools that can be used at different stages, and ways to import and export the data from and to those tools.
 
 Biodiversity resources are increasingly international. We focus on biodiversity data and resources from Sweden but our aim is to present considerations and methods that can be applied beyond Sweden's borders.
 
-General description of the workflow here. Data--\>Cleaning--\>Fitness evaluation--\>Analysis always exploring and filtering the data in light of the research question. Also say here that if known from before, the cleaning and filtering criteria can be set directly on the query!
+General description of the workflow here. Data-->Cleaning-->Fitness evaluation-->Analysis always exploring and filtering the data in light of the research question. Also say here that if known from before, the cleaning and filtering criteria can be set directly on the query!
 
 `r htmltools::includeHTML("images/Workflow Overview Horizontal.html")`
 
-The SBDI4R package is primarily for accessing data. It includes some filter functions that allow you to filter prior to download. It also includes some simple summary functions, and some function for some simple data exploration. The examples also show you how you can use the data by continued exploring and analysing using other R package.
+The SBDI4R package is primarily for accessing data. It includes some filter functions that allow you to filter prior to download. It also includes some simple summary functions, and some function for some simple data exploration. The examples also show you how you can use the data by continued exploring and analyzing using other R package.
 
-Please get in contact with us if you have questions regarding the use of the SBDI4R package.
-
-## Using SBDI4R
-
-Lets assume you have already installed the package as shown in the main site \url{https://biodiversitydata-se.github.io/SBDI4R}.
-
-The SBDI4R package must be loaded for each new R session:
-
-```{r, message=FALSE}
-library(SBDI4R)
-sbdi_config(caching="off")
-```
-
-However, the options you stored in .Rprofile if you did it so, will load automatically with the package.
-
-Then, check that we have some additional packages that we'll use in the examples, and install them if necessary.
-
-```{r, message=FALSE}
-to_install <- c("ape", "dplyr", "ggplot2", "jpeg", "leaflet","maps", "mapdata",
-                "maptools", "phytools", "sp", "rgeos", "tidyr", "vegan")
-to_install <- to_install[!sapply(to_install, requireNamespace, quietly=TRUE)]
-if(length(to_install)>0)
-    install.packages(to_install, repos="http://cran.us.r-project.org")
-```
+Please get in contact with us [MAILTO] if you have questions regarding the use of the SBDI4R package.
