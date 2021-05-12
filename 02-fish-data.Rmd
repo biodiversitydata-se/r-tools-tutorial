@@ -126,7 +126,7 @@ data("swe_wgs84", package="SBDI4R", envir=environment())
 data("Sweden_Grid_50km_Wgs84", package="SBDI4R", envir=environment())
 
 grid <- Sweden_Grid_50km_Wgs84
-grid <- spTransform(grid, CRS("+init=epsg:4326")) # as mentioned above, the grid already has has the same CRS, but changes are undergoing in the sp package and this step is needed
+# grid <- spTransform(grid, CRS("+init=epsg:4326")) # as mentioned above, the grid already has has the same CRS, but changes are undergoing in the sp package and this step is needed
 
 # make the observations spatial
 # NOTE: make sure there are no NAs on either column defining the coordinates
