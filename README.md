@@ -1,4 +1,4 @@
-# Tutorial for the use of SBDI4R <img src="https://github.com/biodiversitydata-se/r-tools-tutorial/raw/master/sbdi-logo-orginal-large.png" align="right" width="120"/>
+# Tutorial for the use of SBDI4R <img src="https://github.com/biodiversitydata-se/r-tools-tutorial/raw/main/sbdi-logo-orginal-large.png" align="right" width="120"/>
 
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
