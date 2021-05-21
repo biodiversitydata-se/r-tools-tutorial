@@ -1,5 +1,5 @@
 ---
-title: "<img src='sbdi-logo-orginal-large.png' class='cover'/> <br><br> Tutorial for using SBDI4R for analysis of biodiversity primary data"
+title: "Tutorial for using R tools for analysis of primary biodiversity data provided by SBDI"
 author: "Debora Arlt and Alejandro Ruete <br>for the Swedish Biodiversity Data Infrastructure" 
 date: "`r Sys.Date()`"
 description: "A set of examples for using SBDI4R" 
@@ -24,33 +24,50 @@ cover-image: sbdi-logo-orginal-large.png
 
 # Introduction {.unnumbered}
 
-[TO BE UPDATED] Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a workflow which answers and / or prompts the large scale questions that should be asked at each stage of the process. We point to resources, methods and facilities that may be useful in answering a particular question. We assume some knowledge of statistical inference and it limitations. The validity and appropriateness of a particular method is dependent on the individual researcher(s). This workflow is focused on the statistical programming language R, as an environment where the complete analysis workflow can take place and can be documented in a fully reproducible way. However, we also point to other tools that can be used at different stages, and ways to import and export the data from and to those tools.
-
-Biodiversity resources are increasingly international. We focus on biodiversity data and resources from Sweden but our aim is to present considerations and methods that can be applied beyond Sweden's borders.
-
-General description of the workflow here. Data-->Cleaning-->Fitness evaluation-->Analysis always exploring and filtering the data in light of the research question. Also say here that if known from before, the cleaning and filtering criteria can be set directly on the query!
+Biodiversity resources are increasingly international. The SBDI has made an effort to canalize biodiversity data and resources to help the research community access and analyze Swedish primary biodiversity data. Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a few examples that prompt questions that may be asked at different stages of the process. The validity and appropriateness of a particular method depends on the individual researcher(s). For a comprehensive workflow on how to treat and analyze PBD please refer to our tutorial on [biodiversity analysis tool](https://github.com/biodiversitydata-se/biodiversity-analysis-tools) where we go through the complete workflow Data --> Cleaning --> Fitness evaluation --> Analysis 
 
 `r htmltools::includeHTML("images/Workflow Overview Horizontal.html")`
 
-The SBDI4R package is primarily for accessing data. It includes some filter functions that allow you to filter prior to download. It also includes some simple summary functions, and some function for some simple data exploration. The examples also show you how you can use the data by continued exploring and analyzing using other R package.
 
-Please get in contact with us via the [support center](https://docs.biodiversitydata.se/support/) if you have questions regarding the use of the SBDI4R package.
+## R and Mirroreum{.unnumbered}
+The present tutorial is focused on the statistical programming language R. 
+R is a free software environment for statistical computing and graphics that is 
+widely used within the scientific community and where the complete analysis 
+workflow can be documented in a fully reproducible way. 
 
-## Package configuration{.unnumbered}
+At SBDI we provide access for researchers and students to [Mirroreum](https://mirroreum.biodiversitydata.se/) 
+– an online web-based environment for Reproducible Open Research in the area of 
+biodiversity analysis. Mirroreum is based on a Free and Open Source stack of software. 
+Logging in, you immediately get access to a web-based version of R Studio with a
+large number of pre-installed packages such as all the packages offered from ROpenSci and more.
 
-Lets assume you have already installed the package as shown in the main [site](https://biodiversitydata-se.github.io/SBDI4R).
+Compared to running R Studio on your own machine, Mirroreum offers more 
+computational resources and a standardized environment where you can rely on all 
+the relevant packages being installed and the configuration parameters being set 
+appropriately. 
+To know more about Mirroreum or to request an account please visit the [SBDI documentation site](https://docs.biodiversitydata.se/analyse-data/mirroreum/)
 
-The SBDI4R package must be loaded for each new R session:
+
+## SBDI4R - R package to search an access data{.unnumbered}
+The SBDI4R package enables the R community to directly access data and resources
+hosted by SBDI. The goal is to enable observations of species to be
+queried and output in a range of standard formats. It includes some filter functions 
+that allow you to filter prior to download. It also includes some simple summary 
+functions, and some function for some simple data exploration. The examples 
+included in this tutorial also show you how you can continue exploring and analyzing
+using other R package.
+
+Please refer to the [package documentation](https://biodiversitydata-se.github.io/SBDI4R)
+for details on how to install it. Once installed the SBDI4R package must be loaded
+for each new R session:
 
 ```{r, message=FALSE, eval=TRUE}
 library(SBDI4R)
 ```
-
-However, the options you stored in .Rprofile if you did it so, will load automatically with the package.
-
 ## Customizing SBDI4R{.unnumbered}
 
-Various aspects of the SBDI4R package can be customized.
+Various aspects of the SBDI4R package can be customized, and even stored in
+`.Rprofile` to be load automatically with the package.
 
 ### Caching{.unnumbered}
 
@@ -125,10 +142,10 @@ once per session using:
 sbdi_config(download_reason_id = "your_reason_id")
 ```
 (See `sbdi_reasons()` for valid download reasons, e.g.
-  * 10 for "testing", 
+  * 3 for "education",
   * 7 for "ecological research", 
   * 8 for "systematic research/taxonomy", 
-  * 3 for "education")
+  * 10 for "testing")
 
 *NO* other personal identification information is sent. You can see all
 configuration settings, including the the user-agent string that is
@@ -151,7 +168,8 @@ sbdi_config(warn_on_empty=TRUE)
 
 ## Other packages needed {.unnumbered}
 
-Then, check that we have some additional packages that we'll use in the examples, and install them if necessary.
+Some additional packages are needed for these examples. Install them if necessary 
+with the following script.
 
 ```{r, message=FALSE}
 to_install <- c("dplyr", "ggplot2", "jpeg", "leaflet","maps", "mapdata",
@@ -160,3 +178,18 @@ to_install <- to_install[!sapply(to_install, requireNamespace, quietly=TRUE)]
 if(length(to_install)>0)
     install.packages(to_install, repos="http://cran.us.r-project.org")
 ```
+
+## Your collaboration is appreciated {.unnumbered}
+Open Source also means that you can contribute. You don't need to know how to program
+but every input is appreciated. Did you find something that is not working? 
+Have suggestions for examples or text? you can always 
+1.  Reach to us via the [support center](https://docs.biodiversitydata.se/support/)
+2.  Submit and issue to the GitHub code repository [see how](https://docs.github.com/en/github/managing-your-work-on-github/managing-your-work-with-issues-and-pull-requests/creating-an-issue) 
+3.  Or contribute with your code or documents modifications by ["forking"](https://docs.github.com/en/github/getting-started-with-github/quickstart/fork-a-repo)
+the code and submitting a ["pull request"](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
+
+The repositories you can contribute to are:
+*   Mirroreum [https://github.com/mskyttner/mirroreum](https://github.com/mskyttner/mirroreum)
+*   SBDI4R [https://github.com/biodiversitydata-se/SBDI4R](https://github.com/biodiversitydata-se/SBDI4R) (NOTE: we may not develop this package but instead move to a new one)
+*   the general analysis workflows [https://github.com/biodiversitydata-se/biodiversity-analysis-tools] https://github.com/biodiversitydata-se/biodiversity-analysis-tools
+*   these tutorial [https://github.com/biodiversitydata-se/r-tools-tutorial](https://github.com/biodiversitydata-se/r-tools-tutorial)

@@ -32,7 +32,7 @@ Using the function `occurrences()` we can the query for the observations fulfill
 ```{r getOcc, cache=FALSE}
 library(SBDI4R)
 xf <- occurrences(fq = fq_str,
-                 email = "test@test.org", 
+                 email = "alejandro@greensway.se", 
                  download_reason_id=10)
 
 # Simply summarise all records by data source 
@@ -194,3 +194,15 @@ legend("bottomleft",
        title = "Number of \nspecies", pch = 15, bty="n")
 suppressWarnings(par(oldpar))
 ```
+
+
+[TO BE CONTINUED]
+[perhaps add, use from Example 5:] species richness vs latitude
+Let’s now ask – can we see any trends for species over the 20 yrs?:
+First we check whether spatial sampling effort was comparable across those years – can we quickly check number of sampling sites over years?
+And we ask: can we see a trend (change = frequency of occurrence = number caught) for species X, or species Y?
+[above may already be enough, nots sure we can/should fit more, but if we have time:]
+And we ask: can we see a relationship between species occurrence and the environment? For example species X and temperature?
+
+Link to analyses of interest – e.g. species distribution models, or trend analyses, or species divesity – link to biodiversity workflow
+

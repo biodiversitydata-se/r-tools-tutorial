@@ -1,30 +1,12 @@
-# The importance of questions and sources of data
+Case 2:
+Look at opportunistically collected citizen science data – using the big Swedish cit science species observation data portal Artportalen.
 
-## Questions
+We want to look at dragonflies – but before we can use the observation records we need to know how the observation effort has varied over time and in space. For this we define field visits i.e. occasions at which an observer has sampled observations – if we have information on observer id, location id and date we can aggregate data into “field visits”. We do this using BIRDS, and 25km grid:
+Select data – get records for Southern Sweden (Götaland) and years 2000-2010.
+How has observation effort (frequency of visits) varied over time and space? – 1) show maps as in Example 7 (all years, year 2000, 2002, 2004, 2006, 2008, 2010), 2 make also a time line plot with no. visits against years, no. of gridcells with visits against years.
 
-Any question to be asked of biodiversity data should be put as simply and succinctly as possible. With the number of different subject areas and techniques used, analyses can quickly become complex.
+We can now look at some particular species and ask whether this has changed in occurrence over time:
+Plot no. records of species x and no. visits all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
+Plot no. gridcells with visits for species x and no. gridcells with visits for all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
+(species x: Tvåfläckad trollslända Epitheca bimaculata)
 
-## Taxonomies
-
-It is important to be aware of likely taxonomic anomalies prior to working within a region. Checklists are very important, especially if working over several regions / countries. Whilst there are many things that will automatically look for the validity of a name they do not check for the validity of that species occurrence. For example *Sphagnum auriculatum* and *S. denticulatum* are both valid names. *S. auriculatum* is the currently accepted species in Europe but in the British Isles, Ireland and the Netherlands *s. denticulatum* is the most recorded taxa. Using data from across the European region without acknowledging this disagreement would impact the results of any research undertaken. For taxa which are known to be capable of dispersing great distances (eg birds) this becomes even more difficult especially when using community sourced data.
-
-For Sweden there is an agreed taxonomy for species accesible through [<https://www.dyntaxa.se/>] and the R library **dyntaxa**.
-
-## Data Sources
-
-Depending on what questions are being asked there are many different resources available. We focus on biodiversity data
-
-### Biodiversity record data
-
--   Artportalen [<https://www.artportalen.se/>] - Sweden's data portal for biodiversity data
--   Global Biodiversity Information Facility [<http://www.gbif.org/>] - International organization aggregating biodiversity data. Contains data from a mixture of sources; curated collections, community science data, ecological research projects etc. **rgbif, spocc**
--   BioCASE [<https://www.biocase.org/>] - A European transnational biodiversity repository
--   eBird [<http://ebird.org/content/ebird/>] - American database of bird observations **auk, rebird,spocc**
--   iNaturalist <http://www.inaturalist.org/> - International community science observation repository **spocc**
--   Berkeley ecoengine [<https://ecoengine.berkeley.edu>] - Access to UC Berkley's Natural history data **spocc**
--   VertNet [<http://vertnet.org/>] - vertebrate biodiversity collections **rvert, spocc**
--   iDigBio [<https://www.idigbio.org/>] - Integrated digitise biodiversity collections **ridigbio**
--   OBIS [<http://www.iobis.org/>] - Ocean biodiversity information system **robis**
--   ALA [<http://www.ala.org.au/>] - Atlas of living Australia **ALA4r**
--   Neotoma [<https://www.neotomadb.org/>] Palaeoecology databas **neotoma**
--   ...
