@@ -4,21 +4,22 @@ In this example we are interested in exploring data from a specific data resourc
 
 As you may already know, SBDI is a collection of many biodiversity databases. We start by searching for the data resource we are interested in using the function `pick_filter()`. This is an interactive query guiding you through the many resources available to filtering your query (data resources, spatial layers, and curated species lists).
 
-```{r, message=FALSE, eval=FALSE}
+```{r filter1, message=FALSE, eval=FALSE}
+library(SBDI4R)
 fq_str <- pick_filter("resource") 
 # follow the instructions 
 ```
 
 Follow the instruction. Your choices here would have been "in3" --> "dr20". Your variable `fq_str` will now contain a string "data_resource_uid:dr20".
 
-```{r}
+```{r filter2}
 # we cant do it interactive here so we force it
 fq_str <- "data_resource_uid:dr20"
 ```
 
 But we are not interested in the complete database, but on the last 10 years of data. for this we concatenate (add to a vector) another filter string. These will be treated as AND factors.
 
-```{r}
+```{r filter3}
 y1 <- 2012
 y2 <- 2021
 fq_str <- c(fq_str, paste0("year:[", y1, " TO ", y2,"]"))
@@ -37,6 +38,7 @@ xf <- occurrences(fq = fq_str,
 
 # Simply summarise all records by data source 
 table(xf$data$dataResourceName)
+table(xf$data$dataResourceID)
 ```
 
 ## Plotting data on a map
@@ -44,7 +46,7 @@ table(xf$data$dataResourceName)
 You can quickly plot all the observations as a PDF file with the function `ocurrence_plot()`, one page per species:
 
 ```{r pdf_plot, eval=FALSE}
-occurrences_plot(x, "obsPlot.pdf", 
+occurrences_plot(xf, "obsPlot.pdf", 
                  grouped=FALSE, 
                  taxon_level="species", 
                  pch='+')
@@ -73,15 +75,15 @@ leaflet(width = "100%") %>%
                   clusterOptions = markerClusterOptions())
 ```
 
-## Temporal analysis
+## Temporal summary
 
-A quick summary over the years reveal a drop in number of records over time, and stops .
+A quick summary over the years reveal a drop in number of records over time <span class="hgl>[IF DATA IS NOT CHANGED]</span>.
 
-```{r}
+```{r timeTable}
 table(xf$data$year)
 ```
 
-```{r}
+```{r timeHist}
 hist(xf$data$year, 
      breaks = seq(y1, y2), 
      xlab = "Year", 
@@ -91,7 +93,6 @@ hist(xf$data$year,
 ## Species summary
 
 In the same way we can summaries the number of observations for each species, by common or scientific name.
-
 ```{r nObsTab, paged.print=TRUE}
 sppTab <- table(xf$data$commonName)
 sppDF <- as.data.frame(sppTab)
@@ -108,7 +109,7 @@ sppDF
 
 Perhaps, you need to send this table as a .CSV file to a colleague.
 
-```{r, eval=FALSE}
+```{r savesummary, eval=FALSE}
 write.csv(sppDF, "NORS species summary.csv")
 # NOTE: again this will be saved on your working directory
 ```
@@ -126,7 +127,6 @@ data("swe_wgs84", package="SBDI4R", envir=environment())
 data("Sweden_Grid_50km_Wgs84", package="SBDI4R", envir=environment())
 
 grid <- Sweden_Grid_50km_Wgs84
-# grid <- spTransform(grid, CRS("+init=epsg:4326")) # as mentioned above, the grid already has has the same CRS, but changes are undergoing in the sp package and this step is needed
 
 # make the observations spatial
 # NOTE: make sure there are no NAs on either column defining the coordinates
@@ -162,14 +162,17 @@ res <- data.frame("nObs"=as.numeric(rep(NA,nCells)),
 
 cols2use <- c("scientificName", "year")
 
-dataRes <- lapply(ObsInGridList[wNonEmpty], function(x){
-  x <- x[,cols2use]
-  colnames(x) <- c("scientificName", "year")
-  return(c("nObs" = length(x[,"scientificName"]),
-           "nYears" = length(unique(x[,"year"])),
-           "nSpp" = length(unique(x[,"scientificName"]))
-           ))
-  })
+dataRes <- lapply(ObsInGridList[wNonEmpty], 
+                  function(x){
+                    x <- x[,cols2use]
+                    colnames(x) <- c("scientificName", "year")
+                    return(c("nObs" = length(x[,"scientificName"]),
+                             "nYears" = length(unique(x[,"year"])),
+                             "nSpp" = length(unique(x[,"scientificName"]))
+                             )
+                           )
+                    }
+                  )
 
 dataRes <- as.data.frame(dplyr::bind_rows(dataRes, .id = "gridID"))
 
@@ -179,7 +182,6 @@ resSp <- sp::SpatialPolygonsDataFrame(grid, res)
 ```
 
 And finally plot the grid summary as a map:
-
 ```{r grid, fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
 palBW <- leaflet::colorNumeric(c("white", "navyblue"),
                                c(0, max(resSp@data$nSpp, na.rm = TRUE)),
@@ -195,14 +197,61 @@ legend("bottomleft",
 suppressWarnings(par(oldpar))
 ```
 
-
+We can go further by gathering the observations by latitude. 
 [TO BE CONTINUED]
-[perhaps add, use from Example 5:] species richness vs latitude
-Let’s now ask – can we see any trends for species over the 20 yrs?:
+```{r sppLatitude}
+library(dplyr)
+library(tidyr)
+xgridded <- xf$data %>%
+    ## discard genus- and higher-level records
+    filter(rank %in% c("species", "subspecies", "variety", "form", "cultivar")) %>%
+    mutate(longitude = round(longitude * 4)/4, 
+           latitude = round(latitude * 4)/4) %>%
+    group_by(longitude,latitude) %>%
+    ## subset to vars of interest
+    select(longitude, latitude, species) %>%
+    ## take one row per cell per species (presence)
+    distinct() %>%
+    ## calculate species richness
+    mutate(richness=n()) %>%
+    ## convert to wide format (sites by species)
+    mutate(present=1) %>%
+    # do(tidyr::spread(data=., key=species, value=present, fill=0)) %>%
+    do(tidyr::pivot_wider(data=.,  names_from=species, values_from=present, values_fill=0)) %>%
+    ungroup()
+## where a species was not present, it will have NA: convert these to 0
+sppcols <- setdiff(names(xgridded),
+                   c("longitude", "latitude", "richness"))
+xgridded <- xgridded %>% 
+  mutate_at(sppcols, function(z) ifelse(is.na(z), 0, z))
+```
+
+And plot it accordingly
+```{r plot_richLat, warning=FALSE}
+library(ggplot2)
+
+ggplot(xgridded, aes(latitude, richness)) + 
+  labs(x = "Latitude (º)", 
+       y = "Species richness") +
+  lims(y = c(0,20)) +
+  geom_point() + 
+  theme_bw()
+```
+
+
+## Temporal biodiversity analysis
+Despite the drop seen in sampling effort <span class=hgl>(IF DATA IS NOT CHANGED)</span>, we can still analyse weather there is any trends for species over the 20 yrs?:
+
+```{r}
+xf$data %>%
+    ## discard genus- and higher-level records
+    filter(rank %in% c("species", "subspecies", "variety", "form", "cultivar"))
+  
+```
+
 First we check whether spatial sampling effort was comparable across those years – can we quickly check number of sampling sites over years?
 And we ask: can we see a trend (change = frequency of occurrence = number caught) for species X, or species Y?
-[above may already be enough, nots sure we can/should fit more, but if we have time:]
-And we ask: can we see a relationship between species occurrence and the environment? For example species X and temperature?
 
+## Links to further tutorials that could be of interest
 Link to analyses of interest – e.g. species distribution models, or trend analyses, or species divesity – link to biodiversity workflow
 

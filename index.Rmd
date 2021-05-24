@@ -21,6 +21,9 @@ monofontoptions: "Scale=0.8"
 github-repo: https://github.com/biodiversitydata-se/r-tools-tutorial
 cover-image: sbdi-logo-orginal-large.png
 ---
+<style>
+span.hgl { background-color:#ffff66; border-radius: 5px; padding: 5px;}
+</style>
 
 # Introduction {.unnumbered}
 
@@ -172,7 +175,7 @@ Some additional packages are needed for these examples. Install them if necessar
 with the following script.
 
 ```{r, message=FALSE}
-to_install <- c("dplyr", "ggplot2", "jpeg", "leaflet","maps", "mapdata",
+to_install <- c("dplyr", "BIRDS","ggplot2", "jpeg", "leaflet","maps", "mapdata",
                 "maptools", "sp", "rgeos", "tidyr", "vegan")
 to_install <- to_install[!sapply(to_install, requireNamespace, quietly=TRUE)]
 if(length(to_install)>0)
