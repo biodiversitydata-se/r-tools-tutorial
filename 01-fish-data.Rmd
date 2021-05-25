@@ -1,6 +1,6 @@
 # Example with fish data from NORS
 
-In this example we are interested in exploring data from a specific data resource -- Sjöprovfiskedatabasen NORS (Institutionen för akvatiska resurser, SLU). This data base has 2.8 M observations starting in the 1950's.
+In this example we are interested in exploring data from a specific data resource -- Swedish Electrofishing Registry - SERS (Institutionen för akvatiska resurser, SLU). This data base has 2.8 M observations starting in the 1950's.
 
 As you may already know, SBDI is a collection of many biodiversity databases. We start by searching for the data resource we are interested in using the function `pick_filter()`. This is an interactive query guiding you through the many resources available to filtering your query (data resources, spatial layers, and curated species lists).
 
@@ -10,11 +10,11 @@ fq_str <- pick_filter("resource")
 # follow the instructions 
 ```
 
-Follow the instruction. Your choices here would have been "in3" --> "dr20". Your variable `fq_str` will now contain a string "data_resource_uid:dr20".
+Follow the instruction. Your choices here would have been "in3" --> "dr10". Your variable `fq_str` will now contain a string "data_resource_uid:dr10".
 
 ```{r filter2}
 # we cant do it interactive here so we force it
-fq_str <- "data_resource_uid:dr20"
+fq_str <- "data_resource_uid:dr10"
 ```
 
 But we are not interested in the complete database, but on the last 10 years of data. for this we concatenate (add to a vector) another filter string. These will be treated as AND factors.
@@ -26,7 +26,7 @@ fq_str <- c(fq_str, paste0("year:[", y1, " TO ", y2,"]"))
 # Note the square brackets are hard limits
 ```
 
-For references on how to use the filters see documentation at [docs](link).
+For references on how to use the filters see SBDI APIS [documentation](https://api.biodiversitydata.se/?lang=en-US#ws3).
 
 Using the function `occurrences()` we can the query for the observations fulfilling our filter. If you haven't specified that in the `sbdi_config()` before (see [Case 1: Example with fish data from NORS] Installation), you need to pass your email and the download reason.
 
@@ -216,7 +216,6 @@ xgridded <- xf$data %>%
     mutate(richness=n()) %>%
     ## convert to wide format (sites by species)
     mutate(present=1) %>%
-    # do(tidyr::spread(data=., key=species, value=present, fill=0)) %>%
     do(tidyr::pivot_wider(data=.,  names_from=species, values_from=present, values_fill=0)) %>%
     ungroup()
 ## where a species was not present, it will have NA: convert these to 0
@@ -240,12 +239,23 @@ ggplot(xgridded, aes(latitude, richness)) +
 
 
 ## Temporal biodiversity analysis
-Despite the drop seen in sampling effort <span class=hgl>(IF DATA IS NOT CHANGED)</span>, we can still analyse weather there is any trends for species over the 20 yrs?:
+Despite the drop seen in sampling effort <span class=hgl>(IF DATA IS NOT CHANGED)</span>, we can still analyse weather there is any trends for species over the 8 yrs?:
 
 ```{r}
 xf$data %>%
     ## discard genus- and higher-level records
-    filter(rank %in% c("species", "subspecies", "variety", "form", "cultivar"))
+    filter(rank %in% c("species", "subspecies", "variety", "form", "cultivar")) %>% 
+    group_by(year) %>%
+    ## subset to vars of interest
+    select(year, species) %>%
+    ## take one row per cell per species (presence)
+    distinct() %>%
+    ## calculate species richness
+    mutate(richness=n()) %>%
+    ## convert to wide format (sites by species)
+    mutate(present=1) %>%
+    do(tidyr::pivot_wider(data=.,  names_from=species, values_from=present, values_fill=0)) %>%
+    ungroup()
   
 ```
 
