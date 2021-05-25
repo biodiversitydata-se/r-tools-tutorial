@@ -126,7 +126,7 @@ sbdi_config(caching="off")
 or set to "refresh", meaning that the cached results will re-downloaded
 from the SBDI servers and the cache updated. (This will happen for as
 long as caching is set to "refresh" — so you may wish to switch back to
-normal "on" caching behaviour once you have updated your cache with the
+normal "on" caching behavior once you have updated your cache with the
 data you are working on).
 
 ### E-mail address{.unnumbered}
