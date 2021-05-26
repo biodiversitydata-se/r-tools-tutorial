@@ -33,7 +33,7 @@ Using the function `occurrences()` we can the query for the observations fulfill
 ```{r getOcc, cache=FALSE}
 library(SBDI4R)
 xf <- occurrences(fq = fq_str,
-                 email = "alejandro@greensway.se", 
+                 email = "sbdi4r-test@biodiversitydata.se", 
                  download_reason_id=10)
 
 # Simply summarise all records by data source 
