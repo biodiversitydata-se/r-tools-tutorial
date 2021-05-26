@@ -1,4 +1,4 @@
-example-with-fish-data-from-nors
+example-with-fish-data-from-sers
 plotting-data-on-a-map
 leaflet
 temporal-summary
@@ -6,3 +6,4 @@ species-summary
 spatial-biodiversity-analysis
 temporal-biodiversity-analysis
 links-to-further-tutorials-that-could-be-of-interest
+case-2

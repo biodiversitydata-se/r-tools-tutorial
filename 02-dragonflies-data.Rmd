@@ -1,4 +1,4 @@
-#Case 2:
+# Case 2:
 Look at opportunistically collected citizen science data – using the big Swedish cit science species observation data portal Artportalen.
 
 We want to look at dragonflies – but before we can use the observation records we need to know how the observation effort has varied over time and in space. For this we define field visits i.e. occasions at which an observer has sampled observations – if we have information on observer id, location id and date we can aggregate data into “field visits”. We do this using BIRDS, and 25km grid:

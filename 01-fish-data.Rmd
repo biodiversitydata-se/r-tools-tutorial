@@ -1,4 +1,4 @@
-# Example with fish data from NORS
+# Example with fish data from SERS
 
 In this example we are interested in exploring data from a specific data resource -- Swedish Electrofishing Registry - SERS (Institutionen för akvatiska resurser, SLU). This data base has 2.8 M observations starting in the 1950's.
 
@@ -20,7 +20,7 @@ fq_str <- "data_resource_uid:dr10"
 But we are not interested in the complete database, but on the last 10 years of data. for this we concatenate (add to a vector) another filter string. These will be treated as AND factors.
 
 ```{r filter3}
-y1 <- 2002
+y1 <- 2008
 y2 <- 2012
 fq_str <- c(fq_str, paste0("year:[", y1, " TO ", y2,"]"))
 # Note the square brackets are hard limits
@@ -33,9 +33,8 @@ Using the function `occurrences()` we can the query for the observations fulfill
 ```{r getOcc, cache=TRUE}
 library(SBDI4R)
 xf <- occurrences(fq = fq_str,
-                 # email = "sbdi4r-test@biodiversitydata.se", 
-                email = "aleruete@gmail.com", 
-                 download_reason_id=10)
+                 email = "sbdi4r-test@biodiversitydata.se", 
+                 download_reason_id = 10)
 
 # Simply summarise all records by data source 
 table(xf$data$dataResourceName)
@@ -43,6 +42,10 @@ table(xf$data$dataResourceID)
 ```
 ```{r save, echo=FALSE, include=FALSE, eval=FALSE}
 save(xf, file = "data/tmp_occdata_for compile.rdata")
+```
+
+```{r load, echo=FALSE, include=FALSE, eval=FALSE}
+load(file = "data/tmp_occdata_for compile.rdata")
 ```
 
 ## Plotting data on a map
@@ -81,7 +84,7 @@ leaflet(width = "100%") %>%
 
 ## Temporal summary
 
-A quick summary over the years reveal a drop in number of records over time <span class="hgl>[IF DATA IS NOT CHANGED]</span>.
+A quick summary over the years reveal a drop in number of records over time.
 
 ```{r timeTable}
 table(xf$data$year)
@@ -114,7 +117,7 @@ sppDF
 Perhaps, you need to send this table as a .CSV file to a colleague.
 
 ```{r savesummary, eval=FALSE}
-write.csv(sppDF, "NORS species summary.csv")
+write.csv(sppDF, "SERS_species_summary.csv")
 # NOTE: again this will be saved on your working directory
 ```
 
@@ -202,8 +205,8 @@ suppressWarnings(par(oldpar))
 ```
 
 We can go further by gathering the observations by latitude. 
-[TO BE CONTINUED]
-```{r sppLatitude}
+
+```{r sppLatitude, warning=FALSE, message=FALSE}
 library(dplyr)
 library(tidyr)
 xgridded <- xf$data %>%
@@ -243,27 +246,25 @@ ggplot(xgridded, aes(latitude, richness)) +
 
 
 ## Temporal biodiversity analysis
-Despite the drop seen in sampling effort <span class=hgl>(IF DATA IS NOT CHANGED)</span>, we can still analyse weather there is any trends for species over the 8 yrs?:
+Despite the drop seen in sampling effort, we can still analyse weather there is 
+any trends for species over the sampled years. To do this, we first need to 
+check whether the spatial sampling effort was comparable across those years
 
-```{r}
+```{r temporalBiodiv}
+
 xf$data %>%
     ## discard genus- and higher-level records
     filter(rank %in% c("species", "subspecies", "variety", "form", "cultivar")) %>% 
     group_by(year) %>%
     ## subset to vars of interest
-    select(year, species) %>%
-    ## take one row per cell per species (presence)
-    distinct() %>%
+    select(year, locality) %>%
     ## calculate species richness
-    mutate(richness=n()) %>%
-    ## convert to wide format (sites by species)
-    mutate(present=1) %>%
-    do(tidyr::pivot_wider(data=.,  names_from=species, values_from=present, values_fill=0)) %>%
-    ungroup()
+    mutate(nObs = n())
+
   
 ```
 
-First we check whether spatial sampling effort was comparable across those years – can we quickly check number of sampling sites over years?
+
 And we ask: can we see a trend (change = frequency of occurrence = number caught) for species X, or species Y?
 
 ## Links to further tutorials that could be of interest
