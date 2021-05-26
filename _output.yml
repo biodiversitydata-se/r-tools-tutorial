@@ -1,0 +1,19 @@
+bookdown::gitbook:
+  css: style.css
+  split_by: chapter
+  config:
+    toc:
+      before: |
+        <li><a href="./"> <strong>R tools for biodiversity data</strong></a></li>
+    collapse: chapter
+  edit: https://github.com/biodiversitydata-se/r-tools-tutorial/edit/master/%s
+  download: ["pdf"]
+  sharing:
+    github: yes
+    facebook: no
+    twitter: no
+    all: []
+bookdown::pdf_book:
+  latex_engine: xelatex
+  citation_package: natbib
+  keep_tex: yes  

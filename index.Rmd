@@ -1,31 +1,22 @@
 ---
-title: "Tutorial for using R tools for analysis of primary biodiversity data provided by SBDI"
+title: "Using R tools for analysis <br>of primary biodiversity data provided by SBDI"
 author: "Debora Arlt and Alejandro Ruete <br>for the Swedish Biodiversity Data Infrastructure" 
 date: "`r Sys.Date()`"
-description: "A set of examples for using SBDI4R" 
-output: bookdown::gitbook
+description: "R tools for biodiversity data" 
 site: bookdown::bookdown_site
-documentclass: book
-bibliography:
-- references.bib
+
+bibliography: references.bib
 biblio-style: apalike
 link-citations: yes
 colorlinks: yes
-graphics: yes
-lot: yes
-lof: yes
-fontsize: 11pt
-mainfont: Palatino
-monofont: "Source Code Pro"
-monofontoptions: "Scale=0.8"
-github-repo: https://github.com/biodiversitydata-se/r-tools-tutorial
+
+fontsize: 10pt
+github-repo: "biodiversitydata-se/r-tools-tutorial"
+cover: "images/sbdi-logo-orginal-large.png"
 ---
 
-![](images/sbdi-logo-orginal-large.png){width=50%}
-
 # Introduction {.unnumbered}
-
-Biodiversity resources are increasingly international. The SBDI has made an effort to canalize biodiversity data and resources to help the research community access and analyze Swedish primary biodiversity data. Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a few examples that prompt questions that may be asked at different stages of the process. The validity and appropriateness of a particular method depends on the individual researcher(s). For a comprehensive workflow on how to treat and analyze PBD please refer to our tutorial on [biodiversity analysis tool](https://github.com/biodiversitydata-se/biodiversity-analysis-tools) where we go through the complete workflow Data --> Cleaning --> Fitness evaluation --> Analysis 
+<img src="sbdi-logo-orginal-large.png" class="cover" width="250" style="float: right;"/> Biodiversity resources are increasingly international. The SBDI has made an effort to canalize biodiversity data and resources to help the research community access and analyze Swedish primary biodiversity data. Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a few examples that prompt questions that may be asked at different stages of the process. The validity and appropriateness of a particular method depends on the individual researcher(s). For a comprehensive workflow on how to treat and analyze PBD please refer to our tutorial on [biodiversity analysis tool](https://github.com/biodiversitydata-se/biodiversity-analysis-tools) where we go through the complete workflow Data --> Cleaning --> Fitness evaluation --> Analysis 
 
 `r htmltools::includeHTML("images/Workflow Overview Horizontal.html")`
 

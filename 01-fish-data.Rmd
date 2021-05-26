@@ -104,14 +104,14 @@ In the same way we can summaries the number of observations for each species, by
 sppTab <- table(xf$data$commonName)
 sppDF <- as.data.frame(sppTab)
 colnames(sppDF)[1] <- "species"
-sppDF
+head(sppDF)
 ```
 
 ```{r nObsTab2, paged.print=TRUE}
 sppTab <- table(xf$data$scientificName)
 sppDF <- as.data.frame(sppTab)
 colnames(sppDF)[1] <- "species"
-sppDF
+head(sppDF)
 ```
 
 Perhaps, you need to send this table as a .CSV file to a colleague.
