@@ -13,9 +13,9 @@ by Debora Arlt and Alejandro Ruete
 
 -----
 
-:spiral_calendar: May 30, 2021  
+:spiral_calendar: May 31, 2021  
 
-:alarm_clock:     09:00 - 17:00  
+:alarm_clock:     10:00 - 12:00  
 
 -----
 
