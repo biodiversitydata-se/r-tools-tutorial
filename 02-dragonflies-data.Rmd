@@ -67,13 +67,13 @@ You could instead use the data we kindly provided in the SBDI4R package `data("s
 ```{r sweshape}
 data("swe")
 wGotaland <- swe$Counties$LnNamn %in% c("Blekinge", "Gotlands", "Hallands", "Jönköpings", "Kalmar", "Kronobergs", "Östergötlands", "Skåne", "Västra Götalands")
-shape <- swe$Counties[wGotaland,]
+gotaland_c <- swe$Counties[wGotaland,]
 ```
 
 We could create the WKT string using the `rgeos` library:
 ```{r, eval=FALSE}
 library(rgeos)
-wkt <- writeWKT(shape)
+wkt <- writeWKT(gotaland_c)
 ```
 
 Unfortunately, in this instance this gives a WKT string that is too long and won't
@@ -82,17 +82,24 @@ the coordinate system SWEREF99 TM, and the web service only accepts coordinates 
 a geodesic coordinate system WGS84. Instead, let's construct the WKT string directly, 
 which gives us a little more control over its format:
 ```{r, warning=FALSE}
-shape <- sf::as_Spatial(
+gotaland_c <- sf::as_Spatial(
                 sf::st_transform(
-                  sf::st_as_sf(shape), 
+                  sf::st_as_sf(gotaland_c), 
                   crs = sf::st_crs(4326)$wkt) )
 
-# extract the polygon coordinates
-lonlat <- shape@polygons[[1]]@Polygons[[1]]@coords 
+gotaland <- gUnaryUnion(gotaland_c)
+
+# extract the polygons coordinates
+nPol <- length(gotaland@polygons[[1]]@Polygons) 
+lonlat <- list()
+for(p in seq(nPol)){
+  lonlat[[p]] <- gotaland@polygons[[1]]@Polygons[[p]]@coords
+}
+lonlat <- do.call(rbind, lonlat)
 
 # create a convex hull of the polygon to reduce the length of the WKT string
-chull_temp <- chull(lonlat)
-lonlat <- lonlat[c(chull_temp, chull_temp[1]), ]
+gotaland_ch <- chull(lonlat)
+lonlat <- lonlat[c(gotaland_ch, gotaland_ch[1]), ]
 
 # create WKT string
 # first join each lon-lat coordinate pair
@@ -102,11 +109,42 @@ wkt <- paste("MULTIPOLYGON(((", paste(wkt_temp, collapse=","), ")))", sep="")
 # NOTE: as of today, the SBDI APIs will only work properly if the polygon is 
 # submitted as a MULTIPOLYGON
 ```
-wkt=wkt,
 
 
+```{r getData}
+sbdi_fields("occurrence")[,1:2]
+xf <- SBDI4R::occurrences(taxon = "order:Odonata", 
+                  fq = fq_str,
+                  wkt = wkt,
+                  extra = "collector",
+                  email = "sbdi4r-test@biodiversitydata.se", 
+                  download_reason_id = 10)
+
+xf$meta
+```
 
 but before we can use the observation records we need to know how the observation effort has varied over time and in space. For this we define field visits i.e. occasions at which an observer has sampled observations – if we have information on observer id, location id and date we can aggregate data into “field visits”. We do this using BIRDS, and 25km grid:
+
+```{r birds}
+library(BIRDS)
+OB <- organiseBirds(xf$data, sppCol = "species" , 
+                    taxonRankCol = "rank", taxonRank = "species", 
+                    idCols = c("locality", "collector"), 
+                    timeCols = c("year", "month", "day"), 
+                    xyCols =c("longitude","latitude") )
+
+gotaland_grid25 <- raster::intersect(gotaland, Sweden_Grid_25km_Wgs84)
+
+# gotaland_grid25 <- gIntersection(spTransform(Sweden_Grid_25km_Wgs84, CRSobj = CRS(sf::st_crs(4326)$wkt)), 
+#                                  gotaland, 
+#                                  byid = TRUE)
+
+SB <- summariseBirds(OB, grid = gotaland_grid25, spillOver = "unique")
+```
+
+plot(SB$spatial, col=SB$spatial$nObs)
+
+
 
 How has observation effort (frequency of visits) varied over time and space? – 1) show maps as in Example 7 (all years, year 2000, 2002, 2004, 2006, 2008, 2010), 2 make also a time line plot with no. visits against years, no. of gridcells with visits against years.
 
