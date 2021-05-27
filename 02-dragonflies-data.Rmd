@@ -1,12 +1,118 @@
-# Case 2:
-Look at opportunistically collected citizen science data – using the big Swedish cit science species observation data portal Artportalen.
+# Example with opportunistic data on Dragonflies
 
-We want to look at dragonflies – but before we can use the observation records we need to know how the observation effort has varied over time and in space. For this we define field visits i.e. occasions at which an observer has sampled observations – if we have information on observer id, location id and date we can aggregate data into “field visits”. We do this using BIRDS, and 25km grid:
-Select data – get records for Southern Sweden (Götaland) and years 2000-2010.
+In this example we are interested in exploring opportunistically collected data 
+from the Swedish citizen science observation data portal - Artportalen.
+
+## Name searching
+To begin, we want be sure there is an unequivocal way to find the species within 
+the order Odonata and nothing else, so let's search for it:
+```{r search1, warning=FALSE, message=FALSE}
+library(SBDI4R)
+sx <- search_fulltext("odonata")
+sx
+```  
+we see there that other taxonomic definitions appear too, but only one order. 
+Let's refine the search. To know the names of the search fields (that may not be 
+the same as returned column names) we can use the function `sbdi_fields(fields_type = "general")`.
+The search field we are looking for is "order_s".  
+```{r search2, warning=FALSE, message=FALSE}
+sx <- search_fulltext(fq="order_s:Odonata", page_size = 10)
+sx$data[,c( "name","scientificName", "guid", "rank")]
+```  
+
+Now we can download the taxonomic data (note that the search is case-sensitive):
+```{r, message=FALSE, results=FALSE}
+tx <- taxinfo_download("order_s:Odonata", 
+                       fields = c("guid", "order_s","genus_s", "specificEpithet_s", 
+                                  "scientificName",  "canonicalName_s", "rank"), 
+                       verbose = FALSE)
+tx <- tx[tx$rank == "species" & tx$genusS != "",] ## restrict to species and not hybrids
+```
+Now `tx` is our complete species list. 
+
+## Get the observations, filter the search, get quality assertions, plotting data on a map and save data
+As usual we start by searching for the data resource we are interested in using 
+the function `pick_filter()`. This is an interactive query guiding you through 
+the many resources available to filtering your query (data resources, spatial 
+layers, and curated species lists).
+
+```{r filter1, message=FALSE, eval=FALSE}
+library(SBDI4R)
+fq_str <- pick_filter("resource") 
+# follow the instructions 
+```
+Follow the instruction. Your choices here would have been "in3" --> "dr5". 
+Your variable `fq_str` will now contain a string "data_resource_uid:dr5".
+
+```{r filter2, echo=FALSE, eval=TRUE}
+# we cant do it interactive here so we force it
+fq_str <- "data_resource_uid:dr5"
+```
+
+We only need data from 2000 to 2010
+```{r filter3}
+y1 <- 2000
+y2 <- 2010
+fq_str <- c(fq_str, paste0("year:[", y1, " TO ", y2,"]"))
+# Note the square brackets are hard limits
+```
+
+Select data – get records for Southern Sweden ([Götaland](https://en.wikipedia.org/wiki/G%C3%B6taland)).
+
+Vector spatial layers (eg. polygons) can be imported  in a number of different ways. 
+SBDI APIs take as search input polygons in the s.k. WKT [Well Known Text](https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html) 
+format. So the first step is to load a vector layer and transform it into a WKT string. 
+You could instead use the data we kindly provided in the SBDI4R package `data("swe")`. 
+
+```{r sweshape}
+data("swe")
+wGotaland <- swe$Counties$LnNamn %in% c("Blekinge", "Gotlands", "Hallands", "Jönköpings", "Kalmar", "Kronobergs", "Östergötlands", "Skåne", "Västra Götalands")
+shape <- swe$Counties[wGotaland,]
+```
+
+We could create the WKT string using the `rgeos` library:
+```{r, eval=FALSE}
+library(rgeos)
+wkt <- writeWKT(shape)
+```
+
+Unfortunately, in this instance this gives a WKT string that is too long and won't
+be accepted by the web service. Also, the shapefile we just got is projected in 
+the coordinate system SWEREF99 TM, and the web service only accepts coordinates in 
+a geodesic coordinate system WGS84. Instead, let's construct the WKT string directly, 
+which gives us a little more control over its format:
+```{r, warning=FALSE}
+shape <- sf::as_Spatial(
+                sf::st_transform(
+                  sf::st_as_sf(shape), 
+                  crs = sf::st_crs(4326)$wkt) )
+
+# extract the polygon coordinates
+lonlat <- shape@polygons[[1]]@Polygons[[1]]@coords 
+
+# create a convex hull of the polygon to reduce the length of the WKT string
+chull_temp <- chull(lonlat)
+lonlat <- lonlat[c(chull_temp, chull_temp[1]), ]
+
+# create WKT string
+# first join each lon-lat coordinate pair
+wkt_temp <- apply(lonlat, 1, function(z) paste(round(z,4), collapse=" "))
+# now build the WKT string
+wkt <- paste("MULTIPOLYGON(((", paste(wkt_temp, collapse=","), ")))", sep="")
+# NOTE: as of today, the SBDI APIs will only work properly if the polygon is 
+# submitted as a MULTIPOLYGON
+```
+wkt=wkt,
+
+
+
+but before we can use the observation records we need to know how the observation effort has varied over time and in space. For this we define field visits i.e. occasions at which an observer has sampled observations – if we have information on observer id, location id and date we can aggregate data into “field visits”. We do this using BIRDS, and 25km grid:
+
 How has observation effort (frequency of visits) varied over time and space? – 1) show maps as in Example 7 (all years, year 2000, 2002, 2004, 2006, 2008, 2010), 2 make also a time line plot with no. visits against years, no. of gridcells with visits against years.
 
 We can now look at some particular species and ask whether this has changed in occurrence over time:
 Plot no. records of species x and no. visits all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
+
 Plot no. gridcells with visits for species x and no. gridcells with visits for all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
 (species x: Tvåfläckad trollslända Epitheca bimaculata)
 

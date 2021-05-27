@@ -245,28 +245,28 @@ ggplot(xgridded, aes(latitude, richness)) +
 ```
 
 
-## Temporal biodiversity analysis
-Despite the drop seen in sampling effort, we can still analyse weather there is 
-any trends for species over the sampled years. To do this, we first need to 
-check whether the spatial sampling effort was comparable across those years
+<!-- ## Temporal biodiversity analysis -->
+<!-- Despite the drop seen in sampling effort, we can still analyse weather there is  -->
+<!-- any trends for species over the sampled years. To do this, we first need to  -->
+<!-- check whether the spatial sampling effort was comparable across those years -->
 
-```{r temporalBiodiv}
+<!-- ```{r temporalBiodiv} -->
 
-xf$data %>%
-    ## discard genus- and higher-level records
-    filter(rank %in% c("species", "subspecies", "variety", "form", "cultivar")) %>% 
-    group_by(year) %>%
-    ## subset to vars of interest
-    select(year, locality) %>%
-    ## calculate species richness
-    mutate(nObs = n())
-
-  
-```
+<!-- xf$data %>% -->
+<!--     ## discard genus- and higher-level records -->
+<!--     filter(rank %in% c("species", "subspecies", "variety", "form", "cultivar")) %>%  -->
+<!--     group_by(year) %>% -->
+<!--     ## subset to vars of interest -->
+<!--     select(year, locality) %>% -->
+<!--     ## calculate species richness -->
+<!--     mutate(nObs = n()) -->
 
 
-And we ask: can we see a trend (change = frequency of occurrence = number caught) for species X, or species Y?
+<!-- ``` -->
 
-## Links to further tutorials that could be of interest
-Link to analyses of interest – e.g. species distribution models, or trend analyses, or species divesity – link to biodiversity workflow
+
+<!-- And we ask: can we see a trend (change = frequency of occurrence = number caught) for species X, or species Y? -->
+
+<!-- ## Links to further tutorials that could be of interest -->
+<!-- Link to analyses of interest – e.g. species distribution models, or trend analyses, or species divesity – link to biodiversity workflow -->
 
