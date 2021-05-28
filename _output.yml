@@ -8,7 +8,7 @@ bookdown::gitbook:
         <li><a href="./"><strong>R tools for biodiversity data</strong></a></li>
     collapse: chapter
   edit: 
-    link: https://github.com/biodiversitydata-se/r-tools-tutorial/edit/master/%s
+    link: https\://github.com/biodiversitydata-se/r-tools-tutorial/edit/master/%s
     text: "Suggest an edit"
   download: ["pdf"]
   sharing:

@@ -14,7 +14,7 @@ fontsize: 10pt
 github-repo: biodiversitydata-se/r-tools-tutorial
 cover: images/sbdi-logo-orginal-large.png
 favicon: images/favicon_io/favicon.ico
-url: https://biodiversitydata-se.github.io/r-tools-tutorial/
+url: https\://biodiversitydata-se.github.io/r-tools-tutorial/
 ---
 
 # Introduction {.unnumbered}
