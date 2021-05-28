@@ -1,18 +1,21 @@
 bookdown::gitbook:
-  css: style.css
+  highlight: tango
+  css: [style.css, toc.css]
   split_by: chapter
   config:
     toc:
       before: |
-        <li><a href="./"> <strong>R tools for biodiversity data</strong></a></li>
+        <li><a href="./"><strong>R tools for biodiversity data</strong></a></li>
     collapse: chapter
-  edit: https://github.com/biodiversitydata-se/r-tools-tutorial/edit/master/%s
+  edit: 
+    link: https://github.com/biodiversitydata-se/r-tools-tutorial/edit/master/%s
+    text: "Suggest an edit"
   download: ["pdf"]
   sharing:
     github: yes
-    facebook: no
-    twitter: no
-    all: []
+    facebook: yes
+    twitter: yes
+    all: no
 bookdown::pdf_book:
   latex_engine: xelatex
   citation_package: natbib
