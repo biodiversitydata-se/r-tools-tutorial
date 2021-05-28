@@ -337,16 +337,32 @@ with the following script.
 Open Source also means that you can contribute. You don't need to know how to program
 but every input is appreciated. Did you find something that is not working?
 Have suggestions for examples or text? you can always
-1. Reach to us via the \href{https://docs.biodiversitydata.se/support/}{support center}
-2. Submit and issue to the GitHub code repository \href{https://docs.github.com/en/github/managing-your-work-on-github/managing-your-work-with-issues-and-pull-requests/creating-an-issue}{see how}
-3. Or contribute with your code or documents modifications by \href{https://docs.github.com/en/github/getting-started-with-github/quickstart/fork-a-repo}{``forking''}
-the code and submitting a \href{https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork}{``pull request''}
 
-The repositories you can contribute to are:\\
-* Mirroreum \url{https://github.com/mskyttner/mirroreum}\\
-* SBDI4R \url{https://github.com/biodiversitydata-se/SBDI4R} (NOTE: we may not develop this package but instead move to a new one)\\
-* the general analysis workflows \url{https://github.com/biodiversitydata-se/biodiversity-analysis-tools}\\
-* these tutorial \url{https://github.com/biodiversitydata-se/r-tools-tutorial}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Reach to us via the \href{https://docs.biodiversitydata.se/support/}{support center}
+\item
+  Submit and issue to the GitHub code repository \href{https://docs.github.com/en/github/managing-your-work-on-github/managing-your-work-with-issues-and-pull-requests/creating-an-issue}{see how}
+\item
+  Or contribute with your code or documents modifications by \href{https://docs.github.com/en/github/getting-started-with-github/quickstart/fork-a-repo}{``forking''}
+  the code and submitting a \href{https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork}{``pull request''}
+\end{enumerate}
+
+The repositories you can contribute to are:
+
+\begin{itemize}
+\tightlist
+\item
+  Mirroreum \url{https://github.com/mskyttner/mirroreum}\\
+\item
+  SBDI4R \url{https://github.com/biodiversitydata-se/SBDI4R} (NOTE: we may not develop this package but instead move to a new one)\\
+\item
+  the general analysis workflows \url{https://github.com/biodiversitydata-se/biodiversity-analysis-tools}\\
+\item
+  these tutorial \url{https://github.com/biodiversitydata-se/r-tools-tutorial}
+\end{itemize}
 
 \hypertarget{example-with-fish-data-from-sers}{%
 \section{Example with fish data from SERS}\label{example-with-fish-data-from-sers}}
@@ -1225,28 +1241,28 @@ which gives us a little more control over its format:
 \begin{verbatim}
 ##   UID                                                 Name
 ## 1 dp0                                      IPT GBIF Sweden
-## 2 co3 Artportalen - The Swedish Species Observation System
-## 3 dr5     Artportalen (Swedish Species Observation System)
+## 2 dr5     Artportalen (Swedish Species Observation System)
+## 3 co3 Artportalen - The Swedish Species Observation System
 ## 4 in3      The Swedish University of Agricultural Sciences
 ##                       DOI
 ## 1                        
-## 2                        
-## 3 doi.org/10.15468/kllkyl
+## 2 doi.org/10.15468/kllkyl
+## 3                        
 ## 4                        
 ##                                                                                                                         Citation
 ## 1                                                             Records provided by IPT GBIF Sweden, accessed through ALA website.
-## 2                        Records provided by Artportalen - The Swedish Species Observation System, accessed through ALA website.
-## 3 Artportalen (Swedish Species Observation System). ArtDatabanken. Dataset/Occurrence. http://www.gbif.se/ipt/resource?r=artdata
+## 2 Artportalen (Swedish Species Observation System). ArtDatabanken. Dataset/Occurrence. http://www.gbif.se/ipt/resource?r=artdata
+## 3                        Records provided by Artportalen - The Swedish Species Observation System, accessed through ALA website.
 ## 4                             Records provided by The Swedish University of Agricultural Sciences, accessed through ALA website.
 ##                                                                                                                                                                                                                                                                        Rights
 ## 1                                                                                                                                                                                                                                                                            
-## 2                                                                                                                                                                                                                                                                            
-## 3 Public Domain (CC0) To the extent possible under law, the publisher has waived all rights to these data and has dedicated them to the Public Domain (CC0 1.0). Users may copy, modify, distribute and use the work, including for commercial purposes, without restriction.
+## 2 Public Domain (CC0) To the extent possible under law, the publisher has waived all rights to these data and has dedicated them to the Public Domain (CC0 1.0). Users may copy, modify, distribute and use the work, including for commercial purposes, without restriction.
+## 3                                                                                                                                                                                                                                                                            
 ## 4                                                                                                                                                                                                                                                                            
 ##                                                                More.Information
 ## 1 For more information: https://collections.biodiversitydata.se/public/show/dp0
-## 2 For more information: https://collections.biodiversitydata.se/public/show/co3
-## 3 For more information: https://collections.biodiversitydata.se/public/show/dr5
+## 2 For more information: https://collections.biodiversitydata.se/public/show/dr5
+## 3 For more information: https://collections.biodiversitydata.se/public/show/co3
 ## 4 For more information: https://collections.biodiversitydata.se/public/show/in3
 ##   Data.generalisations Information.withheld Download.limit
 ## 1                   NA                   NA             NA
@@ -1255,8 +1271,8 @@ which gives us a little more control over its format:
 ## 4                   NA                   NA             NA
 ##   Number.of.Records.in.Download
 ## 1                         27290
-## 2                         26744
-## 3                         31779
+## 2                         31779
+## 3                         26744
 ## 4                         26744
 \end{verbatim}
 

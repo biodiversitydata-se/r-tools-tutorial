@@ -1,5 +1,5 @@
 bookdown::gitbook:
-  highlight: tango
+  highlight: haddock
   css: [style.css, toc.css]
   split_by: chapter
   config:
