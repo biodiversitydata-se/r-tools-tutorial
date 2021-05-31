@@ -1,8 +1,8 @@
 # Example with fish data from SERS
 
-In this example we are interested in exploring data from a specific data resource -- Swedish Electrofishing Registry - SERS (Institutionen för akvatiska resurser, SLU). This data base has 2.8 M observations starting in the 1950's.
+In this example we are interested in exploring data from a specific data resource -- the Swedish Electrofishing Registry - SERS (Department of Aquatic Resources, SLU Aqua). This database has 2.8 M observations starting in the 1950's.
 
-As you may already know, SBDI is a collection of many biodiversity databases. We start by searching for the data resource we are interested in using the function `pick_filter()`. This is an interactive query guiding you through the many resources available to filtering your query (data resources, spatial layers, and curated species lists).
+SBDI is a collection of many biodiversity databases. We start by searching for the data resource we are interested in by using the function `pick_filter()`. This is an interactive query guiding you through the many resources available to filtering your query (data resources, spatial layers, and curated species lists).
 
 ```{r filter1, message=FALSE, eval=FALSE}
 library(SBDI4R)
@@ -10,14 +10,14 @@ fq_str <- pick_filter("resource")
 # follow the instructions 
 ```
 
-Follow the instruction. Your choices here would have been "in3" --> "dr10". Your variable `fq_str` will now contain a string "data_resource_uid:dr10".
+Follow the instructions. Your choices here would have been "in3" --> "dr10" (specifying the institution - SLU Aqua, and data resource - SERS). Your variable `fq_str` will now contain a string "data_resource_uid:dr10".
 
 ```{r filter2, echo=FALSE, eval=TRUE}
-# we cant do it interactive here so we force it
+# we can't do it interactive here so we force it
 fq_str <- "data_resource_uid:dr10"
 ```
 
-But we are not interested in the complete database, but on the last 10 years of data. for this we concatenate (add to a vector) another filter string. These will be treated as AND factors.
+But we are not interested in the complete database, we only want to look at the data from the last 10 years. For this we concatenate (add to a vector) another filter string. Both filter strings (for data resource and for time period) will be treated as AND factors.
 
 ```{r filter3}
 y1 <- 2008
@@ -26,9 +26,9 @@ fq_str <- c(fq_str, paste0("year:[", y1, " TO ", y2,"]"))
 # Note the square brackets are hard limits
 ```
 
-For references on how to use the filters see SBDI APIS [documentation](https://api.biodiversitydata.se/?lang=en-US#ws3).
+For references on how to use the filters see the SBDI APIs [documentation](https://api.biodiversitydata.se/?lang=en-US#ws3).
 
-Using the function `occurrences()` we can the query for the observations fulfilling our filter. If you haven't specified that in the `sbdi_config()` before, you need to pass your email and the download reason.
+Using the function `occurrences()` we can now query for the observations fulfilling our filter. If you haven't specified your email and the download reason in the `sbdi_config()` before, you need to pass this here.
 
 ```{r getOcc, cache=TRUE, message=FALSE}
 xf <- SBDI4R::occurrences(fq = fq_str,
@@ -86,7 +86,7 @@ leaflet(width = "100%") %>%
 
 ## Temporal summary
 
-A quick summary over the years reveal a drop in number of records over time.
+A quick summary over the years reveals a drop in number of records over time.
 ```{r timeTable}
 table(xf$data$year)
 ```
@@ -99,7 +99,7 @@ hist(xf$data$year,
 ```
 
 ## Species summary
-In the same way we can summaries the number of observations for each species, by common or scientific name.
+In the same way we can summarise the number of observations for each species, by common or scientific name.
 ```{r nObsTab, paged.print=TRUE}
 sppTab <- table(xf$data$commonName)
 sppDF <- as.data.frame(sppTab)
@@ -114,7 +114,7 @@ colnames(sppDF)[1] <- "species"
 head(sppDF)
 ```
 
-Perhaps, you need to send this table as a .CSV file to a colleague.
+Perhaps, you want to send this table as a .CSV file to a colleague. Save the table:
 
 ```{r savesummary, eval=FALSE}
 write.csv(sppDF, "SERS_species_summary.csv")
@@ -123,10 +123,11 @@ write.csv(sppDF, "SERS_species_summary.csv")
 
 ## Spatial biodiversity analysis
 
-Let's now ask: how does the species richness vary across Sweden? In this case we 
-want to summarise occurrences species-wise over a defined grid instead of plotting 
+Let's now ask: How does the species richness vary across Sweden? 
+
+For this we want to summarise occurrences species-wise over a defined grid instead of plotting 
 every observation point. First we need to overlay the observations with a grid. 
-In this case, the standard Swedish grids at 50, 25, 10 and 5 km are provided as 
+Here we are using the standard Swedish grids with grid square size of 50, 25, 10 or 5 km provided as 
 data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326).
 
 ```{r overlay}
@@ -134,13 +135,13 @@ library(sp) # the function coordinates() and proj4string() are in sp
 library(rgeos) # the function over() is in package rgeos
 # load some shapes over Sweden's political borders
 data("swe_wgs84", package="SBDI4R", envir=environment())
-# A standard 50km grid
+# a standard 50 km grid
 data("Sweden_Grid_50km_Wgs84", package="SBDI4R", envir=environment())
 
 grid <- Sweden_Grid_50km_Wgs84
 
 # make the observations spatial
-# NOTE: make sure there are no NAs on either column defining the coordinates
+# NOTE: make sure there are no NAs in the columns defining the coordinates
 # xf$data[!is.na(xf$data$longitude) | !is.na(xf$data$latitude),]
 
 obs <- as.data.frame(xf$data)
@@ -150,13 +151,13 @@ proj4string(obs) <- sp::CRS(wkt) #CRS("+init=epsg:4326")
 
 nObs <- nrow(obs)
 
-# overlay the data with the grid
+# overlay the occurrence data with the grid
 ObsInGridList <- over(grid, obs, returnList=TRUE)
 wNonEmpty <- unname( which( unlist(lapply(ObsInGridList, nrow)) != 0) )
 if(length(wNonEmpty)==0) message("Observations don't overlap any grid cell.")
 ```
 
-The result `ObsInGridList` is a `list` object with a subset of the data on each grid. Now summarise occurrences within grid cells:
+The result `ObsInGridList` is a `list` object with a subset of the data for each grid cell. Now summarise occurrences within grid cells:
 
 ```{r overlay_summary}
 # check n the total number of observations
@@ -222,7 +223,7 @@ legend("bottomleft",
 suppressWarnings(par(oldpar))
 ```
 
-We can go further by gathering the observations by latitude. 
+We may now ask wether species richness varies across latitude. So we go further by arranging the observations by latitude: 
 ```{r sppLatitude, warning=FALSE, message=FALSE}
 library(dplyr)
 library(tidyr)
@@ -250,7 +251,7 @@ xgridded <- xgridded %>%
   mutate_at(sppcols, function(z) ifelse(is.na(z), 0, z))
 ```
 
-And plot it accordingly
+And plot it accordingly:
 ```{r plot_richLat, warning=FALSE}
 library(ggplot2)
 
@@ -264,8 +265,8 @@ ggplot(xgridded, aes(latitude, richness)) +
 
 
 <!-- ## Temporal biodiversity analysis -->
-<!-- Despite the drop seen in sampling effort, we can still analyse weather there is  -->
-<!-- any trends for species over the sampled years. To do this, we first need to  -->
+<!-- Despite the drop seen in sampling effort, we can still analyse whether there may be  -->
+<!-- any trends for occurrence of species over the sampled years. To do this, we first need to  -->
 <!-- check whether the spatial sampling effort was comparable across those years -->
 
 <!-- ```{r temporalBiodiv} -->
