@@ -6,19 +6,37 @@ from the Swedish citizen science observation data portal - Artportalen.
 ## Name searching
 To begin, we want be sure there is an unequivocal way to find the species within 
 the order Odonata and nothing else, so let's search for it:
-```{r search1, warning=FALSE, message=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE, include=FALSE}
 library(SBDI4R)
+```
+
+```{r search1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
 sx <- search_fulltext("odonata")
-sx
+sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
 ```  
-we see there that other taxonomic definitions appear too, but only one order. 
-Let's refine the search. To know the names of the search fields (that may not be 
-the same as returned column names) we can use the function `sbdi_fields(fields_type = "general")`.
+
+```{r search1eval, include=FALSE}
+sx <- search_fulltext("odonata")
+```  
+```{r search1show, echo=FALSE}
+sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
+```
+
+
+We quickly see there that other taxonomic definitions appear too, but there is only one order. 
+Let's refine the search. To know which search fields we can use to filter the search 
+we use the function `sbdi_fields(fields_type = "general")`.
 The search field we are looking for is "order_s".  
-```{r search2, warning=FALSE, message=FALSE}
+```{r search2, warning=FALSE, message=FALSE, error=FALSE}
 sx <- search_fulltext(fq="order_s:Odonata", page_size = 10)
-sx$data[,c( "name","scientificName", "guid", "rank")]
+sx$data[, c("scientificName", "rank", "occurrenceCount")]
 ```  
+```{r search2eval, include=FALSE}
+sx <- search_fulltext("odonata")
+```  
+```{r search1show, echo=FALSE}
+sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
+```
 
 Now we can download the taxonomic data (note that the search is case-sensitive):
 ```{r, message=FALSE, results=FALSE}
@@ -28,7 +46,7 @@ tx <- taxinfo_download("order_s:Odonata",
                        verbose = FALSE)
 tx <- tx[tx$rank == "species" & tx$genusS != "",] ## restrict to species and not hybrids
 ```
-Now `tx` is our complete species list. 
+Then you can save `tx` as the complete species list for later use. 
 
 ## Get the observations, filter the search, get quality assertions, plotting data on a map and save data
 As usual we start by searching for the data resource we are interested in using 
@@ -36,10 +54,9 @@ the function `pick_filter()`. This is an interactive query guiding you through
 the many resources available to filtering your query (data resources, spatial 
 layers, and curated species lists).
 
-```{r filter1, message=FALSE, eval=FALSE}
-library(SBDI4R)
-fq_str <- pick_filter("resource") 
+```{r filter1, eval=FALSE}
 # follow the instructions 
+fq_str <- pick_filter("resource") 
 ```
 Follow the instruction. Your choices here would have been "in3" --> "dr5". 
 Your variable `fq_str` will now contain a string "data_resource_uid:dr5".
