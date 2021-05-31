@@ -1,3 +1,53 @@
+---
+title: "Using R tools for analysis <br>of primary biodiversity data provided by SBDI"
+author: "Debora Arlt and Alejandro Ruete <br>for the Swedish Biodiversity Data Infrastructure" 
+date: "`r Sys.Date()`"
+description: "R tools for biodiversity data" 
+site: bookdown::bookdown_site
+
+bibliography: references.bib
+biblio-style: apalike
+link-citations: yes
+colorlinks: yes
+
+fontsize: 10pt
+github-repo: biodiversitydata-se/r-tools-tutorial
+cover: images/sbdi-logo-orginal-large.png
+favicon: images/favicon_io/favicon.ico
+url: https\://biodiversitydata-se.github.io/r-tools-tutorial/
+---
+
+# Introduction {.unnumbered}
+
+Placeholder
+
+
+## R and Mirroreum{.unnumbered}
+## SBDI4R - R package to search an access data{.unnumbered}
+## Customizing SBDI4R{.unnumbered}
+### Caching{.unnumbered}
+### E-mail address{.unnumbered}
+### Setting the download reason{.unnumbered}
+### Other options{.unnumbered}
+## Other packages needed {.unnumbered}
+## Your collaboration is appreciated {.unnumbered}
+
+<!--chapter:end:index.Rmd-->
+
+
+# Example with fish data from SERS
+
+Placeholder
+
+
+## Plotting data on a map
+#### Leaflet
+## Temporal summary
+## Species summary
+## Spatial biodiversity analysis
+
+<!--chapter:end:01-fish-data.Rmd-->
+
 # Example with opportunistic data on Dragonflies
 
 In this example we are interested in exploring opportunistically collected data 
@@ -285,4 +335,7 @@ Plot no. records of species x and no. visits all species over years (we simply e
 
 Plot no. gridcells with visits for species x and no. gridcells with visits for all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
 (species x: Tvåfläckad trollslända Epitheca bimaculata)
+
+
+<!--chapter:end:02-dragonflies-data.Rmd-->
 
