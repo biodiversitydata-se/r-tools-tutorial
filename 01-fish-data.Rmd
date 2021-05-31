@@ -265,8 +265,8 @@ ggplot(xgridded, aes(latitude, richness)) +
 
 
 <!-- ## Temporal biodiversity analysis -->
-<!-- Despite the drop seen in sampling effort, we can still analyse weather there is  -->
-<!-- any trends for species over the sampled years. To do this, we first need to  -->
+<!-- Despite the drop seen in sampling effort, we can still analyse whether there may be  -->
+<!-- any trends for occurrence of species over the sampled years. To do this, we first need to  -->
 <!-- check whether the spatial sampling effort was comparable across those years -->
 
 <!-- ```{r temporalBiodiv} -->
