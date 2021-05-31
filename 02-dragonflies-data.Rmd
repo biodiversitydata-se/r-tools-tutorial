@@ -381,7 +381,7 @@ lines(vis.m["2000/2010",2], col = "orange", lwd=2)
 ```
 
 
-We can now look at some particular species and ask whether this has changed in occurrence over time:
+We can now look at some particular species and ask whether those have changed in occurrence over time:
 Plot no. records of species x and no. visits all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
 
 Plot no. gridcells with visits for species x and no. gridcells with visits for all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
