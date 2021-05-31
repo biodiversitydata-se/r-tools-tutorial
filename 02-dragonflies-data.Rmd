@@ -196,8 +196,8 @@ gotaland_grid25 <- raster::intersect(gotaland, Sweden_Grid_25km_Wgs84)
 SB <- summariseBirds(OB, grid = gotaland_grid25, spillOver = "unique")
 ```
 
-Once summarized, we can see over space and for a few selected year how was the 
-sampling effort (in this case number of observations) distributed.
+Once summarised, we can see over space and for a few selected years how the 
+number of observations is distributed:
 ```{r plotBIRDSspatial_cose, eval=FALSE}
 maxC <- max(SB$spatial@data$nObs, na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
@@ -295,9 +295,9 @@ legend("topleft", inset = c(0,0.05),
 suppressWarnings(par(oldpar))
 ```
 
-There are other ways to plot spatial data, here there is another example this time
-using the package `sf` instead of `sp` and using number of visits as the measure
-for sampling effort.  
+We now want to use the number of field visits as the measure
+for sampling effort. And since there are other ways to plot spatial data, we this time
+use the package `sf` instead of `sp`:  
 ```{r ggplot1, message=FALSE, warning=FALSE, fig.width=7}
 library(sf)
 library(cowplot)
@@ -329,8 +329,8 @@ grid.arrange(vis, spp, ncol=2)
 ```
 
 We see that `SB` contains an element called `SB$temporal` that contains a daily 
-time series with time specific rows when there is information. `xts` also supports 
-time, but dating below day resolution is not yet implemented in the `BIRDS` package.  
+time series with time-specific rows when there is information. `xts` also supports 
+day time, but dating below day resolution is not yet implemented in the `BIRDS` package.  
 
 ```{r temporal}
 sb.xts <- SB$temporal
@@ -346,7 +346,7 @@ sb.xts["2010-09-01/2010-09-15"] #for a period
 sb.xts["2010-09"] #a specific month
 ```
 
-The package `xts` has several tools for converting to different periods. Here we 
+The package `xts` has several tools for converting to different time periods. Here we 
 will use `to.monthly`. This provides, the first, min, max, and last of the data. 
 We can plot the daily maximum number of observations. The plot command with an 
 `xts` object provides a TON of features. This makes it fairly easy to customize 
