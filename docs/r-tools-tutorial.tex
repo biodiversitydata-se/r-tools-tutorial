@@ -124,7 +124,7 @@
 
 \title{Using R tools for analysis of primary biodiversity data provided by SBDI}
 \author{Debora Arlt and Alejandro Ruete for the Swedish Biodiversity Data Infrastructure}
-\date{2021-05-27}
+\date{2021-05-31}
 
 \begin{document}
 \maketitle
@@ -144,63 +144,37 @@ Biodiversity resources are increasingly international. The SBDI has made an effo
 \subsection*{R and Mirroreum}\label{r-and-mirroreum}}
 \addcontentsline{toc}{subsection}{R and Mirroreum}
 
-The present tutorial is focused on the statistical programming language R.
-R is a free software environment for statistical computing and graphics that is
-widely used within the scientific community and where the complete analysis
-workflow can be documented in a fully reproducible way.
+The present tutorial is focused on the statistical programming language R. R is a free software environment for statistical computing and graphics that is widely used within the scientific community and where the complete analysis workflow can be documented in a fully reproducible way.
 
-At SBDI we provide access for researchers and students to \href{https://mirroreum.biodiversitydata.se/}{Mirroreum}
--- an online web-based environment for Reproducible Open Research in the area of
-biodiversity analysis. Mirroreum is based on a Free and Open Source stack of software.
-Logging in, you immediately get access to a web-based version of R Studio with a
-large number of pre-installed packages such as all the packages offered from ROpenSci and more.
+At SBDI we provide access for researchers and students to \href{https://mirroreum.biodiversitydata.se/}{Mirroreum} -- an online web-based environment for Reproducible Open Research in the area of biodiversity analysis. Mirroreum is based on a Free and Open Source stack of software. Logging in, you immediately get access to a web-based version of R Studio with a large number of pre-installed packages such as all the packages offered from ROpenSci and more.
 
-Compared to running R Studio on your own machine, Mirroreum offers more
-computational resources and a standardized environment where you can rely on all
-the relevant packages being installed and the configuration parameters being set
-appropriately.
-To know more about Mirroreum or to request an account please visit the \href{https://docs.biodiversitydata.se/analyse-data/mirroreum/}{SBDI documentation site}
+Compared to running R Studio on your own machine, Mirroreum offers more computational resources and a standardized environment where you can rely on all the relevant packages being installed and the configuration parameters being set appropriately. To know more about Mirroreum or to request an account please visit the \href{https://docs.biodiversitydata.se/analyse-data/mirroreum/}{SBDI documentation site}
 
-\hypertarget{sbdi4r---r-package-to-search-an-access-data}{%
-\subsection*{SBDI4R - R package to search an access data}\label{sbdi4r---r-package-to-search-an-access-data}}
-\addcontentsline{toc}{subsection}{SBDI4R - R package to search an access data}
+\href{https://mirroreum.biodiversitydata.se/auth-sign-in}{\includegraphics{images/Mirroreum.png}}
 
-The SBDI4R package enables the R community to directly access data and resources
-hosted by SBDI. The goal is to enable observations of species to be
-queried and output in a range of standard formats. It includes some filter functions
-that allow you to filter prior to download. It also includes some simple summary
-functions, and some function for some simple data exploration. The examples
-included in this tutorial also show you how you can continue exploring and analyzing
-using other R package.
+\hypertarget{sbdi4r---an-r-to-search-an-access-data}{%
+\subsection*{SBDI4R - an R 📦 to search an access data}\label{sbdi4r---an-r-to-search-an-access-data}}
+\addcontentsline{toc}{subsection}{SBDI4R - an R 📦 to search an access data}
 
-Please refer to the \href{https://biodiversitydata-se.github.io/SBDI4R}{package documentation}
-for details on how to install it. Once installed the SBDI4R package must be loaded
-for each new R session:
+The SBDI4R package enables the R community to directly access data and resources hosted by SBDI. The goal is to enable observations of species to be queried and output in a range of standard formats. It includes some filter functions that allow you to filter prior to download. It also includes some simple summary functions, and some function for some simple data exploration. The examples included in this tutorial also show you how you can continue exploring and analyzing using other R package.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(SBDI4R)}
-\end{Highlighting}
-\end{Shaded}
+Please refer to the \href{https://biodiversitydata-se.github.io/SBDI4R}{package documentation} for details on how to install it. Once installed the SBDI4R package must be loaded for each new R session:
+
+\begin{verbatim}
+## Warning: package 'sp' was built under R version 4.0.4
+\end{verbatim}
 
 \hypertarget{customizing-sbdi4r}{%
-\subsection*{Customizing SBDI4R}\label{customizing-sbdi4r}}
-\addcontentsline{toc}{subsection}{Customizing SBDI4R}
+\subsubsection*{Customizing SBDI4R}\label{customizing-sbdi4r}}
+\addcontentsline{toc}{subsubsection}{Customizing SBDI4R}
 
 Various aspects of the SBDI4R package can be customized.
 
 \hypertarget{caching}{%
-\subsubsection*{Caching}\label{caching}}
-\addcontentsline{toc}{subsubsection}{Caching}
+\paragraph*{Caching}\label{caching}}
+\addcontentsline{toc}{paragraph}{Caching}
 
-SBDI4R can cache most results to local files. This means that if the
-same code is run multiple times, the second and subsequent iterations
-will be faster. This will also reduce load on the web servers. By
-default, this caching is session-based, meaning that the local files are
-stored in a temporary directory that is automatically deleted when the R
-session is ended. This behaviour can be altered so that caching is
-permanent, by setting the caching directory to a non-temporary location.
-For example, under Windows, use something like:
+SBDI4R can cache most results to local files. This means that if the same code is run multiple times, the second and subsequent iterations will be faster. This will also reduce load on the web servers. By default, this caching is session-based, meaning that the local files are stored in a temporary directory that is automatically deleted when the R session is ended. This behaviour can be altered so that caching is permanent, by setting the caching directory to a non-temporary location. For example, under Windows, use something like:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -218,14 +192,9 @@ or for Linux:
 
 Note that this directory must exist (you need to create it yourself).
 
-All results will be stored in that cache directory and will be used from
-one session to the next. They won't be re-downloaded from the server
-unless the user specifically deletes those files or changes the caching
-setting to ``refresh''.
+All results will be stored in that cache directory and will be used from one session to the next. They won't be re-downloaded from the server unless the user specifically deletes those files or changes the caching setting to ``refresh''.
 
-If you change the cache\_directory to a permanent location, you may wish
-to add something like this to your .Rprofile file, so that it happens
-automatically each time the SBDI4R package is loaded:
+If you change the cache\_directory to a permanent location, you may wish to add something like this to your .Rprofile file, so that it happens automatically each time the SBDI4R package is loaded:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -242,21 +211,13 @@ Caching can also be turned off entirely by:
 \end{Highlighting}
 \end{Shaded}
 
-or set to ``refresh'', meaning that the cached results will re-downloaded
-from the SBDI servers and the cache updated. (This will happen for as
-long as caching is set to ``refresh'' --- so you may wish to switch back to
-normal ``on'' caching behavior once you have updated your cache with the
-data you are working on).
+or set to ``refresh'', meaning that the cached results will re-downloaded from the SBDI servers and the cache updated. (This will happen for as long as caching is set to ``refresh'' --- so you may wish to switch back to normal ``on'' caching behavior once you have updated your cache with the data you are working on).
 
 \hypertarget{e-mail-address}{%
-\subsubsection*{E-mail address}\label{e-mail-address}}
-\addcontentsline{toc}{subsubsection}{E-mail address}
+\paragraph*{E-mail address}\label{e-mail-address}}
+\addcontentsline{toc}{paragraph}{E-mail address}
 
-Each download request to SBDI servers is also accompanied by an ``e-mail address''
-string that identifies the user making the request. You will need to provide an
-email address registered with the SBDI. You can create an account
-\href{https://auth.biodiversitydata.se/cas/login}{here}. Once an email is registered
-with the SBDI, it should be stored in the config:
+Each download request to SBDI servers is also accompanied by an ``e-mail address'' string that identifies the user making the request. You will need to provide an email address registered with the SBDI. You can create an account \href{https://auth.biodiversitydata.se/cas/login}{here}. Once an email is registered with the SBDI, it should be stored in the config:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -264,17 +225,13 @@ with the SBDI, it should be stored in the config:
 \end{Highlighting}
 \end{Shaded}
 
-Else you can provide this e-mail address as a parameter directly to
-each call of the function occurrences().
+Else you can provide this e-mail address as a parameter directly to each call of the function occurrences().
 
 \hypertarget{setting-the-download-reason}{%
-\subsubsection*{Setting the download reason}\label{setting-the-download-reason}}
-\addcontentsline{toc}{subsubsection}{Setting the download reason}
+\paragraph*{Setting the download reason}\label{setting-the-download-reason}}
+\addcontentsline{toc}{paragraph}{Setting the download reason}
 
-SBDI requires that you provide a reason when downloading occurrence data
-(via the SBDI4R \texttt{occurrences()} function). You can provide this as a
-parameter directly to each call of \texttt{occurrences()}, or you can set it
-once per session using:
+SBDI requires that you provide a reason when downloading occurrence data (via the SBDI4R \texttt{occurrences()} function). You can provide this as a parameter directly to each call of \texttt{occurrences()}, or you can set it once per session using:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -282,15 +239,12 @@ once per session using:
 \end{Highlighting}
 \end{Shaded}
 
-(See \texttt{sbdi\_reasons()} for valid download reasons, e.g.
-* 3 for ``education'',
-* 7 for ``ecological research'',
-* 8 for ``systematic research/taxonomy'',
-* 10 for ``testing'')
+(See \texttt{sbdi\_reasons()} for valid download reasons, e.g.~* 3 for ``education'', * 7 for ``ecological research'', * 8 for ``systematic research/taxonomy'', * 10 for ``testing'')
 
-\emph{NO} other personal identification information is sent. You can see all
-configuration settings, including the the user-agent string that is
-being used, with the command:
+\hypertarget{privacy}{%
+\paragraph{Privacy}\label{privacy}}
+
+\textbf{\emph{NO}} other personal identification information is sent. You can see all configuration settings, including the the user-agent string that is being used, with the command:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -299,13 +253,10 @@ being used, with the command:
 \end{Shaded}
 
 \hypertarget{other-options}{%
-\subsubsection*{Other options}\label{other-options}}
-\addcontentsline{toc}{subsubsection}{Other options}
+\paragraph*{Other options}\label{other-options}}
+\addcontentsline{toc}{paragraph}{Other options}
 
-If you make a request that returns an empty result set (e.g.~an
-un-matched name), by default you will simply get an empty data structure
-returned to you without any special notification. If you would like to
-be warned about empty result sets, you can use:
+If you make a request that returns an empty result set (e.g.~an un-matched name), by default you will simply get an empty data structure returned to you without any special notification. If you would like to be warned about empty result sets, you can use:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -317,16 +268,19 @@ be warned about empty result sets, you can use:
 \subsection*{Other packages needed}\label{other-packages-needed}}
 \addcontentsline{toc}{subsection}{Other packages needed}
 
-Some additional packages are needed for these examples. Install them if necessary
-with the following script.
+Some additional packages are needed for these examples. Install them if necessary with the following script.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{to\_install }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{, }\StringTok{"BIRDS"}\NormalTok{,}\StringTok{"ggplot2"}\NormalTok{, }\StringTok{"jpeg"}\NormalTok{, }\StringTok{"leaflet"}\NormalTok{,}\StringTok{"maps"}\NormalTok{, }\StringTok{"mapdata"}\NormalTok{,}
-                \StringTok{"maptools"}\NormalTok{, }\StringTok{"sp"}\NormalTok{, }\StringTok{"rgeos"}\NormalTok{, }\StringTok{"tidyr"}\NormalTok{, }\StringTok{"vegan"}\NormalTok{)}
-\NormalTok{to\_install }\OtherTok{\textless{}{-}}\NormalTok{ to\_install[}\SpecialCharTok{!}\FunctionTok{sapply}\NormalTok{(to\_install, requireNamespace, }\AttributeTok{quietly=}\ConstantTok{TRUE}\NormalTok{)]}
+\NormalTok{to\_install }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"BIRDS"}\NormalTok{,}\StringTok{"colorRamps"}\NormalTok{, }\StringTok{"cowplot"}\NormalTok{,}\StringTok{"dplyr"}\NormalTok{,}\StringTok{"ggplot2"}\NormalTok{, }
+                \StringTok{"leaflet"}\NormalTok{, }\StringTok{"maps"}\NormalTok{, }\StringTok{"mapdata"}\NormalTok{, }\StringTok{"maptools"}\NormalTok{, }\StringTok{"sf"}\NormalTok{, }\StringTok{"sp"}\NormalTok{,}
+                \StringTok{"rgeos"}\NormalTok{, }\StringTok{"tidyr"}\NormalTok{, }\StringTok{"xts"}\NormalTok{)}
+\NormalTok{to\_install }\OtherTok{\textless{}{-}}\NormalTok{ to\_install[}\SpecialCharTok{!}\FunctionTok{sapply}\NormalTok{(to\_install, }
+\NormalTok{                                 requireNamespace, }
+                                 \AttributeTok{quietly=}\ConstantTok{TRUE}\NormalTok{)]}
 \ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(to\_install)}\SpecialCharTok{\textgreater{}}\DecValTok{0}\NormalTok{)}
-    \FunctionTok{install.packages}\NormalTok{(to\_install, }\AttributeTok{repos=}\StringTok{"http://cran.us.r{-}project.org"}\NormalTok{)}
+    \FunctionTok{install.packages}\NormalTok{(to\_install, }
+                     \AttributeTok{repos=}\StringTok{"http://cran.us.r{-}project.org"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -334,19 +288,32 @@ with the following script.
 \subsection*{Your collaboration is appreciated}\label{your-collaboration-is-appreciated}}
 \addcontentsline{toc}{subsection}{Your collaboration is appreciated}
 
-Open Source also means that you can contribute. You don't need to know how to program
-but every input is appreciated. Did you find something that is not working?
-Have suggestions for examples or text? you can always
-1. Reach to us via the \href{https://docs.biodiversitydata.se/support/}{support center}
-2. Submit and issue to the GitHub code repository \href{https://docs.github.com/en/github/managing-your-work-on-github/managing-your-work-with-issues-and-pull-requests/creating-an-issue}{see how}
-3. Or contribute with your code or documents modifications by \href{https://docs.github.com/en/github/getting-started-with-github/quickstart/fork-a-repo}{``forking''}
-the code and submitting a \href{https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork}{``pull request''}
+Open Source also means that you can contribute. You don't need to know how to program but every input is appreciated. Did you find something that is not working? Have suggestions for examples or text? you can always
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Reach to us via the \href{https://docs.biodiversitydata.se/support/}{support center}
+\item
+  Submit and issue to the GitHub code repository \href{https://docs.github.com/en/github/managing-your-work-on-github/managing-your-work-with-issues-and-pull-requests/creating-an-issue}{see how}
+\item
+  Or contribute with your code or documents modifications by \href{https://docs.github.com/en/github/getting-started-with-github/quickstart/fork-a-repo}{``forking''} the code and submitting a \href{https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork}{``pull request''}
+\end{enumerate}
 
 The repositories you can contribute to are:
-* Mirroreum \url{https://github.com/mskyttner/mirroreum}
-* SBDI4R \url{https://github.com/biodiversitydata-se/SBDI4R} (NOTE: we may not develop this package but instead move to a new one)
-* the general analysis workflows {[}\url{https://github.com/biodiversitydata-se/biodiversity-analysis-tools}{]} \url{https://github.com/biodiversitydata-se/biodiversity-analysis-tools}
-* these tutorial \url{https://github.com/biodiversitydata-se/r-tools-tutorial}
+
+\begin{itemize}
+\tightlist
+\item
+  Mirroreum \url{https://github.com/mskyttner/mirroreum}\\
+\item
+  SBDI4R \url{https://github.com/biodiversitydata-se/SBDI4R} (NOTE: we may not develop this package but instead move to a new one)\\
+\item
+  the general analysis workflows \url{https://github.com/biodiversitydata-se/biodiversity-analysis-tools}\\
+\item
+  these tutorial \url{https://github.com/biodiversitydata-se/r-tools-tutorial}
+\end{itemize}
 
 \hypertarget{example-with-fish-data-from-sers}{%
 \section{Example with fish data from SERS}\label{example-with-fish-data-from-sers}}
@@ -382,32 +349,22 @@ Using the function \texttt{occurrences()} we can the query for the observations 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(SBDI4R)}
-\NormalTok{xf }\OtherTok{\textless{}{-}} \FunctionTok{occurrences}\NormalTok{(}\AttributeTok{fq =}\NormalTok{ fq\_str,}
+\NormalTok{xf }\OtherTok{\textless{}{-}}\NormalTok{ SBDI4R}\SpecialCharTok{::}\FunctionTok{occurrences}\NormalTok{(}\AttributeTok{fq =}\NormalTok{ fq\_str,}
                  \AttributeTok{email =} \StringTok{"sbdi4r{-}test@biodiversitydata.se"}\NormalTok{, }
                  \AttributeTok{download\_reason\_id =} \DecValTok{10}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
-\begin{verbatim}
-## Registered S3 methods overwritten by 'ALA4R':
-##   method              from  
-##   subset.occurrences  SBDI4R
-##   summary.occurrences SBDI4R
-##   unique.occurrences  SBDI4R
-\end{verbatim}
+\CommentTok{\# Remove what is not a species}
+\NormalTok{xf}\SpecialCharTok{$}\NormalTok{data }\OtherTok{\textless{}{-}}\NormalTok{ xf}\SpecialCharTok{$}\NormalTok{data[xf}\SpecialCharTok{$}\NormalTok{data}\SpecialCharTok{$}\NormalTok{rank }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"species"}\NormalTok{, }\StringTok{"subspecies"}\NormalTok{, }\StringTok{"variety"}\NormalTok{, }\StringTok{"form"}\NormalTok{, }\StringTok{"cultivar"}\NormalTok{),]}
 
-\begin{Shaded}
-\begin{Highlighting}[]
 \CommentTok{\# Simply summarise all records by data source }
-\FunctionTok{table}\NormalTok{(xf}\SpecialCharTok{$}\NormalTok{data}\SpecialCharTok{$}\NormalTok{dataResourceName)}
+\FunctionTok{table}\NormalTok{(xf}\SpecialCharTok{$}\NormalTok{data}\SpecialCharTok{$}\NormalTok{dataResourceName, xf}\SpecialCharTok{$}\NormalTok{data}\SpecialCharTok{$}\NormalTok{dataResourceID)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## 
-## SLU Aqua  Institute of Freshwater Research Swedish Electrofishing Registry - SERS 
-##                                                                             95082
+##                                                                                    
+##                                                                                      dr10
+##   SLU Aqua  Institute of Freshwater Research Swedish Electrofishing Registry - SERS 93205
 \end{verbatim}
 
 \begin{Shaded}
@@ -419,7 +376,7 @@ Using the function \texttt{occurrences()} we can the query for the observations 
 \begin{verbatim}
 ## 
 ##  dr10 
-## 95082
+## 93205
 \end{verbatim}
 
 \hypertarget{plotting-data-on-a-map}{%
@@ -432,7 +389,7 @@ You can quickly plot all the observations as a PDF file with the function \textt
 \FunctionTok{occurrences\_plot}\NormalTok{(xf, }\StringTok{"obsPlot.pdf"}\NormalTok{, }
                  \AttributeTok{grouped=}\ConstantTok{FALSE}\NormalTok{, }
                  \AttributeTok{taxon\_level=}\StringTok{"species"}\NormalTok{, }
-                 \AttributeTok{pch=}\StringTok{\textquotesingle{}+\textquotesingle{}}\NormalTok{)}
+                 \AttributeTok{pch=}\StringTok{\textquotesingle{}.\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -478,7 +435,7 @@ A quick summary over the years reveal a drop in number of records over time.
 \begin{verbatim}
 ## 
 ##  2008  2009  2010  2011  2012 
-## 18168 19674 20055 17188 19997
+## 17757 19300 19648 16853 19647
 \end{verbatim}
 
 \begin{Shaded}
@@ -530,9 +487,9 @@ In the same way we can summaries the number of observations for each species, by
 ## 1       Abramis brama (Linnaeus, 1758)   61
 ## 2   Alburnus alburnus (Linnaeus, 1758)  660
 ## 3   Anguilla anguilla (Linnaeus, 1758) 2140
-## 4                            Astacidae  100
-## 5     Astacus astacus (Linnaeus, 1758)  618
-## 6 Barbatula barbatula (Linnaeus, 1758)  620
+## 4     Astacus astacus (Linnaeus, 1758)  618
+## 5 Barbatula barbatula (Linnaeus, 1758)  620
+## 6     Blicca bjoerkna (Linnaeus, 1758)   74
 \end{verbatim}
 
 Perhaps, you need to send this table as a .CSV file to a colleague.
@@ -547,33 +504,16 @@ Perhaps, you need to send this table as a .CSV file to a colleague.
 \hypertarget{spatial-biodiversity-analysis}{%
 \subsection{Spatial biodiversity analysis}\label{spatial-biodiversity-analysis}}
 
-Let's now ask: how does the species richness vary across Sweden? In this case we want to summarise occurrences species-wise over a defined grid instead of plotting every observation point. First we need to overlay the observations with a grid. In this case, the standard Swedish grids at 50, 25, 10 and 5 km are provided as data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326).
+Let's now ask: how does the species richness vary across Sweden? In this case we
+want to summarise occurrences species-wise over a defined grid instead of plotting
+every observation point. First we need to overlay the observations with a grid.
+In this case, the standard Swedish grids at 50, 25, 10 and 5 km are provided as
+data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326).
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(sp) }\CommentTok{\# the function coordinates() and proj4string() are in sp}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning: package 'sp' was built under R version 4.0.3
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(rgeos) }\CommentTok{\# the function over() is in package rgeos}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## rgeos version: 0.5-5, (SVN revision 640)
-##  GEOS runtime version: 3.8.0-CAPI-1.13.1 
-##  Linking to sp version: 1.4-2 
-##  Polygon checking: TRUE
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \CommentTok{\# load some shapes over Sweden\textquotesingle{}s political borders}
 \FunctionTok{data}\NormalTok{(}\StringTok{"swe\_wgs84"}\NormalTok{, }\AttributeTok{package=}\StringTok{"SBDI4R"}\NormalTok{, }\AttributeTok{envir=}\FunctionTok{environment}\NormalTok{())}
 \CommentTok{\# A standard 50km grid}
@@ -609,7 +549,7 @@ The result \texttt{ObsInGridList} is a \texttt{list} object with a subset of the
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 95082
+## [1] 93205
 \end{verbatim}
 
 \begin{Shaded}
@@ -660,14 +600,7 @@ And finally plot the grid summary as a map:
        \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(resSp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nSpp, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
        \AttributeTok{col =} \FunctionTok{palBW}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(resSp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nSpp, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
        \AttributeTok{title =} \StringTok{"Number of }\SpecialCharTok{\textbackslash{}n}\StringTok{species"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{15}\NormalTok{, }\AttributeTok{bty=}\StringTok{"n"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{r-tools-tutorial_files/figure-latex/grid-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{suppressWarnings}\NormalTok{(}\FunctionTok{par}\NormalTok{(oldpar))}
+\FunctionTok{par}\NormalTok{(oldpar)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -678,8 +611,6 @@ We can go further by gathering the observations by latitude.
 \FunctionTok{library}\NormalTok{(dplyr)}
 \FunctionTok{library}\NormalTok{(tidyr)}
 \NormalTok{xgridded }\OtherTok{\textless{}{-}}\NormalTok{ xf}\SpecialCharTok{$}\NormalTok{data }\SpecialCharTok{\%\textgreater{}\%}
-    \DocumentationTok{\#\# discard genus{-} and higher{-}level records}
-    \FunctionTok{filter}\NormalTok{(rank }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"species"}\NormalTok{, }\StringTok{"subspecies"}\NormalTok{, }\StringTok{"variety"}\NormalTok{, }\StringTok{"form"}\NormalTok{, }\StringTok{"cultivar"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
     \FunctionTok{mutate}\NormalTok{(}\AttributeTok{longitude =} \FunctionTok{round}\NormalTok{(longitude }\SpecialCharTok{*} \DecValTok{4}\NormalTok{)}\SpecialCharTok{/}\DecValTok{4}\NormalTok{, }
            \AttributeTok{latitude =} \FunctionTok{round}\NormalTok{(latitude }\SpecialCharTok{*} \DecValTok{4}\NormalTok{)}\SpecialCharTok{/}\DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
     \FunctionTok{group\_by}\NormalTok{(longitude,latitude) }\SpecialCharTok{\%\textgreater{}\%}
@@ -691,7 +622,10 @@ We can go further by gathering the observations by latitude.
     \FunctionTok{mutate}\NormalTok{(}\AttributeTok{richness=}\FunctionTok{n}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%}
     \DocumentationTok{\#\# convert to wide format (sites by species)}
     \FunctionTok{mutate}\NormalTok{(}\AttributeTok{present=}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{do}\NormalTok{(tidyr}\SpecialCharTok{::}\FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{data=}\NormalTok{.,  }\AttributeTok{names\_from=}\NormalTok{species, }\AttributeTok{values\_from=}\NormalTok{present, }\AttributeTok{values\_fill=}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{do}\NormalTok{(tidyr}\SpecialCharTok{::}\FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{data=}\NormalTok{.,  }
+                          \AttributeTok{names\_from=}\NormalTok{species, }
+                          \AttributeTok{values\_from=}\NormalTok{present, }
+                          \AttributeTok{values\_fill=}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
     \FunctionTok{ungroup}\NormalTok{()}
 \DocumentationTok{\#\# where a species was not present, it will have NA: convert these to 0}
 \NormalTok{sppcols }\OtherTok{\textless{}{-}} \FunctionTok{setdiff}\NormalTok{(}\FunctionTok{names}\NormalTok{(xgridded),}
@@ -718,62 +652,546 @@ And plot it accordingly
 
 \includegraphics{r-tools-tutorial_files/figure-latex/plot_richLat-1.pdf}
 
-\hypertarget{temporal-biodiversity-analysis}{%
-\subsection{Temporal biodiversity analysis}\label{temporal-biodiversity-analysis}}
+\hypertarget{example-with-opportunistic-data-on-dragonflies}{%
+\section{Example with opportunistic data on Dragonflies}\label{example-with-opportunistic-data-on-dragonflies}}
 
-Despite the drop seen in sampling effort, we can still analyse weather there is
-any trends for species over the sampled years. To do this, we first need to
-check whether the spatial sampling effort was comparable across those years
+In this example we are interested in exploring opportunistically collected data
+from the Swedish citizen science observation data portal - Artportalen.
+
+\hypertarget{name-searching}{%
+\subsection{Name searching}\label{name-searching}}
+
+To begin, we want be sure there is an unequivocal way to find the species within
+the order Odonata and nothing else, so let's search for it:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{xf}\SpecialCharTok{$}\NormalTok{data }\SpecialCharTok{\%\textgreater{}\%}
-    \DocumentationTok{\#\# discard genus{-} and higher{-}level records}
-    \FunctionTok{filter}\NormalTok{(rank }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"species"}\NormalTok{, }\StringTok{"subspecies"}\NormalTok{, }\StringTok{"variety"}\NormalTok{, }\StringTok{"form"}\NormalTok{, }\StringTok{"cultivar"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
-    \FunctionTok{group\_by}\NormalTok{(year) }\SpecialCharTok{\%\textgreater{}\%}
-    \DocumentationTok{\#\# subset to vars of interest}
-    \FunctionTok{select}\NormalTok{(year, locality) }\SpecialCharTok{\%\textgreater{}\%}
-    \DocumentationTok{\#\# calculate species richness}
-    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{nObs =} \FunctionTok{n}\NormalTok{())}
+\NormalTok{sx }\OtherTok{\textless{}{-}} \FunctionTok{search\_fulltext}\NormalTok{(}\StringTok{"odonata"}\NormalTok{)}
+\NormalTok{sx}\SpecialCharTok{$}\NormalTok{data[, }\FunctionTok{c}\NormalTok{(}\StringTok{"guid"}\NormalTok{, }\StringTok{"scientificName"}\NormalTok{, }\StringTok{"rank"}\NormalTok{, }\StringTok{"occurrenceCount"}\NormalTok{)]}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 93,205 x 3
-## # Groups:   year [5]
-##     year locality                                nObs
-##    <int> <chr>                                  <int>
-##  1  2011 "6846840-1568800 Sjötrösk. Lillfj.utl" 16853
-##  2  2009 "6340000-1286200 Göingegården"         19300
-##  3  2009 ""                                     19300
-##  4  2011 "6846840-1568800 Sjötrösk. Lillfj.utl" 16853
-##  5  2009 "6339030-1288080 Holmagärde B st.v. 2" 19300
-##  6  2009 "6339030-1288080 Holmagärde B stv. 2"  19300
-##  7  2009 ""                                     19300
-##  8  2010 "6321540-1301320 Ned övre kulv. Krono" 19648
-##  9  2010 ""                                     19648
-## 10  2009 "6466090-1409270 Nedstr Herrekvarn"    19300
-## # ... with 93,195 more rows
+##       guid                          scientificName    rank occurrenceCount
+## 1  9829523  Odonata associated gemycircularvirus 1 species               0
+## 2 10072832  Odonata associated gemycircularvirus 2 species               0
+## 3  8062407 Bdellodes odonata Wallace & Mahon, 1976 species               0
+## 4      789                                 Odonata   order          207680
+## 5  7367071    Ramalina fastigiata var. odonata Hue variety               0
 \end{verbatim}
 
-And we ask: can we see a trend (change = frequency of occurrence = number caught) for species X, or species Y?
+We quickly see there that other taxonomic definitions appear too, but there is only one order.
+Let's refine the search. To know which search fields we can use to filter the search
+we use the function \texttt{sbdi\_fields(fields\_type\ =\ "general")}.
+The search field we are looking for is ``order\_s''.
 
-\hypertarget{links-to-further-tutorials-that-could-be-of-interest}{%
-\subsection{Links to further tutorials that could be of interest}\label{links-to-further-tutorials-that-could-be-of-interest}}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sx }\OtherTok{\textless{}{-}} \FunctionTok{search\_fulltext}\NormalTok{(}\AttributeTok{fq=}\StringTok{"order\_s:Odonata"}\NormalTok{, }\AttributeTok{page\_size =} \DecValTok{10}\NormalTok{)}
+\NormalTok{sx}\SpecialCharTok{$}\NormalTok{data[, }\FunctionTok{c}\NormalTok{(}\StringTok{"scientificName"}\NormalTok{, }\StringTok{"rank"}\NormalTok{, }\StringTok{"occurrenceCount"}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
 
-Link to analyses of interest -- e.g.~species distribution models, or trend analyses, or species divesity -- link to biodiversity workflow
+\begin{verbatim}
+##       guid                          scientificName    rank occurrenceCount
+## 1  9829523  Odonata associated gemycircularvirus 1 species               0
+## 2 10072832  Odonata associated gemycircularvirus 2 species               0
+## 3  8062407 Bdellodes odonata Wallace & Mahon, 1976 species               0
+## 4      789                                 Odonata   order          207680
+## 5  7367071    Ramalina fastigiata var. odonata Hue variety               0
+\end{verbatim}
 
-\hypertarget{case-2}{%
-\section{Case 2:}\label{case-2}}
+Now we can download the taxonomic data (note that the search is case-sensitive):
 
-Look at opportunistically collected citizen science data -- using the big Swedish cit science species observation data portal Artportalen.
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tx }\OtherTok{\textless{}{-}} \FunctionTok{taxinfo\_download}\NormalTok{(}\StringTok{"order\_s:Odonata"}\NormalTok{, }
+                       \AttributeTok{fields =} \FunctionTok{c}\NormalTok{(}\StringTok{"guid"}\NormalTok{, }\StringTok{"order\_s"}\NormalTok{,}\StringTok{"genus\_s"}\NormalTok{, }\StringTok{"specificEpithet\_s"}\NormalTok{, }
+                                  \StringTok{"scientificName"}\NormalTok{,  }\StringTok{"canonicalName\_s"}\NormalTok{, }\StringTok{"rank"}\NormalTok{), }
+                       \AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{tx }\OtherTok{\textless{}{-}}\NormalTok{ tx[tx}\SpecialCharTok{$}\NormalTok{rank }\SpecialCharTok{==} \StringTok{"species"} \SpecialCharTok{\&}\NormalTok{ tx}\SpecialCharTok{$}\NormalTok{genusS }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,] }\DocumentationTok{\#\# restrict to species and not hybrids}
+\end{Highlighting}
+\end{Shaded}
 
-We want to look at dragonflies -- but before we can use the observation records we need to know how the observation effort has varied over time and in space. For this we define field visits i.e.~occasions at which an observer has sampled observations -- if we have information on observer id, location id and date we can aggregate data into ``field visits''. We do this using BIRDS, and 25km grid:
-Select data -- get records for Southern Sweden (Götaland) and years 2000-2010.
-How has observation effort (frequency of visits) varied over time and space? -- 1) show maps as in Example 7 (all years, year 2000, 2002, 2004, 2006, 2008, 2010), 2 make also a time line plot with no. visits against years, no. of gridcells with visits against years.
+Then you can save \texttt{tx} as the complete species list for later use.
+
+\hypertarget{filter-the-search-to-get-the-observations}{%
+\subsection{Filter the search to get the observations}\label{filter-the-search-to-get-the-observations}}
+
+As usual we start by searching for the data resource we are interested in using
+the function \texttt{pick\_filter()}. This is an interactive query guiding you through
+the many resources available to filtering your query (data resources, spatial
+layers, and curated species lists).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# follow the instructions }
+\NormalTok{fq\_str }\OtherTok{\textless{}{-}} \FunctionTok{pick\_filter}\NormalTok{(}\StringTok{"resource"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+Follow the instruction. Your choices here would have been ``in3'' --\textgreater{} ``dr5''.
+Your variable \texttt{fq\_str} will now contain a string ``data\_resource\_uid:dr5''.
+
+We only need data from 2000 to 2010
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{y1 }\OtherTok{\textless{}{-}} \DecValTok{2000}
+\NormalTok{y2 }\OtherTok{\textless{}{-}} \DecValTok{2010}
+\NormalTok{fq\_str }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(fq\_str, }\FunctionTok{paste0}\NormalTok{(}\StringTok{"year:["}\NormalTok{, y1, }\StringTok{" TO "}\NormalTok{, y2,}\StringTok{"]"}\NormalTok{))}
+\CommentTok{\# Note the square brackets are hard limits}
+\end{Highlighting}
+\end{Shaded}
+
+We also need to filter spatially for Southern Sweden (\href{https://en.wikipedia.org/wiki/G\%C3\%B6taland}{Götaland}).
+
+Vector spatial layers (eg. polygons) can be imported in a number of different ways.
+SBDI APIs take as search input polygons in the s.k. WKT \href{https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html}{Well Known Text}
+format. So the first step is to load a vector layer and transform it into a WKT string.
+You could instead use the data we kindly provided in the SBDI4R package \texttt{data("swe")}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(}\StringTok{"swe"}\NormalTok{)}
+\NormalTok{wGotaland }\OtherTok{\textless{}{-}}\NormalTok{ swe}\SpecialCharTok{$}\NormalTok{Counties}\SpecialCharTok{$}\NormalTok{LnNamn }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Blekinge"}\NormalTok{, }\StringTok{"Gotlands"}\NormalTok{, }\StringTok{"Hallands"}\NormalTok{, }
+                                        \StringTok{"Jönköpings"}\NormalTok{, }\StringTok{"Kalmar"}\NormalTok{, }\StringTok{"Kronobergs"}\NormalTok{, }
+                                        \StringTok{"Östergötlands"}\NormalTok{, }\StringTok{"Skåne"}\NormalTok{, }\StringTok{"Västra Götalands"}\NormalTok{)}
+\NormalTok{gotaland\_c }\OtherTok{\textless{}{-}}\NormalTok{ swe}\SpecialCharTok{$}\NormalTok{Counties[wGotaland,]}
+\end{Highlighting}
+\end{Shaded}
+
+Unfortunately, in this instance this gives a WKT string that is too long and won't
+be accepted by the web service. Also, the shapefile we just got is projected in
+the coordinate system SWEREF99 TM, and the web service only accepts coordinates in
+a geodesic coordinate system WGS84. Instead, let's construct the WKT string directly,
+which gives us a little more control over its format:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gotaland\_c }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{as\_Spatial}\NormalTok{(}
+\NormalTok{                sf}\SpecialCharTok{::}\FunctionTok{st\_transform}\NormalTok{(}
+\NormalTok{                  sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{(gotaland\_c), }
+                  \AttributeTok{crs =}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_crs}\NormalTok{(}\DecValTok{4326}\NormalTok{)}\SpecialCharTok{$}\NormalTok{wkt) )}
+
+\NormalTok{gotaland }\OtherTok{\textless{}{-}}\NormalTok{ rgeos}\SpecialCharTok{::}\FunctionTok{gUnaryUnion}\NormalTok{(gotaland\_c)}
+
+\CommentTok{\# extract the polygons coordinates}
+\NormalTok{nPol }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(gotaland}\SpecialCharTok{@}\NormalTok{polygons[[}\DecValTok{1}\NormalTok{]]}\SpecialCharTok{@}\NormalTok{Polygons) }
+\NormalTok{lonlat }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{(p }\ControlFlowTok{in} \FunctionTok{seq}\NormalTok{(nPol))\{}
+\NormalTok{  lonlat[[p]] }\OtherTok{\textless{}{-}}\NormalTok{ gotaland}\SpecialCharTok{@}\NormalTok{polygons[[}\DecValTok{1}\NormalTok{]]}\SpecialCharTok{@}\NormalTok{Polygons[[p]]}\SpecialCharTok{@}\NormalTok{coords}
+\NormalTok{\}}
+\NormalTok{lonlat }\OtherTok{\textless{}{-}} \FunctionTok{do.call}\NormalTok{(rbind, lonlat)}
+
+\CommentTok{\# create a convex hull of the polygon to reduce the length of the WKT string}
+\NormalTok{gotaland\_ch }\OtherTok{\textless{}{-}} \FunctionTok{chull}\NormalTok{(lonlat)}
+\NormalTok{lonlat }\OtherTok{\textless{}{-}}\NormalTok{ lonlat[}\FunctionTok{c}\NormalTok{(gotaland\_ch, gotaland\_ch[}\DecValTok{1}\NormalTok{]), ]}
+
+\CommentTok{\# create WKT string}
+\CommentTok{\# first join each lon{-}lat coordinate pair}
+\NormalTok{wkt\_temp }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(lonlat, }\DecValTok{1}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(z) }\FunctionTok{paste}\NormalTok{(}\FunctionTok{round}\NormalTok{(z,}\DecValTok{4}\NormalTok{), }\AttributeTok{collapse=}\StringTok{" "}\NormalTok{))}
+\CommentTok{\# now build the WKT string}
+\NormalTok{wkt }\OtherTok{\textless{}{-}} \FunctionTok{paste}\NormalTok{(}\StringTok{"MULTIPOLYGON((("}\NormalTok{, }\FunctionTok{paste}\NormalTok{(wkt\_temp, }\AttributeTok{collapse=}\StringTok{","}\NormalTok{), }\StringTok{")))"}\NormalTok{, }\AttributeTok{sep=}\StringTok{""}\NormalTok{)}
+\CommentTok{\# }\AlertTok{NOTE}\CommentTok{: as of today, the SBDI APIs will only work properly if the polygon is }
+\CommentTok{\# submitted as a MULTIPOLYGON}
+\end{Highlighting}
+\end{Shaded}
+
+We download the observations using the command \texttt{occurrences()}, but be aware that
+the search fields may not be the same as those use to search for taxa. We therefore
+recommend using the function \texttt{sbdi\_fields("occurrence")}. Here see that the field
+we need this time is ``order''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{xf }\OtherTok{\textless{}{-}}\NormalTok{ SBDI4R}\SpecialCharTok{::}\FunctionTok{occurrences}\NormalTok{(}\AttributeTok{taxon =} \StringTok{"order:Odonata"}\NormalTok{, }
+                  \AttributeTok{fq =}\NormalTok{ fq\_str,}
+                  \AttributeTok{wkt =}\NormalTok{ wkt,}
+                  \AttributeTok{extra =} \StringTok{"collector"}\NormalTok{,}
+                  \AttributeTok{email =} \StringTok{"sbdi4r{-}test@biodiversitydata.se"}\NormalTok{, }
+                  \AttributeTok{download\_reason\_id =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+We have now downloaded the data locally and depending on your configuration this
+will be cached on your computer. However, as the search and download could take
+long, we recommend to anyhow save the data locally.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{save}\NormalTok{(xf, }\AttributeTok{file =} \StringTok{"an\_approprieted\_name.rdata"}\NormalTok{)}
+\FunctionTok{load}\NormalTok{(}\AttributeTok{file =} \StringTok{"an\_approprieted\_name.rdata"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{quality-and-fit-for-use-check}{%
+\subsection{Quality and fit-for-use check}\label{quality-and-fit-for-use-check}}
+
+Before we can use the observation records we need to know if the observation
+effort has varied over time and in space. For this we need to define field visits
+i.e.~occasions at which an observer has sampled observations, and reconstruct them
+(that is, assign each observation a visitUID). We do this using the package
+\href{https://greensway.github.io/BIRDS/}{BIRDS}. We even want the data to be summarized
+over a grid of 25 km (provided by the SBDI4R package). The following functions
+will perform many different summaries at the same time. Please refer to the package
+documentation for more detail.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(BIRDS)}
+\NormalTok{OB }\OtherTok{\textless{}{-}} \FunctionTok{organiseBirds}\NormalTok{(xf}\SpecialCharTok{$}\NormalTok{data, }\AttributeTok{sppCol =} \StringTok{"species"}\NormalTok{ , }
+                    \CommentTok{\# We only want observations identified at the species level}
+                    \AttributeTok{taxonRankCol =} \StringTok{"rank"}\NormalTok{, }\AttributeTok{taxonRank =} \StringTok{"species"}\NormalTok{, }
+                    \CommentTok{\# the visits are defined by collector and named locality}
+                    \AttributeTok{idCols =} \FunctionTok{c}\NormalTok{(}\StringTok{"locality"}\NormalTok{, }\StringTok{"collector"}\NormalTok{), }
+                    \AttributeTok{timeCols =} \FunctionTok{c}\NormalTok{(}\StringTok{"year"}\NormalTok{, }\StringTok{"month"}\NormalTok{, }\StringTok{"day"}\NormalTok{), }
+                    \AttributeTok{xyCols =}\FunctionTok{c}\NormalTok{(}\StringTok{"longitude"}\NormalTok{,}\StringTok{"latitude"}\NormalTok{) )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 252 observations did not match with the specified taxon rank and were removed.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# We don\textquotesingle{}t need the whole grid, just the piece that overlaps our searching polygon}
+\NormalTok{gotaland\_grid25 }\OtherTok{\textless{}{-}}\NormalTok{ raster}\SpecialCharTok{::}\FunctionTok{intersect}\NormalTok{(gotaland, Sweden\_Grid\_25km\_Wgs84)}
+
+\CommentTok{\# This is another way of doing it.}
+\CommentTok{\# gotaland\_grid25 \textless{}{-} gIntersection(gotaland,}
+\CommentTok{\#                                  spTransform(Sweden\_Grid\_25km\_Wgs84, }
+\CommentTok{\#                                              CRSobj = CRS(sf::st\_crs(4326)$wkt)))}
+
+\NormalTok{SB }\OtherTok{\textless{}{-}} \FunctionTok{summariseBirds}\NormalTok{(OB, }\AttributeTok{grid =}\NormalTok{ gotaland\_grid25, }\AttributeTok{spillOver =} \StringTok{"unique"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 1664 observations did not overlap with the grid and will be discarded.
+\end{verbatim}
+
+\begin{verbatim}
+## 0.009 % of the visits spill over neighbouring grid cells.
+\end{verbatim}
+
+Once summarized, we can see over space and for a few selected year how was the
+sampling effort (in this case number of observations) distributed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{maxC }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nObs, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{palBW }\OtherTok{\textless{}{-}}\NormalTok{ leaflet}\SpecialCharTok{::}\FunctionTok{colorNumeric}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\StringTok{"navyblue"}\NormalTok{), }
+                               \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC), }
+                               \AttributeTok{na.color =} \StringTok{"transparent"}\NormalTok{)}
+\NormalTok{oldpar }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{()}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{0}\NormalTok{), }\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial, }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nObs),}
+     \AttributeTok{border =} \StringTok{"grey"}\NormalTok{, }\AttributeTok{main=}\StringTok{"All years"}\NormalTok{) }\DocumentationTok{\#\# with palette}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
+       \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
+       \AttributeTok{col =} \FunctionTok{palBW}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
+       \AttributeTok{title =} \StringTok{"Number of }\SpecialCharTok{\textbackslash{}n}\StringTok{observations"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{15}\NormalTok{, }\AttributeTok{bty=}\StringTok{"n"}\NormalTok{)}
+
+\DocumentationTok{\#\# or export other combinations, e.g. one map per observed year}
+\NormalTok{yearlySp }\OtherTok{\textless{}{-}} \FunctionTok{exportBirds}\NormalTok{(SB, }
+                        \AttributeTok{dimension =} \StringTok{"spatial"}\NormalTok{, }
+                        \AttributeTok{timeRes =} \StringTok{"yearly"}\NormalTok{, }
+                        \AttributeTok{variable =} \StringTok{"nObs"}\NormalTok{, }
+                        \AttributeTok{method =} \StringTok{"sum"}\NormalTok{)}
+
+\NormalTok{maxC }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(yearlySp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\StringTok{\textquotesingle{}2005\textquotesingle{}}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{palBW }\OtherTok{\textless{}{-}}\NormalTok{ leaflet}\SpecialCharTok{::}\FunctionTok{colorNumeric}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\StringTok{"navyblue"}\NormalTok{), }
+                               \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC), }
+                               \AttributeTok{na.color =} \StringTok{"transparent"}\NormalTok{)}
+
+\FunctionTok{plot}\NormalTok{(yearlySp[}\StringTok{"2005"}\NormalTok{], }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(yearlySp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\StringTok{\textquotesingle{}2005\textquotesingle{}}\NormalTok{), }
+     \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}\AttributeTok{main=}\StringTok{"2005"}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
+       \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
+       \AttributeTok{col =} \FunctionTok{palBW}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
+       \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}
+       \AttributeTok{title =} \StringTok{"Number of }\SpecialCharTok{\textbackslash{}n}\StringTok{observations"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{15}\NormalTok{, }\AttributeTok{bty=}\StringTok{"n"}\NormalTok{)}
+
+\NormalTok{maxC }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(yearlySp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\StringTok{\textquotesingle{}2010\textquotesingle{}}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{palBW }\OtherTok{\textless{}{-}}\NormalTok{ leaflet}\SpecialCharTok{::}\FunctionTok{colorNumeric}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\StringTok{"navyblue"}\NormalTok{), }
+                               \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC), }
+                               \AttributeTok{na.color =} \StringTok{"transparent"}\NormalTok{)}
+
+\FunctionTok{plot}\NormalTok{(yearlySp[}\StringTok{"2010"}\NormalTok{], }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(yearlySp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\StringTok{\textquotesingle{}2010\textquotesingle{}}\NormalTok{), }
+     \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}\AttributeTok{main=}\StringTok{"2010"}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
+       \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
+       \AttributeTok{col =} \FunctionTok{palBW}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
+       \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}
+       \AttributeTok{title =} \StringTok{"Number of }\SpecialCharTok{\textbackslash{}n}\StringTok{observations"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{15}\NormalTok{, }\AttributeTok{bty=}\StringTok{"n"}\NormalTok{)}
+\FunctionTok{par}\NormalTok{(oldpar)}
+\end{Highlighting}
+\end{Shaded}
+
+There are other ways to plot spatial data, here there is another example this time
+using the package \texttt{sf} instead of \texttt{sp} and using number of visits as the measure
+for sampling effort.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(sf)}
+\FunctionTok{library}\NormalTok{(cowplot)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(colorRamps)}
+\FunctionTok{library}\NormalTok{(gridExtra)}
+
+\NormalTok{spatial\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial)}
+
+\NormalTok{vis }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ spatial\_sf, }\FunctionTok{aes}\NormalTok{( }\AttributeTok{fill =}\NormalTok{ nVis)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_sf}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Visits"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"\#56B1F7"}\NormalTok{,}
+                      \AttributeTok{high =} \StringTok{"\#132B43"}\NormalTok{,}
+                      \AttributeTok{na.value =} \ConstantTok{NA}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.margin =} \FunctionTok{margin}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\StringTok{"pt"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_cowplot}\NormalTok{()}
+
+\NormalTok{spp }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ spatial\_sf ,}\FunctionTok{aes}\NormalTok{( }\AttributeTok{fill =}\NormalTok{ nSpp))}\SpecialCharTok{+}
+  \FunctionTok{geom\_sf}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Number of species"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"\#56B1F7"}\NormalTok{,}
+                      \AttributeTok{high =} \StringTok{"\#132B43"}\NormalTok{,}
+                      \AttributeTok{na.value =} \ConstantTok{NA}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.margin =} \FunctionTok{margin}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\StringTok{"pt"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_cowplot}\NormalTok{()}
+
+\FunctionTok{grid.arrange}\NormalTok{(vis, spp, }\AttributeTok{ncol=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{r-tools-tutorial_files/figure-latex/ggplot1-1.pdf}
+
+How has observation effort (frequency of visits) varied over time and space? --
+1) show maps as in Example 7 (all years, year 2000, 2002, 2004, 2006, 2008, 2010),
+2 make also a time line plot with no. visits against years, no. of gridcells with visits against years.
+
+we see that SB contains an element called \texttt{SB\$temporal} that contains a daily time series with time specific rows when there is information. \texttt{xts} also supports time, but dating below day resolution is not yet implemented in the \texttt{BIRDS} package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sb.xts }\OtherTok{\textless{}{-}}\NormalTok{ SB}\SpecialCharTok{$}\NormalTok{temporal}
+\FunctionTok{dim}\NormalTok{(sb.xts)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1118    3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(sb.xts, }\DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            nObs nVis nSpp
+## 2000-03-24    1    1    1
+## 2000-04-05    4    3    3
+## 2000-04-06   11    6    3
+## 2000-04-10    1    1    1
+## 2000-04-12    3    3    1
+## 2000-04-13    8    5    2
+## 2000-04-20    1    1    1
+## 2000-04-21    5    4    2
+## 2000-04-23    5    2    3
+## 2000-04-24    7    5    2
+## 2000-04-26    1    1    1
+## 2000-04-27    7    6    3
+## 2000-04-28    9    7    3
+## 2000-04-29    6    3    3
+## 2000-05-27    1    1    1
+## 2000-06-03    1    1    1
+## 2000-07-30    1    1    1
+## 2000-08-03    1    1    1
+## 2000-08-05    5    2    5
+## 2000-08-06    3    1    3
+\end{verbatim}
+
+Sub-setting is convenient in \texttt{xts} as you can do it with its dates and with a \texttt{/} for a range of dates.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sb.xts[}\StringTok{"2010{-}09{-}07"}\NormalTok{] }\CommentTok{\#a specific day}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            nObs nVis nSpp
+## 2010-09-07    9    7    5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sb.xts[}\StringTok{"2010{-}09{-}01/2010{-}09{-}15"}\NormalTok{] }\CommentTok{\#for a period}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            nObs nVis nSpp
+## 2010-09-01   38   15   14
+## 2010-09-02   26   12   12
+## 2010-09-03   20    9   10
+## 2010-09-04   63   19   18
+## 2010-09-05   71   25   12
+## 2010-09-06   16    4    9
+## 2010-09-07    9    7    5
+## 2010-09-08   13    6    8
+## 2010-09-09   32   12   14
+## 2010-09-10    1    1    1
+## 2010-09-11   15    8    8
+## 2010-09-12   15    7    8
+## 2010-09-13   14    5    9
+## 2010-09-14    1    1    1
+## 2010-09-15    3    3    2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sb.xts[}\StringTok{"2010{-}09"}\NormalTok{] }\CommentTok{\#a specific month}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            nObs nVis nSpp
+## 2010-09-01   38   15   14
+## 2010-09-02   26   12   12
+## 2010-09-03   20    9   10
+## 2010-09-04   63   19   18
+## 2010-09-05   71   25   12
+## 2010-09-06   16    4    9
+## 2010-09-07    9    7    5
+## 2010-09-08   13    6    8
+## 2010-09-09   32   12   14
+## 2010-09-10    1    1    1
+## 2010-09-11   15    8    8
+## 2010-09-12   15    7    8
+## 2010-09-13   14    5    9
+## 2010-09-14    1    1    1
+## 2010-09-15    3    3    2
+## 2010-09-17    3    2    3
+## 2010-09-18    9    5    5
+## 2010-09-19   12    7    5
+## 2010-09-21    3    2    3
+## 2010-09-22    4    4    2
+## 2010-09-23    3    3    2
+## 2010-09-24   10    5    5
+## 2010-09-25    6    3    6
+## 2010-09-26    7    6    2
+## 2010-09-28    2    2    2
+## 2010-09-29    5    3    4
+## 2010-09-30    2    2    2
+\end{verbatim}
+
+The package \texttt{xts} has several tools for converting to different periods. Here we will use \texttt{to.monthly}. This provides, the first, min, max, and last of the data. We can plot the daily maximum number of observations. The plot command with an \texttt{xts} object provides a TON of features. This makes it fairly easy to customize your plots. Read more in \texttt{?plot.xts}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(xts)}
+\NormalTok{obs.m }\OtherTok{\textless{}{-}} \FunctionTok{to.monthly}\NormalTok{(sb.xts}\SpecialCharTok{$}\NormalTok{nObs) }
+\NormalTok{obs.m[}\StringTok{"2007{-}04"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          sb.xts$nObs.Open sb.xts$nObs.High sb.xts$nObs.Low sb.xts$nObs.Close
+## Apr 2007                7               14               1                 2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sb.xts[}\StringTok{"2007{-}04"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            nObs nVis nSpp
+## 2007-04-02    7    4    4
+## 2007-04-11   14    7    3
+## 2007-04-12    8    6    4
+## 2007-04-13    1    1    1
+## 2007-04-15    1    1    1
+## 2007-04-17    6    4    3
+## 2007-04-18    1    1    1
+## 2007-04-21    1    1    1
+## 2007-04-23    1    1    1
+## 2007-04-27   11    6    4
+## 2007-04-28    4    4    3
+## 2007-04-30    2    2    2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(obs.m[}\StringTok{"2000/2010"}\NormalTok{,}\DecValTok{2}\NormalTok{], }
+     \AttributeTok{col =} \StringTok{"darkblue"}\NormalTok{, }
+     \AttributeTok{grid.ticks.on =} \StringTok{"month"}\NormalTok{, }
+     \AttributeTok{major.ticks =} \StringTok{"month"}\NormalTok{, }
+     \AttributeTok{grid.col =} \StringTok{"lightgrey"}\NormalTok{,  }
+     \AttributeTok{main =} \StringTok{"Maximum number of daily observations/visits per month"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{r-tools-tutorial_files/figure-latex/monthly and plot-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vis.m }\OtherTok{\textless{}{-}} \FunctionTok{to.monthly}\NormalTok{(sb.xts}\SpecialCharTok{$}\NormalTok{nVis) }
+\NormalTok{vis.m[}\StringTok{"2007{-}04"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          sb.xts$nVis.Open sb.xts$nVis.High sb.xts$nVis.Low sb.xts$nVis.Close
+## Apr 2007                4                7               1                 2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sb.xts[}\StringTok{"2007{-}04"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            nObs nVis nSpp
+## 2007-04-02    7    4    4
+## 2007-04-11   14    7    3
+## 2007-04-12    8    6    4
+## 2007-04-13    1    1    1
+## 2007-04-15    1    1    1
+## 2007-04-17    6    4    3
+## 2007-04-18    1    1    1
+## 2007-04-21    1    1    1
+## 2007-04-23    1    1    1
+## 2007-04-27   11    6    4
+## 2007-04-28    4    4    3
+## 2007-04-30    2    2    2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lines}\NormalTok{(vis.m[}\StringTok{"2000/2010"}\NormalTok{,}\DecValTok{2}\NormalTok{], }\AttributeTok{col =} \StringTok{"orange"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{r-tools-tutorial_files/figure-latex/monthly and plot-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+     \CommentTok{\# major.ticks = "month", grid.col = "lightgrey", }
+     \CommentTok{\# main = "Maximum number of daily visits per month")}
+\end{Highlighting}
+\end{Shaded}
 
 We can now look at some particular species and ask whether this has changed in occurrence over time:
 Plot no. records of species x and no. visits all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
+
 Plot no. gridcells with visits for species x and no. gridcells with visits for all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
 (species x: Tvåfläckad trollslända Epitheca bimaculata)
 
