@@ -121,7 +121,7 @@ wkt <- paste("MULTIPOLYGON(((", paste(wkt_temp, collapse=","), ")))", sep="")
 # NOTE: as of today, the SBDI APIs will only work properly if the polygon is 
 # submitted as a MULTIPOLYGON
 ```
-The WKT string the looks like this
+The WKT string then looks like this:
 ```{r}
 wkt
 ```
@@ -141,8 +141,9 @@ suppressWarnings(par(oldpar))
 ```
 
 Next, we download the observations using the command `occurrences()`, but be aware that 
-the search fields may not be the same as those use to search for taxa. We therefore
-recommend using the function `sbdi_fields("occurrence")`. Here see that the field 
+the search fields may not be the same as those used to search for taxa. We therefore
+recommend using the function `sbdi_fields("occurrence")` to find out which search fields we can use 
+to filter for occurrences. Here we see that the field 
 we need this time is "order".
 
 ```{r getData, cache=TRUE}
@@ -159,19 +160,19 @@ load(file = "data/tmp_occdata2_for compile.rdata")
 ```
 We have now downloaded the data locally and depending on your configuration this
 will be cached on your computer. However, as the search and download could take
-long, we recommend to anyhow save the data locally. 
+long time, we recommend to save the data locally. 
 ```{r save2, eval=FALSE}
 save(xf, file = "an_approprieted_name.rdata")
 load(file = "an_approprieted_name.rdata")
 ```
 ## Quality and fit-for-use check
 Before we can use the observation records we need to know if the observation 
-effort has varied over time and in space. For this we need to define field visits 
-i.e. occasions at which an observer has sampled observations, and reconstruct them
-(that is, assign each observation a visitUID). We do this using the package 
-[BIRDS](https://greensway.github.io/BIRDS/). We even want the data to be summarized 
-over a grid of 25 km (provided by the SBDI4R package). The following functions 
-will perform many different summaries at the same time. Please refer to the package 
+effort (sampling effort) has varied over time and in space. We can approximate observation effort from the data by 
+defining field visits i.e. occasions at which an observer has sampled observations. We reconstruct field visits
+(that is, assign each observation a visitUID) using using the package 
+[BIRDS](https://greensway.github.io/BIRDS/). Additionally we want the data to be summarized 
+over a grid of 25 km (provided through the SBDI4R package). The following functions 
+will perform many different summaries at the same time. Please refer to the BIRDS package 
 documentation for more detail. 
 
 ```{r birds}
