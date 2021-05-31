@@ -10,7 +10,7 @@ the order Odonata and nothing else, so let's search for it:
 library(SBDI4R)
 ```
 
-```{r search1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
+```{r search1, echo=TRUE, eval=FALSE}
 sx <- search_fulltext("odonata")
 sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
 ```  
@@ -27,7 +27,7 @@ We quickly see there that other taxonomic definitions appear too, but there is o
 Let's refine the search. To know which search fields we can use to filter the search 
 we use the function `sbdi_fields(fields_type = "general")`.
 The search field we are looking for is "order_s".  
-```{r search2, warning=FALSE, message=FALSE, error=FALSE}
+```{r search2,  echo=TRUE, eval=FALSE}
 sx <- search_fulltext(fq="order_s:Odonata", page_size = 10)
 sx$data[, c("scientificName", "rank", "occurrenceCount")]
 ```  
@@ -48,7 +48,7 @@ tx <- tx[tx$rank == "species" & tx$genusS != "",] ## restrict to species and not
 ```
 Then you can save `tx` as the complete species list for later use. 
 
-## Get the observations, filter the search, get quality assertions, plotting data on a map and save data
+## Filter the search to get the observations
 As usual we start by searching for the data resource we are interested in using 
 the function `pick_filter()`. This is an interactive query guiding you through 
 the many resources available to filtering your query (data resources, spatial 
@@ -75,7 +75,7 @@ fq_str <- c(fq_str, paste0("year:[", y1, " TO ", y2,"]"))
 # Note the square brackets are hard limits
 ```
 
-Select data – get records for Southern Sweden ([Götaland](https://en.wikipedia.org/wiki/G%C3%B6taland)).
+We also need to filter spatially for Southern Sweden ([Götaland](https://en.wikipedia.org/wiki/G%C3%B6taland)).
 
 Vector spatial layers (eg. polygons) can be imported  in a number of different ways. 
 SBDI APIs take as search input polygons in the s.k. WKT [Well Known Text](https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html) 
@@ -84,15 +84,17 @@ You could instead use the data we kindly provided in the SBDI4R package `data("s
 
 ```{r sweshape}
 data("swe")
-wGotaland <- swe$Counties$LnNamn %in% c("Blekinge", "Gotlands", "Hallands", "Jönköpings", "Kalmar", "Kronobergs", "Östergötlands", "Skåne", "Västra Götalands")
+wGotaland <- swe$Counties$LnNamn %in% c("Blekinge", "Gotlands", "Hallands", 
+                                        "Jönköpings", "Kalmar", "Kronobergs", 
+                                        "Östergötlands", "Skåne", "Västra Götalands")
 gotaland_c <- swe$Counties[wGotaland,]
 ```
 
-We could create the WKT string using the `rgeos` library:
-```{r, eval=FALSE}
-library(rgeos)
-wkt <- writeWKT(gotaland_c)
-```
+<!-- We could create the WKT string using the `rgeos` library: -->
+<!-- ```{r, eval=FALSE} -->
+<!-- library(rgeos) -->
+<!-- wkt <- writeWKT(gotaland_c) -->
+<!-- ``` -->
 
 Unfortunately, in this instance this gives a WKT string that is too long and won't
 be accepted by the web service. Also, the shapefile we just got is projected in 
@@ -128,40 +130,112 @@ wkt <- paste("MULTIPOLYGON(((", paste(wkt_temp, collapse=","), ")))", sep="")
 # submitted as a MULTIPOLYGON
 ```
 
+We download the observations using the command `occurrences()`, but be aware that 
+the search fields may not be the same as those use to search for taxa. We therefore
+recommend using the function `sbdi_fields("occurrence")`. Here see that the field 
+we need this time is "order".
 
-```{r getData}
-sbdi_fields("occurrence")[,1:2]
+```{r getData, cache=TRUE}
 xf <- SBDI4R::occurrences(taxon = "order:Odonata", 
                   fq = fq_str,
                   wkt = wkt,
                   extra = "collector",
                   email = "sbdi4r-test@biodiversitydata.se", 
                   download_reason_id = 10)
-
-xf$meta
 ```
-
-but before we can use the observation records we need to know how the observation effort has varied over time and in space. For this we define field visits i.e. occasions at which an observer has sampled observations – if we have information on observer id, location id and date we can aggregate data into “field visits”. We do this using BIRDS, and 25km grid:
+```{r localtmp, echo=FALSE, eval=FALSE}
+save(xf, file = "data/tmp_occdata2_for compile.rdata")
+load(file = "data/tmp_occdata2_for compile.rdata")
+```
+We have now downloaded the data locally and depending on your configuration this
+will be cached on your computer. However, as the search and download could take
+long, we recommend to anyhow save the data locally. 
+```{r save2, eval=FALSE}
+save(xf, file = "an_approprieted_name.rdata")
+load(file = "an_approprieted_name.rdata")
+```
+## Quality and fit-for-use check
+Before we can use the observation records we need to know if the observation 
+effort has varied over time and in space. For this we need to define field visits 
+i.e. occasions at which an observer has sampled observations, and reconstruct them
+(that is, assign each observation a visitUID). We do this using the package 
+[BIRDS](https://greensway.github.io/BIRDS/). We even want the data to be summarized 
+over a grid of 25 km (provided by the SBDI4R package). The following functions 
+will perform many different summaries at the same time. Please refer to the package 
+documentation for more detail. 
 
 ```{r birds}
 library(BIRDS)
 OB <- organiseBirds(xf$data, sppCol = "species" , 
+                    # We only want observations identified at the species level
                     taxonRankCol = "rank", taxonRank = "species", 
+                    # the visits are defined by collector and named locality
                     idCols = c("locality", "collector"), 
                     timeCols = c("year", "month", "day"), 
                     xyCols =c("longitude","latitude") )
 
+# We don't need the whole grid, just the piece that overlaps our searching polygon
 gotaland_grid25 <- raster::intersect(gotaland, Sweden_Grid_25km_Wgs84)
 
-# gotaland_grid25 <- gIntersection(spTransform(Sweden_Grid_25km_Wgs84, 
-#                                              CRSobj = CRS(sf::st_crs(4326)$wkt)),
-#                                  gotaland,
-#                                  byid = TRUE)
+# This is another way of doing it.
+# gotaland_grid25 <- gIntersection(gotaland,
+#                                  spTransform(Sweden_Grid_25km_Wgs84, 
+#                                              CRSobj = CRS(sf::st_crs(4326)$wkt)))
 
 SB <- summariseBirds(OB, grid = gotaland_grid25, spillOver = "unique")
 ```
 
-```{r plotBIRDSspatial, message=FALSE, warning=FALSE}
+Once summarized, we can see over space and for a few selected year how was the 
+sampling effort (in this case number of observations) distributed.
+```{r plotBIRDSspatial_cose, eval=FALSE}
+maxC <- max(SB$spatial@data$nObs, na.rm = TRUE)
+palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
+                               c(0, maxC), 
+                               na.color = "transparent")
+oldpar <- par()
+par(mar = c(4,0,4,0), mfrow=c(1,3))
+plot(SB$spatial, col=palBW(SB$spatial@data$nObs),
+     border = "grey", main="All years") ## with palette
+legend("topleft", inset = c(0,0.05),
+       legend = round(seq(0, maxC, length.out = 5)),
+       col = palBW(seq(0, maxC, length.out = 5)),
+       title = "Number of \nobservations", pch = 15, bty="n")
+
+## or export other combinations, e.g. one map per observed year
+yearlySp <- exportBirds(SB, 
+                        dimension = "spatial", 
+                        timeRes = "yearly", 
+                        variable = "nObs", 
+                        method = "sum")
+
+maxC <- max(yearlySp@data$'2005', na.rm = TRUE)
+palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
+                               c(0, maxC), 
+                               na.color = "transparent")
+
+plot(yearlySp["2005"], col=palBW(yearlySp@data$'2005'), 
+     border = "grey",main="2005")
+legend("topleft", inset = c(0,0.05),
+       legend = round(seq(0, maxC, length.out = 5)),
+       col = palBW(seq(0, maxC, length.out = 5)),
+       border = "grey",
+       title = "Number of \nobservations", pch = 15, bty="n")
+
+maxC <- max(yearlySp@data$'2010', na.rm = TRUE)
+palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
+                               c(0, maxC), 
+                               na.color = "transparent")
+
+plot(yearlySp["2010"], col=palBW(yearlySp@data$'2010'), 
+     border = "grey",main="2010")
+legend("topleft", inset = c(0,0.05),
+       legend = round(seq(0, maxC, length.out = 5)),
+       col = palBW(seq(0, maxC, length.out = 5)),
+       border = "grey",
+       title = "Number of \nobservations", pch = 15, bty="n")
+par(oldpar)
+```
+```{r plotBIRDSspatial, include=FALSE, fig.width=7}
 maxC <- max(SB$spatial@data$nObs, na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
@@ -208,56 +282,58 @@ legend("topleft", inset = c(0,0.05),
        border = "grey",
        title = "Number of \nobservations", pch = 15, bty="n")
 suppressWarnings(par(oldpar))
-
 ```
-```{r ggplot1, fig.width=5}
+
+There are other ways to plot spatial data, here there is another example this time
+using the package `sf` instead of `sp` and using number of visits as the measure
+for sampling effort.  
+```{r ggplot1, message=FALSE, warning=FALSE, fig.width=7}
 library(sf)
 library(cowplot)
 library(ggplot2)
 library(colorRamps)
+library(gridExtra)
 
 spatial_sf <- st_as_sf(SB$spatial)
 
-obs <- ggplot(data = spatial_sf, aes( fill = nVis))+
-  geom_sf()+
-  ggtitle("Visits")+
+vis <- ggplot(data = spatial_sf, aes( fill = nVis)) +
+  geom_sf() +
+  ggtitle("Visits") +
   scale_fill_gradient(low = "#56B1F7",
                       high = "#132B43",
                       na.value = NA) +
+  theme(plot.margin = margin(1, 1, 1, 1, "pt")) +
   theme_cowplot()
 
-obs
-```
-
-```{r ggplot2, fig.width=5}
 spp <- ggplot(data = spatial_sf ,aes( fill = nSpp))+
   geom_sf()+
   ggtitle("Number of species")+
   scale_fill_gradient(low = "#56B1F7",
                       high = "#132B43",
                       na.value = NA) +
+  theme(plot.margin = margin(1, 1, 1, 1, "pt")) +
   theme_cowplot()
 
-spp
+grid.arrange(vis, spp, ncol=2)
 ```
 
-How has observation effort (frequency of visits) varied over time and space? – 1) show maps as in Example 7 (all years, year 2000, 2002, 2004, 2006, 2008, 2010), 2 make also a time line plot with no. visits against years, no. of gridcells with visits against years.
+How has observation effort (frequency of visits) varied over time and space? – 
+1) show maps as in Example 7 (all years, year 2000, 2002, 2004, 2006, 2008, 2010), 
+2 make also a time line plot with no. visits against years, no. of gridcells with visits against years.
 
 we see that SB contains an element called `SB$temporal` that contains a daily time series with time specific rows when there is information. `xts` also supports time, but dating below day resolution is not yet implemented in the `BIRDS` package.  
 
 ```{r temporal}
 sb.xts <- SB$temporal
-head(sb.xts)
 dim(sb.xts)
+head(sb.xts, 20)
 ```
 
-
 Sub-setting is convenient in `xts` as you can do it with its dates and with a `/` for a range of dates.  
-
-```{r subsetting, echo=TRUE, message=FALSE, warning=FALSE}
-sb.xts["2010-09"] #a specific month
+```{r subsetting, message=FALSE, warning=FALSE}
 sb.xts["2010-09-07"] #a specific day
-sb.xts["2007-01-01/2007-05-01"] #for a period
+sb.xts["2010-09-01/2010-09-15"] #for a period
+sb.xts["2010-09"] #a specific month
 ```
 
 The package `xts` has several tools for converting to different periods. Here we will use `to.monthly`. This provides, the first, min, max, and last of the data. We can plot the daily maximum number of observations. The plot command with an `xts` object provides a TON of features. This makes it fairly easy to customize your plots. Read more in `?plot.xts`.  
@@ -267,16 +343,19 @@ library(xts)
 obs.m <- to.monthly(sb.xts$nObs) 
 obs.m["2007-04"]
 sb.xts["2007-04"]
-plot(obs.m["2000/2010",2], col = "darkblue", grid.ticks.on = "month", 
-     major.ticks = "month", grid.col = "lightgrey",  
-     main = "Maximum number of daily observations per month")
+plot(obs.m["2000/2010",2], 
+     col = "darkblue", 
+     grid.ticks.on = "month", 
+     major.ticks = "month", 
+     grid.col = "lightgrey",  
+     main = "Maximum number of daily observations/visits per month")
 
 vis.m <- to.monthly(sb.xts$nVis) 
 vis.m["2007-04"]
 sb.xts["2007-04"]
-plot(vis.m["2000/2010",2], col = "darkblue", grid.ticks.on = "month", 
-     major.ticks = "month", grid.col = "lightgrey", 
-     main = "Maximum number of daily visits per month")
+lines(vis.m["2000/2010",2], col = "orange", lwd=2)
+     # major.ticks = "month", grid.col = "lightgrey", 
+     # main = "Maximum number of daily visits per month")
 ```
 
 

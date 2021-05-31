@@ -30,14 +30,16 @@ For references on how to use the filters see SBDI APIS [documentation](https://a
 
 Using the function `occurrences()` we can the query for the observations fulfilling our filter. If you haven't specified that in the `sbdi_config()` before, you need to pass your email and the download reason.
 
-```{r getOcc, cache=TRUE}
-library(SBDI4R)
-xf <- occurrences(fq = fq_str,
+```{r getOcc, cache=TRUE, message=FALSE}
+xf <- SBDI4R::occurrences(fq = fq_str,
                  email = "sbdi4r-test@biodiversitydata.se", 
                  download_reason_id = 10)
 
+# Remove what is not a species
+xf$data <- xf$data[xf$data$rank %in% c("species", "subspecies", "variety", "form", "cultivar"),]
+
 # Simply summarise all records by data source 
-table(xf$data$dataResourceName)
+table(xf$data$dataResourceName, xf$data$dataResourceID)
 table(xf$data$dataResourceID)
 ```
 ```{r save, echo=FALSE, include=FALSE, eval=FALSE}
@@ -56,7 +58,7 @@ You can quickly plot all the observations as a PDF file with the function `ocurr
 occurrences_plot(xf, "obsPlot.pdf", 
                  grouped=FALSE, 
                  taxon_level="species", 
-                 pch='+')
+                 pch='.')
 ```
 
 Note that the plot is saved to a pdf file in the current working directory. You can find that with `getwd()`.
@@ -85,7 +87,6 @@ leaflet(width = "100%") %>%
 ## Temporal summary
 
 A quick summary over the years reveal a drop in number of records over time.
-
 ```{r timeTable}
 table(xf$data$year)
 ```
@@ -98,7 +99,6 @@ hist(xf$data$year,
 ```
 
 ## Species summary
-
 In the same way we can summaries the number of observations for each species, by common or scientific name.
 ```{r nObsTab, paged.print=TRUE}
 sppTab <- table(xf$data$commonName)
@@ -123,7 +123,11 @@ write.csv(sppDF, "SERS_species_summary.csv")
 
 ## Spatial biodiversity analysis
 
-Let's now ask: how does the species richness vary across Sweden? In this case we want to summarise occurrences species-wise over a defined grid instead of plotting every observation point. First we need to overlay the observations with a grid. In this case, the standard Swedish grids at 50, 25, 10 and 5 km are provided as data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326).
+Let's now ask: how does the species richness vary across Sweden? In this case we 
+want to summarise occurrences species-wise over a defined grid instead of plotting 
+every observation point. First we need to overlay the observations with a grid. 
+In this case, the standard Swedish grids at 50, 25, 10 and 5 km are provided as 
+data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326).
 
 ```{r overlay}
 library(sp) # the function coordinates() and proj4string() are in sp
@@ -189,7 +193,21 @@ resSp <- sp::SpatialPolygonsDataFrame(grid, res)
 ```
 
 And finally plot the grid summary as a map:
-```{r grid, fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
+```{r gridCode, eval=FALSE}
+palBW <- leaflet::colorNumeric(c("white", "navyblue"),
+                               c(0, max(resSp@data$nSpp, na.rm = TRUE)),
+                               na.color = "transparent")
+oldpar <- par()
+par(mar = c(1,1,0,0))
+plot(resSp, col=palBW(resSp@data$nSpp), border = NA)
+plot(swe_wgs84$Border, border=1, lwd=1, add=T)
+legend("bottomleft", 
+       legend = round(seq(0, max(resSp@data$nSpp, na.rm = TRUE), length.out = 5)),
+       col = palBW(seq(0, max(resSp@data$nSpp, na.rm = TRUE), length.out = 5)),
+       title = "Number of \nspecies", pch = 15, bty="n")
+par(oldpar)
+```
+```{r gridPlot, fig.height=6, fig.width=6, include=FALSE}
 palBW <- leaflet::colorNumeric(c("white", "navyblue"),
                                c(0, max(resSp@data$nSpp, na.rm = TRUE)),
                                na.color = "transparent")
@@ -205,13 +223,10 @@ suppressWarnings(par(oldpar))
 ```
 
 We can go further by gathering the observations by latitude. 
-
 ```{r sppLatitude, warning=FALSE, message=FALSE}
 library(dplyr)
 library(tidyr)
 xgridded <- xf$data %>%
-    ## discard genus- and higher-level records
-    filter(rank %in% c("species", "subspecies", "variety", "form", "cultivar")) %>%
     mutate(longitude = round(longitude * 4)/4, 
            latitude = round(latitude * 4)/4) %>%
     group_by(longitude,latitude) %>%
@@ -223,7 +238,10 @@ xgridded <- xf$data %>%
     mutate(richness=n()) %>%
     ## convert to wide format (sites by species)
     mutate(present=1) %>%
-    do(tidyr::pivot_wider(data=.,  names_from=species, values_from=present, values_fill=0)) %>%
+    do(tidyr::pivot_wider(data=.,  
+                          names_from=species, 
+                          values_from=present, 
+                          values_fill=0)) %>%
     ungroup()
 ## where a species was not present, it will have NA: convert these to 0
 sppcols <- setdiff(names(xgridded),
