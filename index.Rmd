@@ -19,7 +19,7 @@ url: https\://biodiversitydata-se.github.io/r-tools-tutorial/
 
 # Introduction {.unnumbered}
 
-<img src="sbdi-logo-orginal-large.png" class="cover" width="250" style="float: right;"/> Biodiversity resources are increasingly international. The SBDI has made an effort to canalize biodiversity data and resources to help the research community access and analyze Swedish primary biodiversity data. Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a few examples that prompt questions that may be asked at different stages of the process. The validity and appropriateness of a particular method depends on the individual researcher(s). For a comprehensive workflow on how to treat and analyze PBD please refer to our tutorial on [biodiversity analysis tool](https://github.com/biodiversitydata-se/biodiversity-analysis-tools) where we go through the complete workflow Data --\> Cleaning --\> Fitness evaluation --\> Analysis
+<img src="sbdi-logo-orginal-large.png" class="cover" width="250" style="float: right;"/> Biodiversity resources are increasingly international. The SBDI has made an effort to canalise biodiversity data and resources to help the research community access and analyse Swedish primary biodiversity data. Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a few examples that prompt questions that may be asked at different stages of the process. The validity and appropriateness of a particular method depends on the individual researcher(s). For a comprehensive workflow on how to treat and analyse primary biodiversity data please refer to our tutorial on [biodiversity analysis tools](https://github.com/biodiversitydata-se/biodiversity-analysis-tools) where we go through the complete workflow Data --\> Cleaning --\> Fitness evaluation --\> Analysis
 
 `r htmltools::includeHTML("images/Workflow Overview Horizontal.html")`
 
@@ -124,7 +124,7 @@ sbdi_config(warn_on_empty=TRUE)
 
 ## Other packages needed {.unnumbered}
 
-Some additional packages are needed for these examples. Install them if necessary with the following script.
+Some additional packages are needed for these examples. Install them if necessary with the following script:
 
 ```{r, message=FALSE}
 to_install <- c("BIRDS","colorRamps", "cowplot","dplyr","ggplot2", 
@@ -151,4 +151,4 @@ The repositories you can contribute to are:
 -   Mirroreum <https://github.com/mskyttner/mirroreum>\
 -   SBDI4R <https://github.com/biodiversitydata-se/SBDI4R> (NOTE: we may not develop this package but instead move to a new one)\
 -   the general analysis workflows <https://github.com/biodiversitydata-se/biodiversity-analysis-tools>\
--   these tutorial <https://github.com/biodiversitydata-se/r-tools-tutorial>
+-   this R-tools tutorial <https://github.com/biodiversitydata-se/r-tools-tutorial>
