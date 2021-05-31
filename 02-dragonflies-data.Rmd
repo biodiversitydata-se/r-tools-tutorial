@@ -1,11 +1,11 @@
 # Example with opportunistic data on Dragonflies
 
 In this example we are interested in exploring opportunistically collected data 
-from the Swedish citizen science observation data portal - Artportalen.
+from the Swedish citizen science species observation portal - Artportalen.
 
 ## Name searching
-To begin, we want be sure there is an unequivocal way to find the species within 
-the order Odonata and nothing else, so let's search for it:
+To begin with, we want be sure there is an unequivocal way to find the species within 
+the order Odonata (dragonflies) and nothing else, so let's search for "odonata":
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE, include=FALSE}
 library(SBDI4R)
 ```
@@ -20,8 +20,8 @@ sx <- search_fulltext("odonata")
 sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
 ```  
 
-We quickly see there that other taxonomic definitions appear too, but there is 
-only one order. Let's refine the search. To know which search fields we can use 
+We quickly see there that other taxonomic levels appear too, and also species that look suspiciously as not belonging to 
+dragonsflies. But there is only one order. Let's refine the search. To know which search fields we can use 
 to filter the search we use the function `sbdi_fields(fields_type = "general")`.
 The search field we are looking for is "order_s".  
 ```{r search2,  echo=TRUE, eval=FALSE}
@@ -40,10 +40,10 @@ tx <- taxinfo_download("order_s:Odonata",
                        verbose = FALSE)
 tx <- tx[tx$rank == "species" & tx$genusS != "",] ## restrict to species and not hybrids
 ```
-Then you can save `tx` as the complete species list for later use. 
+You can save the `tx` object as the complete species list for later use. 
 
 ## Filter the search to get the observations
-As usual we start by searching for the data resource we are interested in using 
+We start by searching for the data resource we are interested in using 
 the function `pick_filter()`. This is an interactive query guiding you through 
 the many resources available to filtering your query (data resources, spatial 
 layers, and curated species lists).
@@ -53,7 +53,7 @@ layers, and curated species lists).
 fq_str <- pick_filter("resource") 
 ``` 
 
-Follow the instruction. Your choices here would have been "in3" --> "dr5". 
+Follow the instructions. Your choices here would have been "in3" --> "dr5". 
 Your variable `fq_str` will now contain a string "data_resource_uid:dr5".
 
 ```{r filter2.2, echo=FALSE, eval=TRUE}
@@ -61,7 +61,7 @@ Your variable `fq_str` will now contain a string "data_resource_uid:dr5".
 fq_str <- "data_resource_uid:dr5"
 ```
 
-We only need data from 2000 to 2010
+We only want to look at data from year 2000 to 2010:
 ```{r filter2.3}
 y1 <- 2000
 y2 <- 2010
@@ -69,12 +69,12 @@ fq_str <- c(fq_str, paste0("year:[", y1, " TO ", y2,"]"))
 # Note the square brackets are hard limits
 ```
 
-We also need to filter spatially for Southern Sweden ([Götaland](https://en.wikipedia.org/wiki/G%C3%B6taland)).
+We also want to filter spatially for Southern Sweden ([Götaland](https://en.wikipedia.org/wiki/G%C3%B6taland)).
 
 Vector spatial layers (eg. polygons) can be imported  in a number of different ways. 
-SBDI APIs take as search input polygons in the s.k. WKT [Well Known Text](https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html) 
+SBDI APIs take as search input polygons in the so-called WKT [Well Known Text](https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html) 
 format. So the first step is to load a vector layer and transform it into a WKT string. 
-You could instead use the data we kindly provided in the SBDI4R package `data("swe")`. 
+You could instead use the data we provid in the SBDI4R package `data("swe")`. 
 
 ```{r sweshape}
 data("swe",package = "SBDI4R")
