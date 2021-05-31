@@ -1,9 +1,0 @@
-example-with-fish-data-from-sers
-plotting-data-on-a-map
-leaflet
-temporal-summary
-species-summary
-spatial-biodiversity-analysis
-example-with-opportunistic-data-on-dragonflies
-name-searching
-get-the-observations-filter-the-search-get-quality-assertions-plotting-data-on-a-map-and-save-data
