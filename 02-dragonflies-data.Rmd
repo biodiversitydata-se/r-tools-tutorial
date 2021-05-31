@@ -15,29 +15,23 @@ sx <- search_fulltext("odonata")
 sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
 ```  
 
-```{r search1eval, include=FALSE}
+```{r search1eval, echo=FALSE}
 sx <- search_fulltext("odonata")
-```  
-```{r search1show, echo=FALSE}
 sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
-```
+```  
 
-
-We quickly see there that other taxonomic definitions appear too, but there is only one order. 
-Let's refine the search. To know which search fields we can use to filter the search 
-we use the function `sbdi_fields(fields_type = "general")`.
+We quickly see there that other taxonomic definitions appear too, but there is 
+only one order. Let's refine the search. To know which search fields we can use 
+to filter the search we use the function `sbdi_fields(fields_type = "general")`.
 The search field we are looking for is "order_s".  
 ```{r search2,  echo=TRUE, eval=FALSE}
 sx <- search_fulltext(fq="order_s:Odonata", page_size = 10)
 sx$data[, c("scientificName", "rank", "occurrenceCount")]
 ```  
-```{r search2eval, include=FALSE}
-sx <- search_fulltext("odonata")
-```  
-```{r search2show, echo=FALSE}
+```{r search2eval, echo=FALSE}
+sx <- search_fulltext(fq="order_s:Odonata", page_size = 10)
 sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
-```
-
+```  
 Now we can download the taxonomic data (note that the search is case-sensitive):
 ```{r, message=FALSE, results=FALSE}
 tx <- taxinfo_download("order_s:Odonata", 
@@ -83,30 +77,27 @@ format. So the first step is to load a vector layer and transform it into a WKT 
 You could instead use the data we kindly provided in the SBDI4R package `data("swe")`. 
 
 ```{r sweshape}
-data("swe")
+data("swe",package = "SBDI4R")
+
 wGotaland <- swe$Counties$LnNamn %in% c("Blekinge", "Gotlands", "Hallands", 
                                         "Jönköpings", "Kalmar", "Kronobergs", 
                                         "Östergötlands", "Skåne", "Västra Götalands")
 gotaland_c <- swe$Counties[wGotaland,]
 ```
 
-<!-- We could create the WKT string using the `rgeos` library: -->
-<!-- ```{r, eval=FALSE} -->
-<!-- library(rgeos) -->
-<!-- wkt <- writeWKT(gotaland_c) -->
-<!-- ``` -->
-
-Unfortunately, in this instance this gives a WKT string that is too long and won't
-be accepted by the web service. Also, the shapefile we just got is projected in 
-the coordinate system SWEREF99 TM, and the web service only accepts coordinates in 
-a geodesic coordinate system WGS84. Instead, let's construct the WKT string directly, 
-which gives us a little more control over its format:
-```{r, warning=FALSE}
+There are details about this polygon that we need to take care before. The WKT 
+string should not be too long to be accepted by the API service. Also, the polygon
+we just got is projected in the coordinate system SWEREF99 TM, and the API service 
+only accepts coordinates in a geodesic coordinate system WGS84. Let's construct 
+the WKT string:
+```{r searchpoly2WKT, warning=FALSE}
+# transform the CRS
 gotaland_c <- sf::as_Spatial(
                 sf::st_transform(
                   sf::st_as_sf(gotaland_c), 
                   crs = sf::st_crs(4326)$wkt) )
 
+# disolve the counties into one polygon
 gotaland <- rgeos::gUnaryUnion(gotaland_c)
 
 # extract the polygons coordinates
@@ -117,7 +108,8 @@ for(p in seq(nPol)){
 }
 lonlat <- do.call(rbind, lonlat)
 
-# create a convex hull of the polygon to reduce the length of the WKT string
+# create a convex hull of the polygon to simplify the geometry and 
+# reduce the length of the WKT string
 gotaland_ch <- chull(lonlat)
 lonlat <- lonlat[c(gotaland_ch, gotaland_ch[1]), ]
 
@@ -129,8 +121,26 @@ wkt <- paste("MULTIPOLYGON(((", paste(wkt_temp, collapse=","), ")))", sep="")
 # NOTE: as of today, the SBDI APIs will only work properly if the polygon is 
 # submitted as a MULTIPOLYGON
 ```
+The WKT string the looks like this
+```{r}
+wkt
+```
+```{r searchpoly, fig.width=7, echo=FALSE, warning=FALSE}
+library(sp)
+oldpar <- par()
+par(mar = c(0,0,0,0))
+plot(gotaland_c, border="blue")
+plot(gotaland, lwd=2, add=TRUE)
+plot(rgeos::readWKT(wkt), lwd=2, border="red", add=TRUE)
+legend("bottomleft", inset = c(0,0.05),
+       legend = c("counties", "Götaland", "search polygon"),
+       col = c("blue","black", "red"),
+       lwd = c(1,2,1),
+       title = "Polygons",bty="n")
+suppressWarnings(par(oldpar))
+```
 
-We download the observations using the command `occurrences()`, but be aware that 
+Next, we download the observations using the command `occurrences()`, but be aware that 
 the search fields may not be the same as those use to search for taxa. We therefore
 recommend using the function `sbdi_fields("occurrence")`. Here see that the field 
 we need this time is "order".
@@ -196,7 +206,7 @@ oldpar <- par()
 par(mar = c(4,0,4,0), mfrow=c(1,3))
 plot(SB$spatial, col=palBW(SB$spatial@data$nObs),
      border = "grey", main="All years") ## with palette
-legend("topleft", inset = c(0,0.05),
+legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
        title = "Number of \nobservations", pch = 15, bty="n")
@@ -215,7 +225,7 @@ palBW <- leaflet::colorNumeric(c("white", "navyblue"),
 
 plot(yearlySp["2005"], col=palBW(yearlySp@data$'2005'), 
      border = "grey",main="2005")
-legend("topleft", inset = c(0,0.05),
+legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
        border = "grey",
@@ -228,14 +238,14 @@ palBW <- leaflet::colorNumeric(c("white", "navyblue"),
 
 plot(yearlySp["2010"], col=palBW(yearlySp@data$'2010'), 
      border = "grey",main="2010")
-legend("topleft", inset = c(0,0.05),
+legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
        border = "grey",
        title = "Number of \nobservations", pch = 15, bty="n")
 par(oldpar)
 ```
-```{r plotBIRDSspatial, include=FALSE, fig.width=7}
+```{r plotBIRDSspatial, echo=FALSE, fig.width=7}
 maxC <- max(SB$spatial@data$nObs, na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
@@ -317,11 +327,9 @@ spp <- ggplot(data = spatial_sf ,aes( fill = nSpp))+
 grid.arrange(vis, spp, ncol=2)
 ```
 
-How has observation effort (frequency of visits) varied over time and space? – 
-1) show maps as in Example 7 (all years, year 2000, 2002, 2004, 2006, 2008, 2010), 
-2 make also a time line plot with no. visits against years, no. of gridcells with visits against years.
-
-we see that SB contains an element called `SB$temporal` that contains a daily time series with time specific rows when there is information. `xts` also supports time, but dating below day resolution is not yet implemented in the `BIRDS` package.  
+We see that `SB` contains an element called `SB$temporal` that contains a daily 
+time series with time specific rows when there is information. `xts` also supports 
+time, but dating below day resolution is not yet implemented in the `BIRDS` package.  
 
 ```{r temporal}
 sb.xts <- SB$temporal
@@ -329,20 +337,23 @@ dim(sb.xts)
 head(sb.xts, 20)
 ```
 
-Sub-setting is convenient in `xts` as you can do it with its dates and with a `/` for a range of dates.  
+Sub-setting is convenient in `xts` as you can do it with its dates and with a `/` 
+for a range of dates.  
 ```{r subsetting, message=FALSE, warning=FALSE}
 sb.xts["2010-09-07"] #a specific day
 sb.xts["2010-09-01/2010-09-15"] #for a period
 sb.xts["2010-09"] #a specific month
 ```
 
-The package `xts` has several tools for converting to different periods. Here we will use `to.monthly`. This provides, the first, min, max, and last of the data. We can plot the daily maximum number of observations. The plot command with an `xts` object provides a TON of features. This makes it fairly easy to customize your plots. Read more in `?plot.xts`.  
+The package `xts` has several tools for converting to different periods. Here we 
+will use `to.monthly`. This provides, the first, min, max, and last of the data. 
+We can plot the daily maximum number of observations. The plot command with an 
+`xts` object provides a TON of features. This makes it fairly easy to customize 
+your plots. Read more in `?plot.xts`.  
 
-```{r monthly and plot, echo=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+```{r monthlyPlotcode, eval=FALSE}
 library(xts)
 obs.m <- to.monthly(sb.xts$nObs) 
-obs.m["2007-04"]
-sb.xts["2007-04"]
 plot(obs.m["2000/2010",2], 
      col = "darkblue", 
      grid.ticks.on = "month", 
@@ -351,11 +362,21 @@ plot(obs.m["2000/2010",2],
      main = "Maximum number of daily observations/visits per month")
 
 vis.m <- to.monthly(sb.xts$nVis) 
-vis.m["2007-04"]
-sb.xts["2007-04"]
 lines(vis.m["2000/2010",2], col = "orange", lwd=2)
-     # major.ticks = "month", grid.col = "lightgrey", 
-     # main = "Maximum number of daily visits per month")
+```
+
+```{r monthlyPlot, echo=FALSE, fig.height=5, fig.width=9}
+library(xts)
+obs.m <- to.monthly(sb.xts$nObs) 
+plot(obs.m["2000/2010",2], 
+     col = "darkblue", 
+     grid.ticks.on = "month", 
+     major.ticks = "month", 
+     grid.col = "lightgrey",  
+     main = "Maximum number of daily observations and visits per month")
+
+vis.m <- to.monthly(sb.xts$nVis) 
+lines(vis.m["2000/2010",2], col = "orange", lwd=2)
 ```
 
 

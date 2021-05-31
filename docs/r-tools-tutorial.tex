@@ -514,6 +514,22 @@ data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326)
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(sp) }\CommentTok{\# the function coordinates() and proj4string() are in sp}
 \FunctionTok{library}\NormalTok{(rgeos) }\CommentTok{\# the function over() is in package rgeos}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'rgeos' was built under R version 4.0.4
+\end{verbatim}
+
+\begin{verbatim}
+## rgeos version: 0.5-5, (SVN revision 640)
+##  GEOS runtime version: 3.8.0-CAPI-1.13.1 
+##  Linking to sp version: 1.4-5 
+##  Polygon checking: TRUE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{\# load some shapes over Sweden\textquotesingle{}s political borders}
 \FunctionTok{data}\NormalTok{(}\StringTok{"swe\_wgs84"}\NormalTok{, }\AttributeTok{package=}\StringTok{"SBDI4R"}\NormalTok{, }\AttributeTok{envir=}\FunctionTok{environment}\NormalTok{())}
 \CommentTok{\# A standard 50km grid}
@@ -672,6 +688,10 @@ the order Odonata and nothing else, so let's search for it:
 \end{Shaded}
 
 \begin{verbatim}
+## [1] "https://species.biodiversitydata.se/ws/search.json?q=odonata&fq=idxtype%3ATAXON"
+\end{verbatim}
+
+\begin{verbatim}
 ##       guid                          scientificName    rank occurrenceCount
 ## 1  9829523  Odonata associated gemycircularvirus 1 species               0
 ## 2 10072832  Odonata associated gemycircularvirus 2 species               0
@@ -680,9 +700,9 @@ the order Odonata and nothing else, so let's search for it:
 ## 5  7367071    Ramalina fastigiata var. odonata Hue variety               0
 \end{verbatim}
 
-We quickly see there that other taxonomic definitions appear too, but there is only one order.
-Let's refine the search. To know which search fields we can use to filter the search
-we use the function \texttt{sbdi\_fields(fields\_type\ =\ "general")}.
+We quickly see there that other taxonomic definitions appear too, but there is
+only one order. Let's refine the search. To know which search fields we can use
+to filter the search we use the function \texttt{sbdi\_fields(fields\_type\ =\ "general")}.
 The search field we are looking for is ``order\_s''.
 
 \begin{Shaded}
@@ -693,12 +713,21 @@ The search field we are looking for is ``order\_s''.
 \end{Shaded}
 
 \begin{verbatim}
-##       guid                          scientificName    rank occurrenceCount
-## 1  9829523  Odonata associated gemycircularvirus 1 species               0
-## 2 10072832  Odonata associated gemycircularvirus 2 species               0
-## 3  8062407 Bdellodes odonata Wallace & Mahon, 1976 species               0
-## 4      789                                 Odonata   order          207680
-## 5  7367071    Ramalina fastigiata var. odonata Hue variety               0
+## [1] "https://species.biodiversitydata.se/ws/search.json?fq=order_s%3AOdonata&fq=idxtype%3ATAXON&pageSize=10"
+\end{verbatim}
+
+\begin{verbatim}
+##       guid                             scientificName  rank occurrenceCount
+## 1  1429753                Gomphomacromia Brauer, 1864 genus               1
+## 2  1426725               Austropetalia Tillyard, 1916 genus               0
+## 3  4799335                 Sogjutella Pritykina, 1980 genus               0
+## 4  4302686                    Neuragrion Karsch, 1891 genus               0
+## 5  4799353              Xamenophlebia Pritykina, 1981 genus               0
+## 6  1429769               Lauromacromia Geijskes, 1970 genus               0
+## 7  1428195                     Sympetrum Newman, 1833 genus           27050
+## 8  4798599 Corduliochlora Marinov & Seidenbusch, 2007 genus               0
+## 9  1423625             Torrenticnemis Lieftinck, 1949 genus               0
+## 10 1423468                  Cyanallagma Kennedy, 1920 genus               0
 \end{verbatim}
 
 Now we can download the taxonomic data (note that the search is case-sensitive):
@@ -753,7 +782,8 @@ You could instead use the data we kindly provided in the SBDI4R package \texttt{
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{data}\NormalTok{(}\StringTok{"swe"}\NormalTok{)}
+\FunctionTok{data}\NormalTok{(}\StringTok{"swe"}\NormalTok{,}\AttributeTok{package =} \StringTok{"SBDI4R"}\NormalTok{)}
+
 \NormalTok{wGotaland }\OtherTok{\textless{}{-}}\NormalTok{ swe}\SpecialCharTok{$}\NormalTok{Counties}\SpecialCharTok{$}\NormalTok{LnNamn }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Blekinge"}\NormalTok{, }\StringTok{"Gotlands"}\NormalTok{, }\StringTok{"Hallands"}\NormalTok{, }
                                         \StringTok{"Jönköpings"}\NormalTok{, }\StringTok{"Kalmar"}\NormalTok{, }\StringTok{"Kronobergs"}\NormalTok{, }
                                         \StringTok{"Östergötlands"}\NormalTok{, }\StringTok{"Skåne"}\NormalTok{, }\StringTok{"Västra Götalands"}\NormalTok{)}
@@ -761,19 +791,21 @@ You could instead use the data we kindly provided in the SBDI4R package \texttt{
 \end{Highlighting}
 \end{Shaded}
 
-Unfortunately, in this instance this gives a WKT string that is too long and won't
-be accepted by the web service. Also, the shapefile we just got is projected in
-the coordinate system SWEREF99 TM, and the web service only accepts coordinates in
-a geodesic coordinate system WGS84. Instead, let's construct the WKT string directly,
-which gives us a little more control over its format:
+There are details about this polygon that we need to take care before. The WKT
+string should not be too long to be accepted by the API service. Also, the polygon
+we just got is projected in the coordinate system SWEREF99 TM, and the API service
+only accepts coordinates in a geodesic coordinate system WGS84. Let's construct
+the WKT string:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\# transform the CRS}
 \NormalTok{gotaland\_c }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{as\_Spatial}\NormalTok{(}
 \NormalTok{                sf}\SpecialCharTok{::}\FunctionTok{st\_transform}\NormalTok{(}
 \NormalTok{                  sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{(gotaland\_c), }
                   \AttributeTok{crs =}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_crs}\NormalTok{(}\DecValTok{4326}\NormalTok{)}\SpecialCharTok{$}\NormalTok{wkt) )}
 
+\CommentTok{\# disolve the counties into one polygon}
 \NormalTok{gotaland }\OtherTok{\textless{}{-}}\NormalTok{ rgeos}\SpecialCharTok{::}\FunctionTok{gUnaryUnion}\NormalTok{(gotaland\_c)}
 
 \CommentTok{\# extract the polygons coordinates}
@@ -784,7 +816,8 @@ which gives us a little more control over its format:
 \NormalTok{\}}
 \NormalTok{lonlat }\OtherTok{\textless{}{-}} \FunctionTok{do.call}\NormalTok{(rbind, lonlat)}
 
-\CommentTok{\# create a convex hull of the polygon to reduce the length of the WKT string}
+\CommentTok{\# create a convex hull of the polygon to simplify the geometry and }
+\CommentTok{\# reduce the length of the WKT string}
 \NormalTok{gotaland\_ch }\OtherTok{\textless{}{-}} \FunctionTok{chull}\NormalTok{(lonlat)}
 \NormalTok{lonlat }\OtherTok{\textless{}{-}}\NormalTok{ lonlat[}\FunctionTok{c}\NormalTok{(gotaland\_ch, gotaland\_ch[}\DecValTok{1}\NormalTok{]), ]}
 
@@ -798,7 +831,21 @@ which gives us a little more control over its format:
 \end{Highlighting}
 \end{Shaded}
 
-We download the observations using the command \texttt{occurrences()}, but be aware that
+The WKT string the looks like this
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wkt}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "MULTIPOLYGON(((18.9004 57.4401,18.867 57.3975,18.3725 57.0068,18.3004 56.9528,16.408 56.2023,14.1906 55.3856,13.3357 55.34,12.8163 55.3859,11.2534 58.3579,11.1316 58.9094,11.1314 59.0118,11.2114 59.0897,11.3157 59.1165,11.8203 59.2355,11.9483 59.2624,12.062 59.2716,12.231 59.2736,15.7938 59.0388,15.8431 59.025,19.2889 57.9904,19.3058 57.9689,18.9004 57.4401)))"
+\end{verbatim}
+
+\includegraphics{r-tools-tutorial_files/figure-latex/searchpoly-1.pdf}
+
+Next, we download the observations using the command \texttt{occurrences()}, but be aware that
 the search fields may not be the same as those use to search for taxa. We therefore
 recommend using the function \texttt{sbdi\_fields("occurrence")}. Here see that the field
 we need this time is ``order''.
@@ -889,7 +936,7 @@ sampling effort (in this case number of observations) distributed.
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{0}\NormalTok{), }\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{))}
 \FunctionTok{plot}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial, }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nObs),}
      \AttributeTok{border =} \StringTok{"grey"}\NormalTok{, }\AttributeTok{main=}\StringTok{"All years"}\NormalTok{) }\DocumentationTok{\#\# with palette}
-\FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"bottomleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
        \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
        \AttributeTok{col =} \FunctionTok{palBW}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
        \AttributeTok{title =} \StringTok{"Number of }\SpecialCharTok{\textbackslash{}n}\StringTok{observations"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{15}\NormalTok{, }\AttributeTok{bty=}\StringTok{"n"}\NormalTok{)}
@@ -908,7 +955,7 @@ sampling effort (in this case number of observations) distributed.
 
 \FunctionTok{plot}\NormalTok{(yearlySp[}\StringTok{"2005"}\NormalTok{], }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(yearlySp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\StringTok{\textquotesingle{}2005\textquotesingle{}}\NormalTok{), }
      \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}\AttributeTok{main=}\StringTok{"2005"}\NormalTok{)}
-\FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"bottomleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
        \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
        \AttributeTok{col =} \FunctionTok{palBW}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
        \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}
@@ -921,7 +968,7 @@ sampling effort (in this case number of observations) distributed.
 
 \FunctionTok{plot}\NormalTok{(yearlySp[}\StringTok{"2010"}\NormalTok{], }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(yearlySp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\StringTok{\textquotesingle{}2010\textquotesingle{}}\NormalTok{), }
      \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}\AttributeTok{main=}\StringTok{"2010"}\NormalTok{)}
-\FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"bottomleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
        \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
        \AttributeTok{col =} \FunctionTok{palBW}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
        \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}
@@ -929,6 +976,8 @@ sampling effort (in this case number of observations) distributed.
 \FunctionTok{par}\NormalTok{(oldpar)}
 \end{Highlighting}
 \end{Shaded}
+
+\includegraphics{r-tools-tutorial_files/figure-latex/plotBIRDSspatial-1.pdf}
 
 There are other ways to plot spatial data, here there is another example this time
 using the package \texttt{sf} instead of \texttt{sp} and using number of visits as the measure
@@ -968,11 +1017,9 @@ for sampling effort.
 
 \includegraphics{r-tools-tutorial_files/figure-latex/ggplot1-1.pdf}
 
-How has observation effort (frequency of visits) varied over time and space? --
-1) show maps as in Example 7 (all years, year 2000, 2002, 2004, 2006, 2008, 2010),
-2 make also a time line plot with no. visits against years, no. of gridcells with visits against years.
-
-we see that SB contains an element called \texttt{SB\$temporal} that contains a daily time series with time specific rows when there is information. \texttt{xts} also supports time, but dating below day resolution is not yet implemented in the \texttt{BIRDS} package.
+We see that \texttt{SB} contains an element called \texttt{SB\$temporal} that contains a daily
+time series with time specific rows when there is information. \texttt{xts} also supports
+time, but dating below day resolution is not yet implemented in the \texttt{BIRDS} package.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1015,7 +1062,8 @@ we see that SB contains an element called \texttt{SB\$temporal} that contains a 
 ## 2000-08-06    3    1    3
 \end{verbatim}
 
-Sub-setting is convenient in \texttt{xts} as you can do it with its dates and with a \texttt{/} for a range of dates.
+Sub-setting is convenient in \texttt{xts} as you can do it with its dates and with a \texttt{/}
+for a range of dates.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1090,104 +1138,69 @@ Sub-setting is convenient in \texttt{xts} as you can do it with its dates and wi
 ## 2010-09-30    2    2    2
 \end{verbatim}
 
-The package \texttt{xts} has several tools for converting to different periods. Here we will use \texttt{to.monthly}. This provides, the first, min, max, and last of the data. We can plot the daily maximum number of observations. The plot command with an \texttt{xts} object provides a TON of features. This makes it fairly easy to customize your plots. Read more in \texttt{?plot.xts}.
+The package \texttt{xts} has several tools for converting to different periods. Here we
+will use \texttt{to.monthly}. This provides, the first, min, max, and last of the data.
+We can plot the daily maximum number of observations. The plot command with an
+\texttt{xts} object provides a TON of features. This makes it fairly easy to customize
+your plots. Read more in \texttt{?plot.xts}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(xts)}
 \NormalTok{obs.m }\OtherTok{\textless{}{-}} \FunctionTok{to.monthly}\NormalTok{(sb.xts}\SpecialCharTok{$}\NormalTok{nObs) }
-\NormalTok{obs.m[}\StringTok{"2007{-}04"}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##          sb.xts$nObs.Open sb.xts$nObs.High sb.xts$nObs.Low sb.xts$nObs.Close
-## Apr 2007                7               14               1                 2
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{sb.xts[}\StringTok{"2007{-}04"}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##            nObs nVis nSpp
-## 2007-04-02    7    4    4
-## 2007-04-11   14    7    3
-## 2007-04-12    8    6    4
-## 2007-04-13    1    1    1
-## 2007-04-15    1    1    1
-## 2007-04-17    6    4    3
-## 2007-04-18    1    1    1
-## 2007-04-21    1    1    1
-## 2007-04-23    1    1    1
-## 2007-04-27   11    6    4
-## 2007-04-28    4    4    3
-## 2007-04-30    2    2    2
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \FunctionTok{plot}\NormalTok{(obs.m[}\StringTok{"2000/2010"}\NormalTok{,}\DecValTok{2}\NormalTok{], }
      \AttributeTok{col =} \StringTok{"darkblue"}\NormalTok{, }
      \AttributeTok{grid.ticks.on =} \StringTok{"month"}\NormalTok{, }
      \AttributeTok{major.ticks =} \StringTok{"month"}\NormalTok{, }
      \AttributeTok{grid.col =} \StringTok{"lightgrey"}\NormalTok{,  }
      \AttributeTok{main =} \StringTok{"Maximum number of daily observations/visits per month"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
-\includegraphics{r-tools-tutorial_files/figure-latex/monthly and plot-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \NormalTok{vis.m }\OtherTok{\textless{}{-}} \FunctionTok{to.monthly}\NormalTok{(sb.xts}\SpecialCharTok{$}\NormalTok{nVis) }
-\NormalTok{vis.m[}\StringTok{"2007{-}04"}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##          sb.xts$nVis.Open sb.xts$nVis.High sb.xts$nVis.Low sb.xts$nVis.Close
-## Apr 2007                4                7               1                 2
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{sb.xts[}\StringTok{"2007{-}04"}\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##            nObs nVis nSpp
-## 2007-04-02    7    4    4
-## 2007-04-11   14    7    3
-## 2007-04-12    8    6    4
-## 2007-04-13    1    1    1
-## 2007-04-15    1    1    1
-## 2007-04-17    6    4    3
-## 2007-04-18    1    1    1
-## 2007-04-21    1    1    1
-## 2007-04-23    1    1    1
-## 2007-04-27   11    6    4
-## 2007-04-28    4    4    3
-## 2007-04-30    2    2    2
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \FunctionTok{lines}\NormalTok{(vis.m[}\StringTok{"2000/2010"}\NormalTok{,}\DecValTok{2}\NormalTok{], }\AttributeTok{col =} \StringTok{"orange"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{r-tools-tutorial_files/figure-latex/monthly and plot-2.pdf}
+\begin{verbatim}
+## Warning: package 'xts' was built under R version 4.0.4
+\end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-     \CommentTok{\# major.ticks = "month", grid.col = "lightgrey", }
-     \CommentTok{\# main = "Maximum number of daily visits per month")}
-\end{Highlighting}
-\end{Shaded}
+\begin{verbatim}
+## Loading required package: zoo
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'zoo' was built under R version 4.0.4
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'zoo'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'xts'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:dplyr':
+## 
+##     first, last
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:leaflet':
+## 
+##     addLegend
+\end{verbatim}
+
+\includegraphics{r-tools-tutorial_files/figure-latex/monthlyPlot-1.pdf} \includegraphics{r-tools-tutorial_files/figure-latex/monthlyPlot-2.pdf}
 
 We can now look at some particular species and ask whether this has changed in occurrence over time:
 Plot no. records of species x and no. visits all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
