@@ -13,7 +13,7 @@ by Debora Arlt and Alejandro Ruete
 
 -----
 
-:spiral_calendar: May 31, 2021  
+:spiral_calendar: June 1, 2021  
 
 :alarm_clock:     10:00 - 12:00  
 
