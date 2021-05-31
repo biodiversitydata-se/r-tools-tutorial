@@ -10,7 +10,7 @@ fq_str <- pick_filter("resource")
 # follow the instructions 
 ```
 
-Follow the instructions. Your choices here would have been "in3" --> "dr10" (specifying the institution - SLU Aqua, and data resource - SERS). Your variable `fq_str` will now contain a string "data_resource_uid:dr10".
+Follow the instructions. Your choices here would have been "in3" --> "dr10" (data resource 10 = SERS). Your variable `fq_str` will now contain a string "data_resource_uid:dr10".
 
 ```{r filter2, echo=FALSE, eval=TRUE}
 # we can't do it interactive here so we force it
