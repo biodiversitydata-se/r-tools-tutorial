@@ -19,7 +19,7 @@ url: https\://biodiversitydata-se.github.io/r-tools-tutorial/
 
 # Introduction {.unnumbered}
 
-<img src="sbdi-logo-orginal-large.png" class="cover" width="250" style="float: right;"/> Biodiversity resources are increasingly international. The SBDI has made an effort to canalize biodiversity data and resources to help the research community access and analyze Swedish primary biodiversity data. Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a few examples that prompt questions that may be asked at different stages of the process. The validity and appropriateness of a particular method depends on the individual researcher(s). For a comprehensive workflow on how to treat and analyze PBD please refer to our tutorial on [biodiversity analysis tool](https://github.com/biodiversitydata-se/biodiversity-analysis-tools) where we go through the complete workflow Data --\> Cleaning --\> Fitness evaluation --\> Analysis
+<img src="sbdi-logo-orginal-large.png" class="cover" width="250" style="float: right;"/> Biodiversity resources are increasingly international. The SBDI has made an effort to canalise biodiversity data and resources to help the research community access and analyse Swedish primary biodiversity data. Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a few examples that prompt questions that may be asked at different stages of the process. The validity and appropriateness of a particular method depends on the individual researcher(s). For a comprehensive workflow on how to treat and analyse primary biodiversity data please refer to our tutorial on [biodiversity analysis tools](https://github.com/biodiversitydata-se/biodiversity-analysis-tools) where we go through the complete workflow Data --\> Cleaning --\> Fitness evaluation --\> Analysis
 
 `r htmltools::includeHTML("images/Workflow Overview Horizontal.html")`
 
@@ -39,23 +39,21 @@ The SBDI4R package enables the R community to directly access data and resources
 
 Please refer to the [package documentation](https://biodiversitydata-se.github.io/SBDI4R) for details on how to install it. Once installed the SBDI4R package must be loaded for each new R session:
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
 library(SBDI4R)
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, include=FALSE}
 library(SBDI4R)
 library(sp)
 library(BIRDS)
 ```
 
-### Customizing SBDI4R {.unnumbered}
-
 Various aspects of the SBDI4R package can be customized.
 
 #### Caching {.unnumbered}
 
-SBDI4R can cache most results to local files. This means that if the same code is run multiple times, the second and subsequent iterations will be faster. This will also reduce load on the web servers. By default, this caching is session-based, meaning that the local files are stored in a temporary directory that is automatically deleted when the R session is ended. This behaviour can be altered so that caching is permanent, by setting the caching directory to a non-temporary location. For example, under Windows, use something like:
+SBDI4R can cache most results to local files. This means that if the same code is run multiple times, the second and subsequent iterations will be faster. This will also reduce load on the web servers. By default, this caching is session-based, meaning that the local files are stored in a temporary directory that is automatically deleted when the R session is ended. This behavior can be altered so that caching is permanent, by setting the caching directory to a non-temporary location. For example, under Windows, use something like:
 
 ```{r, eval=FALSE}
 sbdi_config(cache_directory = file.path("c:","mydata","sbdi_cache")) ## Windows
@@ -106,7 +104,7 @@ sbdi_config(download_reason_id = "your_reason_id")
 
 (See `sbdi_reasons()` for valid download reasons, e.g. \* 3 for "education", \* 7 for "ecological research", \* 8 for "systematic research/taxonomy", \* 10 for "testing")
 
-#### Privacy
+#### Privacy {.unnumbered}
 
 ***NO*** other personal identification information is sent. You can see all configuration settings, including the the user-agent string that is being used, with the command:
 
@@ -124,7 +122,7 @@ sbdi_config(warn_on_empty=TRUE)
 
 ## Other packages needed {.unnumbered}
 
-Some additional packages are needed for these examples. Install them if necessary with the following script.
+Some additional packages are needed for these examples. Install them if necessary with the following script:
 
 ```{r, message=FALSE}
 to_install <- c("BIRDS","colorRamps", "cowplot","dplyr","ggplot2", 
@@ -151,4 +149,4 @@ The repositories you can contribute to are:
 -   Mirroreum <https://github.com/mskyttner/mirroreum>\
 -   SBDI4R <https://github.com/biodiversitydata-se/SBDI4R> (NOTE: we may not develop this package but instead move to a new one)\
 -   the general analysis workflows <https://github.com/biodiversitydata-se/biodiversity-analysis-tools>\
--   these tutorial <https://github.com/biodiversitydata-se/r-tools-tutorial>
+-   this R-tools tutorial <https://github.com/biodiversitydata-se/r-tools-tutorial>
