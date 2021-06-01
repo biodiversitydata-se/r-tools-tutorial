@@ -39,23 +39,21 @@ The SBDI4R package enables the R community to directly access data and resources
 
 Please refer to the [package documentation](https://biodiversitydata-se.github.io/SBDI4R) for details on how to install it. Once installed the SBDI4R package must be loaded for each new R session:
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
 library(SBDI4R)
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, include=FALSE}
 library(SBDI4R)
 library(sp)
 library(BIRDS)
 ```
 
-### Customizing SBDI4R {.unnumbered}
-
 Various aspects of the SBDI4R package can be customized.
 
 #### Caching {.unnumbered}
 
-SBDI4R can cache most results to local files. This means that if the same code is run multiple times, the second and subsequent iterations will be faster. This will also reduce load on the web servers. By default, this caching is session-based, meaning that the local files are stored in a temporary directory that is automatically deleted when the R session is ended. This behaviour can be altered so that caching is permanent, by setting the caching directory to a non-temporary location. For example, under Windows, use something like:
+SBDI4R can cache most results to local files. This means that if the same code is run multiple times, the second and subsequent iterations will be faster. This will also reduce load on the web servers. By default, this caching is session-based, meaning that the local files are stored in a temporary directory that is automatically deleted when the R session is ended. This behavior can be altered so that caching is permanent, by setting the caching directory to a non-temporary location. For example, under Windows, use something like:
 
 ```{r, eval=FALSE}
 sbdi_config(cache_directory = file.path("c:","mydata","sbdi_cache")) ## Windows
@@ -106,7 +104,7 @@ sbdi_config(download_reason_id = "your_reason_id")
 
 (See `sbdi_reasons()` for valid download reasons, e.g. \* 3 for "education", \* 7 for "ecological research", \* 8 for "systematic research/taxonomy", \* 10 for "testing")
 
-#### Privacy
+#### Privacy {.unnumbered}
 
 ***NO*** other personal identification information is sent. You can see all configuration settings, including the the user-agent string that is being used, with the command:
 

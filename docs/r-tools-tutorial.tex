@@ -138,7 +138,7 @@
 \section*{Introduction}\label{introduction}}
 \addcontentsline{toc}{section}{Introduction}
 
-Biodiversity resources are increasingly international. The SBDI has made an effort to canalize biodiversity data and resources to help the research community access and analyze Swedish primary biodiversity data. Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a few examples that prompt questions that may be asked at different stages of the process. The validity and appropriateness of a particular method depends on the individual researcher(s). For a comprehensive workflow on how to treat and analyze PBD please refer to our tutorial on \href{https://github.com/biodiversitydata-se/biodiversity-analysis-tools}{biodiversity analysis tool} where we go through the complete workflow Data --\textgreater{} Cleaning --\textgreater{} Fitness evaluation --\textgreater{} Analysis
+Biodiversity resources are increasingly international. The SBDI has made an effort to canalise biodiversity data and resources to help the research community access and analyse Swedish primary biodiversity data. Each research question draws its own challenges which are unique in themselves. Our aim here is to provide a few examples that prompt questions that may be asked at different stages of the process. The validity and appropriateness of a particular method depends on the individual researcher(s). For a comprehensive workflow on how to treat and analyse primary biodiversity data please refer to our tutorial on \href{https://github.com/biodiversitydata-se/biodiversity-analysis-tools}{biodiversity analysis tools} where we go through the complete workflow Data --\textgreater{} Cleaning --\textgreater{} Fitness evaluation --\textgreater{} Analysis
 
 \hypertarget{r-and-mirroreum}{%
 \subsection*{R and Mirroreum}\label{r-and-mirroreum}}
@@ -161,7 +161,11 @@ The SBDI4R package enables the R community to directly access data and resources
 Please refer to the \href{https://biodiversitydata-se.github.io/SBDI4R}{package documentation} for details on how to install it. Once installed the SBDI4R package must be loaded for each new R session:
 
 \begin{verbatim}
-## Warning: package 'sp' was built under R version 4.0.4
+## Warning: package 'sp' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'BIRDS' was built under R version 4.0.5
 \end{verbatim}
 
 \hypertarget{customizing-sbdi4r}{%
@@ -268,7 +272,7 @@ If you make a request that returns an empty result set (e.g.~an un-matched name)
 \subsection*{Other packages needed}\label{other-packages-needed}}
 \addcontentsline{toc}{subsection}{Other packages needed}
 
-Some additional packages are needed for these examples. Install them if necessary with the following script.
+Some additional packages are needed for these examples. Install them if necessary with the following script:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -312,15 +316,15 @@ The repositories you can contribute to are:
 \item
   the general analysis workflows \url{https://github.com/biodiversitydata-se/biodiversity-analysis-tools}\\
 \item
-  these tutorial \url{https://github.com/biodiversitydata-se/r-tools-tutorial}
+  this R-tools tutorial \url{https://github.com/biodiversitydata-se/r-tools-tutorial}
 \end{itemize}
 
 \hypertarget{example-with-fish-data-from-sers}{%
 \section{Example with fish data from SERS}\label{example-with-fish-data-from-sers}}
 
-In this example we are interested in exploring data from a specific data resource -- Swedish Electrofishing Registry - SERS (Institutionen för akvatiska resurser, SLU). This data base has 2.8 M observations starting in the 1950's.
+In this example we are interested in exploring data from a specific data resource -- the Swedish Electrofishing Registry - SERS (Department of Aquatic Resources, SLU Aqua). This database has 2.8 M observations starting in the 1950's.
 
-As you may already know, SBDI is a collection of many biodiversity databases. We start by searching for the data resource we are interested in using the function \texttt{pick\_filter()}. This is an interactive query guiding you through the many resources available to filtering your query (data resources, spatial layers, and curated species lists).
+SBDI is a collection of many biodiversity databases. We start by searching for the data resource we are interested in by using the function \texttt{pick\_filter()}. This is an interactive query guiding you through the many resources available to filtering your query (data resources, spatial layers, and curated species lists).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -330,9 +334,9 @@ As you may already know, SBDI is a collection of many biodiversity databases. We
 \end{Highlighting}
 \end{Shaded}
 
-Follow the instruction. Your choices here would have been ``in3'' --\textgreater{} ``dr10''. Your variable \texttt{fq\_str} will now contain a string ``data\_resource\_uid:dr10''.
+Follow the instructions. Your choices here would have been ``in3'' --\textgreater{} ``dr10'' (data resource 10 = SERS). Your variable \texttt{fq\_str} will now contain a string ``data\_resource\_uid:dr10''.
 
-But we are not interested in the complete database, but on the last 10 years of data. for this we concatenate (add to a vector) another filter string. These will be treated as AND factors.
+But we are not interested in the complete database, we only want to look at the data from the last 10 years. For this we concatenate (add to a vector) another filter string. Both filter strings (for data resource and for time period) will be treated as AND factors.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -343,9 +347,9 @@ But we are not interested in the complete database, but on the last 10 years of 
 \end{Highlighting}
 \end{Shaded}
 
-For references on how to use the filters see SBDI APIS \href{https://api.biodiversitydata.se/?lang=en-US\#ws3}{documentation}.
+For references on how to use the filters see the SBDI APIs \href{https://api.biodiversitydata.se/?lang=en-US\#ws3}{documentation}.
 
-Using the function \texttt{occurrences()} we can the query for the observations fulfilling our filter. If you haven't specified that in the \texttt{sbdi\_config()} before, you need to pass your email and the download reason.
+Using the function \texttt{occurrences()} we can now query for the observations fulfilling our filter. If you haven't specified your email and the download reason in the \texttt{sbdi\_config()} before, you need to pass this here.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -424,7 +428,7 @@ There are many other ways of producing spatial plots in R. The leaflet package p
 \hypertarget{temporal-summary}{%
 \subsection{Temporal summary}\label{temporal-summary}}
 
-A quick summary over the years reveal a drop in number of records over time.
+A quick summary over the years reveals a drop in number of records over time.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -452,7 +456,7 @@ A quick summary over the years reveal a drop in number of records over time.
 \hypertarget{species-summary}{%
 \subsection{Species summary}\label{species-summary}}
 
-In the same way we can summaries the number of observations for each species, by common or scientific name.
+In the same way we can summarise the number of observations for each species, by common or scientific name.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -492,7 +496,7 @@ In the same way we can summaries the number of observations for each species, by
 ## 6     Blicca bjoerkna (Linnaeus, 1758)   74
 \end{verbatim}
 
-Perhaps, you need to send this table as a .CSV file to a colleague.
+Perhaps, you want to send this table as a .CSV file to a colleague. Save the table:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -504,10 +508,11 @@ Perhaps, you need to send this table as a .CSV file to a colleague.
 \hypertarget{spatial-biodiversity-analysis}{%
 \subsection{Spatial biodiversity analysis}\label{spatial-biodiversity-analysis}}
 
-Let's now ask: how does the species richness vary across Sweden? In this case we
-want to summarise occurrences species-wise over a defined grid instead of plotting
+Let's now ask: How does the species richness vary across Sweden?
+
+For this we want to summarise occurrences species-wise over a defined grid instead of plotting
 every observation point. First we need to overlay the observations with a grid.
-In this case, the standard Swedish grids at 50, 25, 10 and 5 km are provided as
+Here we are using the standard Swedish grids with grid square size of 50, 25, 10 or 5 km provided as
 data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326).
 
 \begin{Shaded}
@@ -518,13 +523,9 @@ data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326)
 \end{Shaded}
 
 \begin{verbatim}
-## Warning: package 'rgeos' was built under R version 4.0.4
-\end{verbatim}
-
-\begin{verbatim}
 ## rgeos version: 0.5-5, (SVN revision 640)
 ##  GEOS runtime version: 3.8.0-CAPI-1.13.1 
-##  Linking to sp version: 1.4-5 
+##  Linking to sp version: 1.4-2 
 ##  Polygon checking: TRUE
 \end{verbatim}
 
@@ -532,13 +533,13 @@ data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326)
 \begin{Highlighting}[]
 \CommentTok{\# load some shapes over Sweden\textquotesingle{}s political borders}
 \FunctionTok{data}\NormalTok{(}\StringTok{"swe\_wgs84"}\NormalTok{, }\AttributeTok{package=}\StringTok{"SBDI4R"}\NormalTok{, }\AttributeTok{envir=}\FunctionTok{environment}\NormalTok{())}
-\CommentTok{\# A standard 50km grid}
+\CommentTok{\# a standard 50 km grid}
 \FunctionTok{data}\NormalTok{(}\StringTok{"Sweden\_Grid\_50km\_Wgs84"}\NormalTok{, }\AttributeTok{package=}\StringTok{"SBDI4R"}\NormalTok{, }\AttributeTok{envir=}\FunctionTok{environment}\NormalTok{())}
 
 \NormalTok{grid }\OtherTok{\textless{}{-}}\NormalTok{ Sweden\_Grid\_50km\_Wgs84}
 
 \CommentTok{\# make the observations spatial}
-\CommentTok{\# }\AlertTok{NOTE}\CommentTok{: make sure there are no NAs on either column defining the coordinates}
+\CommentTok{\# }\AlertTok{NOTE}\CommentTok{: make sure there are no NAs in the columns defining the coordinates}
 \CommentTok{\# xf$data[!is.na(xf$data$longitude) | !is.na(xf$data$latitude),]}
 
 \NormalTok{obs }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(xf}\SpecialCharTok{$}\NormalTok{data)}
@@ -548,14 +549,14 @@ data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326)
 
 \NormalTok{nObs }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(obs)}
 
-\CommentTok{\# overlay the data with the grid}
+\CommentTok{\# overlay the occurrence data with the grid}
 \NormalTok{ObsInGridList }\OtherTok{\textless{}{-}} \FunctionTok{over}\NormalTok{(grid, obs, }\AttributeTok{returnList=}\ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{wNonEmpty }\OtherTok{\textless{}{-}} \FunctionTok{unname}\NormalTok{( }\FunctionTok{which}\NormalTok{( }\FunctionTok{unlist}\NormalTok{(}\FunctionTok{lapply}\NormalTok{(ObsInGridList, nrow)) }\SpecialCharTok{!=} \DecValTok{0}\NormalTok{) )}
 \ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(wNonEmpty)}\SpecialCharTok{==}\DecValTok{0}\NormalTok{) }\FunctionTok{message}\NormalTok{(}\StringTok{"Observations don\textquotesingle{}t overlap any grid cell."}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-The result \texttt{ObsInGridList} is a \texttt{list} object with a subset of the data on each grid. Now summarise occurrences within grid cells:
+The result \texttt{ObsInGridList} is a \texttt{list} object with a subset of the data for each grid cell. Now summarise occurrences within grid cells:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -620,7 +621,7 @@ And finally plot the grid summary as a map:
 \end{Highlighting}
 \end{Shaded}
 
-We can go further by gathering the observations by latitude.
+We may now ask wether species richness varies across latitude. So we go further by arranging the observations by latitude:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -651,7 +652,7 @@ We can go further by gathering the observations by latitude.
 \end{Highlighting}
 \end{Shaded}
 
-And plot it accordingly
+And plot it accordingly:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -672,13 +673,13 @@ And plot it accordingly
 \section{Example with opportunistic data on Dragonflies}\label{example-with-opportunistic-data-on-dragonflies}}
 
 In this example we are interested in exploring opportunistically collected data
-from the Swedish citizen science observation data portal - Artportalen.
+from the Swedish citizen science species observation portal - Artportalen.
 
 \hypertarget{name-searching}{%
 \subsection{Name searching}\label{name-searching}}
 
-To begin, we want be sure there is an unequivocal way to find the species within
-the order Odonata and nothing else, so let's search for it:
+To begin with, we want be sure there is an unequivocal way to find the species within
+the order Odonata (dragonflies) and nothing else, so let's search for ``odonata'':
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -686,6 +687,14 @@ the order Odonata and nothing else, so let's search for it:
 \NormalTok{sx}\SpecialCharTok{$}\NormalTok{data[, }\FunctionTok{c}\NormalTok{(}\StringTok{"guid"}\NormalTok{, }\StringTok{"scientificName"}\NormalTok{, }\StringTok{"rank"}\NormalTok{, }\StringTok{"occurrenceCount"}\NormalTok{)]}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Registered S3 methods overwritten by 'ALA4R':
+##   method              from  
+##   subset.occurrences  SBDI4R
+##   summary.occurrences SBDI4R
+##   unique.occurrences  SBDI4R
+\end{verbatim}
 
 \begin{verbatim}
 ## [1] "https://species.biodiversitydata.se/ws/search.json?q=odonata&fq=idxtype%3ATAXON"
@@ -700,8 +709,8 @@ the order Odonata and nothing else, so let's search for it:
 ## 5  7367071    Ramalina fastigiata var. odonata Hue variety               0
 \end{verbatim}
 
-We quickly see there that other taxonomic definitions appear too, but there is
-only one order. Let's refine the search. To know which search fields we can use
+We quickly see there that other taxonomic levels appear too, and also species that look suspiciously as not belonging to
+dragonsflies. But there is only one order. Let's refine the search. To know which search fields we can use
 to filter the search we use the function \texttt{sbdi\_fields(fields\_type\ =\ "general")}.
 The search field we are looking for is ``order\_s''.
 
@@ -742,12 +751,12 @@ Now we can download the taxonomic data (note that the search is case-sensitive):
 \end{Highlighting}
 \end{Shaded}
 
-Then you can save \texttt{tx} as the complete species list for later use.
+You can save the \texttt{tx} object as the complete species list for later use.
 
 \hypertarget{filter-the-search-to-get-the-observations}{%
 \subsection{Filter the search to get the observations}\label{filter-the-search-to-get-the-observations}}
 
-As usual we start by searching for the data resource we are interested in using
+We start by searching for the data resource we are interested in using
 the function \texttt{pick\_filter()}. This is an interactive query guiding you through
 the many resources available to filtering your query (data resources, spatial
 layers, and curated species lists).
@@ -759,10 +768,10 @@ layers, and curated species lists).
 \end{Highlighting}
 \end{Shaded}
 
-Follow the instruction. Your choices here would have been ``in3'' --\textgreater{} ``dr5''.
+Follow the instructions. Your choices here would have been ``in3'' --\textgreater{} ``dr5''.
 Your variable \texttt{fq\_str} will now contain a string ``data\_resource\_uid:dr5''.
 
-We only need data from 2000 to 2010
+We only want to look at data from year 2000 to 2010:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -773,12 +782,12 @@ We only need data from 2000 to 2010
 \end{Highlighting}
 \end{Shaded}
 
-We also need to filter spatially for Southern Sweden (\href{https://en.wikipedia.org/wiki/G\%C3\%B6taland}{Götaland}).
+We also want to filter spatially for Southern Sweden (\href{https://en.wikipedia.org/wiki/G\%C3\%B6taland}{Götaland}).
 
 Vector spatial layers (eg. polygons) can be imported in a number of different ways.
-SBDI APIs take as search input polygons in the s.k. WKT \href{https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html}{Well Known Text}
+SBDI APIs take as search input polygons in the so-called WKT \href{https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html}{Well Known Text}
 format. So the first step is to load a vector layer and transform it into a WKT string.
-You could instead use the data we kindly provided in the SBDI4R package \texttt{data("swe")}.
+You could instead use the data we provid in the SBDI4R package \texttt{data("swe")}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -831,7 +840,7 @@ the WKT string:
 \end{Highlighting}
 \end{Shaded}
 
-The WKT string the looks like this
+The WKT string then looks like this:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -846,8 +855,9 @@ The WKT string the looks like this
 \includegraphics{r-tools-tutorial_files/figure-latex/searchpoly-1.pdf}
 
 Next, we download the observations using the command \texttt{occurrences()}, but be aware that
-the search fields may not be the same as those use to search for taxa. We therefore
-recommend using the function \texttt{sbdi\_fields("occurrence")}. Here see that the field
+the search fields may not be the same as those used to search for taxa. We therefore
+recommend using the function \texttt{sbdi\_fields("occurrence")} to find out which search fields we can use
+to filter for occurrences. Here we see that the field
 we need this time is ``order''.
 
 \begin{Shaded}
@@ -863,7 +873,7 @@ we need this time is ``order''.
 
 We have now downloaded the data locally and depending on your configuration this
 will be cached on your computer. However, as the search and download could take
-long, we recommend to anyhow save the data locally.
+long time, we recommend to save the data locally.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -876,12 +886,12 @@ long, we recommend to anyhow save the data locally.
 \subsection{Quality and fit-for-use check}\label{quality-and-fit-for-use-check}}
 
 Before we can use the observation records we need to know if the observation
-effort has varied over time and in space. For this we need to define field visits
-i.e.~occasions at which an observer has sampled observations, and reconstruct them
-(that is, assign each observation a visitUID). We do this using the package
-\href{https://greensway.github.io/BIRDS/}{BIRDS}. We even want the data to be summarized
-over a grid of 25 km (provided by the SBDI4R package). The following functions
-will perform many different summaries at the same time. Please refer to the package
+effort (sampling effort) has varied over time and in space. We can approximate observation effort from the data by
+defining field visits i.e.~occasions at which an observer has sampled observations. We reconstruct field visits
+(that is, assign each observation a visitUID) using using the package
+\href{https://greensway.github.io/BIRDS/}{BIRDS}. Additionally we want the data to be summarized
+over a grid of 25 km (provided through the SBDI4R package). The following functions
+will perform many different summaries at the same time. Please refer to the BIRDS package
 documentation for more detail.
 
 \begin{Shaded}
@@ -923,8 +933,8 @@ documentation for more detail.
 ## 0.009 % of the visits spill over neighbouring grid cells.
 \end{verbatim}
 
-Once summarized, we can see over space and for a few selected year how was the
-sampling effort (in this case number of observations) distributed.
+Once summarised, we can see over space and for a few selected years how the
+number of observations is distributed:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -979,9 +989,9 @@ sampling effort (in this case number of observations) distributed.
 
 \includegraphics{r-tools-tutorial_files/figure-latex/plotBIRDSspatial-1.pdf}
 
-There are other ways to plot spatial data, here there is another example this time
-using the package \texttt{sf} instead of \texttt{sp} and using number of visits as the measure
-for sampling effort.
+We now want to use the number of field visits as the measure
+for sampling effort. And since there are other ways to plot spatial data, we this time
+use the package \texttt{sf} instead of \texttt{sp}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1018,8 +1028,8 @@ for sampling effort.
 \includegraphics{r-tools-tutorial_files/figure-latex/ggplot1-1.pdf}
 
 We see that \texttt{SB} contains an element called \texttt{SB\$temporal} that contains a daily
-time series with time specific rows when there is information. \texttt{xts} also supports
-time, but dating below day resolution is not yet implemented in the \texttt{BIRDS} package.
+time series with time-specific rows when there is information. \texttt{xts} also supports
+day time, but dating below day resolution is not yet implemented in the \texttt{BIRDS} package.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1138,7 +1148,7 @@ for a range of dates.
 ## 2010-09-30    2    2    2
 \end{verbatim}
 
-The package \texttt{xts} has several tools for converting to different periods. Here we
+The package \texttt{xts} has several tools for converting to different time periods. Here we
 will use \texttt{to.monthly}. This provides, the first, min, max, and last of the data.
 We can plot the daily maximum number of observations. The plot command with an
 \texttt{xts} object provides a TON of features. This makes it fairly easy to customize
@@ -1161,15 +1171,11 @@ your plots. Read more in \texttt{?plot.xts}.
 \end{Shaded}
 
 \begin{verbatim}
-## Warning: package 'xts' was built under R version 4.0.4
-\end{verbatim}
-
-\begin{verbatim}
 ## Loading required package: zoo
 \end{verbatim}
 
 \begin{verbatim}
-## Warning: package 'zoo' was built under R version 4.0.4
+## Warning: package 'zoo' was built under R version 4.0.5
 \end{verbatim}
 
 \begin{verbatim}
@@ -1202,7 +1208,7 @@ your plots. Read more in \texttt{?plot.xts}.
 
 \includegraphics{r-tools-tutorial_files/figure-latex/monthlyPlot-1.pdf} \includegraphics{r-tools-tutorial_files/figure-latex/monthlyPlot-2.pdf}
 
-We can now look at some particular species and ask whether this has changed in occurrence over time:
+We can now look at some particular species and ask whether those have changed in occurrence over time:
 Plot no. records of species x and no. visits all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
 
 Plot no. gridcells with visits for species x and no. gridcells with visits for all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)

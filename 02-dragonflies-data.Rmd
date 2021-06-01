@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
 # Example with opportunistic data on Dragonflies
 
 In this example we are interested in exploring opportunistically collected data 
@@ -78,7 +83,6 @@ You could instead use the data we provid in the SBDI4R package `data("swe")`.
 
 ```{r sweshape}
 data("swe",package = "SBDI4R")
-
 wGotaland <- swe$Counties$LnNamn %in% c("Blekinge", "Gotlands", "Hallands", 
                                         "Jönköpings", "Kalmar", "Kronobergs", 
                                         "Östergötlands", "Skåne", "Västra Götalands")
@@ -122,7 +126,7 @@ wkt <- paste("MULTIPOLYGON(((", paste(wkt_temp, collapse=","), ")))", sep="")
 # submitted as a MULTIPOLYGON
 ```
 The WKT string then looks like this:
-```{r}
+```{r, echo=FALSE}
 wkt
 ```
 ```{r searchpoly, fig.width=7, echo=FALSE, warning=FALSE}
@@ -175,8 +179,10 @@ over a grid of 25 km (provided through the SBDI4R package). The following functi
 will perform many different summaries at the same time. Please refer to the BIRDS package 
 documentation for more detail. 
 
-```{r birds}
+```{r birds, message=FALSE, warning=FALSE}
 library(BIRDS)
+```
+```{r organisebirds, message=FALSE}
 OB <- organiseBirds(xf$data, sppCol = "species" , 
                     # We only want observations identified at the species level
                     taxonRankCol = "rank", taxonRank = "species", 
@@ -204,7 +210,7 @@ palBW <- leaflet::colorNumeric(c("white", "navyblue"),
                                c(0, maxC), 
                                na.color = "transparent")
 oldpar <- par()
-par(mar = c(4,0,4,0), mfrow=c(1,3))
+par(mar = c(1,1,1,1), mfrow=c(1,3))
 plot(SB$spatial, col=palBW(SB$spatial@data$nObs),
      border = "grey", main="All years") ## with palette
 legend("bottomleft", inset = c(0,0.05),
@@ -246,16 +252,16 @@ legend("bottomleft", inset = c(0,0.05),
        title = "Number of \nobservations", pch = 15, bty="n")
 par(oldpar)
 ```
-```{r plotBIRDSspatial, echo=FALSE, fig.width=7}
+```{r plotBIRDSspatial, echo=FALSE, fig.width=8}
 maxC <- max(SB$spatial@data$nObs, na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
 oldpar <- par()
-par(mar = c(4,0,4,0), mfrow=c(1,3))
+par(mar = c(1,1,1,1), mfrow=c(1,3))
 plot(SB$spatial, col=palBW(SB$spatial@data$nObs),
      border = "grey", main="All years") ## with palette
-legend("topleft", inset = c(0,0.05),
+legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
        title = "Number of \nobservations", pch = 15, bty="n")
@@ -274,7 +280,7 @@ palBW <- leaflet::colorNumeric(c("white", "navyblue"),
 
 plot(yearlySp["2005"], col=palBW(yearlySp@data$'2005'), 
      border = "grey",main="2005")
-legend("topleft", inset = c(0,0.05),
+legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
        border = "grey",
@@ -287,7 +293,7 @@ palBW <- leaflet::colorNumeric(c("white", "navyblue"),
 
 plot(yearlySp["2010"], col=palBW(yearlySp@data$'2010'), 
      border = "grey",main="2010")
-legend("topleft", inset = c(0,0.05),
+legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
        border = "grey",
@@ -298,7 +304,7 @@ suppressWarnings(par(oldpar))
 We now want to use the number of field visits as the measure
 for sampling effort. And since there are other ways to plot spatial data, we this time
 use the package `sf` instead of `sp`:  
-```{r ggplot1, message=FALSE, warning=FALSE, fig.width=7}
+```{r ggplot1, message=FALSE, warning=FALSE, fig.width=8}
 library(sf)
 library(cowplot)
 library(ggplot2)
@@ -328,14 +334,14 @@ spp <- ggplot(data = spatial_sf ,aes( fill = nSpp))+
 grid.arrange(vis, spp, ncol=2)
 ```
 
+#### Temporal check
 We see that `SB` contains an element called `SB$temporal` that contains a daily 
 time series with time-specific rows when there is information. `xts` also supports 
 day time, but dating below day resolution is not yet implemented in the `BIRDS` package.  
 
 ```{r temporal}
 sb.xts <- SB$temporal
-dim(sb.xts)
-head(sb.xts, 20)
+head(sb.xts, 5)
 ```
 
 Sub-setting is convenient in `xts` as you can do it with its dates and with a `/` 
@@ -346,44 +352,124 @@ sb.xts["2010-09-01/2010-09-15"] #for a period
 sb.xts["2010-09"] #a specific month
 ```
 
-The package `xts` has several tools for converting to different time periods. Here we 
-will use `to.monthly`. This provides, the first, min, max, and last of the data. 
-We can plot the daily maximum number of observations. The plot command with an 
-`xts` object provides a TON of features. This makes it fairly easy to customize 
-your plots. Read more in `?plot.xts`.  
+The package `xts` has several tools for converting to different time periods. 
+Here we use `apply.monthly` to obtain the total number of observations and visits
+per month. The plot command for an object of calss `xts` provides a many features. 
+This makes it fairly easy to customize your plots. Read more in `?plot.xts`.  
 
 ```{r monthlyPlotcode, eval=FALSE}
 library(xts)
-obs.m <- to.monthly(sb.xts$nObs) 
-plot(obs.m["2000/2010",2], 
+obs.m <- apply.monthly(sb.xts$nObs, "sum", na.rm = TRUE)
+
+# alternative for more summary options but slower
+# obs.m <- exportBirds(SB,
+#                      dimension = "temporal",
+#                      timeRes = "monthly",
+#                      variable = "nObs",
+#                      method = "sum")
+
+plot(obs.m, 
      col = "darkblue", 
      grid.ticks.on = "month", 
-     major.ticks = "month", 
+     major.ticks = "year", 
      grid.col = "lightgrey",  
-     main = "Maximum number of daily observations/visits per month")
+     main = "Total number of daily observations and visits per month")
 
-vis.m <- to.monthly(sb.xts$nVis) 
-lines(vis.m["2000/2010",2], col = "orange", lwd=2)
+vis.m <- apply.monthly(sb.xts$nVis, "sum", na.rm = TRUE)
+lines(vis.m, col = "orange", lwd=2, on=1)
 ```
 
-```{r monthlyPlot, echo=FALSE, fig.height=5, fig.width=9}
+```{r monthlyPlot, echo=FALSE, include=FALSE}
 library(xts)
-obs.m <- to.monthly(sb.xts$nObs) 
-plot(obs.m["2000/2010",2], 
+obs.m <- apply.monthly(sb.xts$nObs, "sum", na.rm = TRUE)
+
+plot(obs.m, 
      col = "darkblue", 
      grid.ticks.on = "month", 
-     major.ticks = "month", 
+     major.ticks = "year", 
      grid.col = "lightgrey",  
-     main = "Maximum number of daily observations and visits per month")
+     main = "Total number of daily observations and visits per month")
 
-vis.m <- to.monthly(sb.xts$nVis) 
-lines(vis.m["2000/2010",2], col = "orange", lwd=2)
+vis.m <- apply.monthly(sb.xts$nVis, "sum", na.rm = TRUE)
+lines(vis.m, col = "orange", lwd=2, on=1)
+```
+```{r, echo=FALSE, fig.width=8}
+addLegend("topleft", c("Observations", "Visits"), 
+          col=c("darkblue","orange"), 
+          lwd=2)
 ```
 
+## Species trends
+We can now look at some particular species and ask whether those have changed in 
+occurrence over time:
+```{r sppTrends, message=FALSE}
+speciesSummary(SB)[,1:4]
+```
+We pick two species and compare their trends in number of visits where the species where reported, relative to the total number of visits.
 
-We can now look at some particular species and ask whether those have changed in occurrence over time:
-Plot no. records of species x and no. visits all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
+```{r trends, fig.width=8}
+library(dplyr)
+sppCountLq <- obsData(OB) %>% 
+            group_by(year,visitUID) %>% 
+            summarise("focalCount" = sum(scientificName == "Libellula quadrimaculata"),
+                      "sppLength" = length(unique(scientificName)), 
+                      .groups = "drop") %>% 
+            ungroup() %>% 
+            group_by(year) %>% 
+            summarise("focalCount" = sum(focalCount),
+                      "nVis" = length(unique(visitUID)), 
+                      .groups = NULL)
 
-Plot no. gridcells with visits for species x and no. gridcells with visits for all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits)
-(species x: Tvåfläckad trollslända Epitheca bimaculata)
+sppCountLq$relCount <- sppCountLq$focalCount/sppCountLq$nVis
 
+sppCountSd <- obsData(OB) %>% 
+            group_by(year,visitUID) %>% 
+            summarise("focalCount" = sum(scientificName == "Sympetrum sanguineum"),
+                      "sppLength" = length(unique(scientificName)), 
+                      .groups = "drop") %>% 
+            ungroup() %>% 
+            group_by(year) %>% 
+            summarise("focalCount" = sum(focalCount),
+                      "nVis" = length(unique(visitUID)), 
+                      .groups = NULL)
+
+sppCountSd$relCount <- sppCountSd$focalCount/sppCountSd$nVis
+
+oldpar <- par(no.readonly = TRUE)
+par(mar=c(4,4,1,1), las=1)
+plot(sppCountLq$year, sppCountLq$relCount, type = "l", 
+     lwd = 3, xlab = "Year", ylab = "Relative number of visits with observations", 
+     ylim=c(0, max(sppCountLq$relCount)), xaxp=c(2000, 2010, 10))
+lines(sppCountSd$year, sppCountSd$relCount, lwd=3, col="#78D2EB")
+legend("bottomright", 
+       legend=c("Libellula quadrimaculata","Sympetrum sanguineum"), 
+       text.font = 3, col = c("black", "#78D2EB"), lwd = 3, bty = "n")
+par(oldpar)
+```
+
+<!-- Plot no. gridcells with visits for species x and no. gridcells with visits for all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits) -->
+<!-- (species x: Tvåfläckad trollslända Epitheca bimaculata) -->
+
+<!-- ```{r} -->
+<!-- sppCountGrid <- lapply(SB$overlaid, function(x, focalSpp="Libellula quadrimaculata"){ -->
+<!--   tmp <- x %>%  -->
+<!--             group_by(year, visitUID) %>%  -->
+<!--             summarise("focalCount" = sum(scientificName == focalSpp), -->
+<!--                       "sppLength" = length(unique(scientificName)), -->
+<!--                       .groups = "drop") %>%  -->
+<!--             ungroup() %>%  -->
+<!--             group_by(year) %>%  -->
+<!--             summarise("focalCount" = sum(focalCount), -->
+<!--                       "nVis" = length(unique(visitUID)),  -->
+<!--                       .groups = NULL) -->
+<!--   res <- as.data.frame(tmp) -->
+<!--   return(res) -->
+<!-- } ) -->
+
+<!-- sppCountGrid <- bind_rows(sppCountGrid, .id = "grid_label") -->
+<!-- sppCountGrid %>%  -->
+<!--             group_by(year, grid_label) %>%  -->
+<!--             summarise("ngrid"= length(unique(grid_label)), -->
+<!--                       "ngridSpp" = ,  -->
+<!--                       .groups = "drop") -->
+<!-- ``` -->

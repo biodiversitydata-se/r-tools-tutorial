@@ -31,16 +31,15 @@ For references on how to use the filters see the SBDI APIs [documentation](https
 Using the function `occurrences()` we can now query for the observations fulfilling our filter. If you haven't specified your email and the download reason in the `sbdi_config()` before, you need to pass this here.
 
 ```{r getOcc, cache=TRUE, message=FALSE}
-xf <- SBDI4R::occurrences(fq = fq_str,
+xf <- occurrences(fq = fq_str,
                  email = "sbdi4r-test@biodiversitydata.se", 
                  download_reason_id = 10)
 
 # Remove what is not a species
-xf$data <- xf$data[xf$data$rank %in% c("species", "subspecies", "variety", "form", "cultivar"),]
+xf$data <- xf$data[xf$data$rank == "species",]
 
 # Simply summarise all records by data source 
-table(xf$data$dataResourceName, xf$data$dataResourceID)
-table(xf$data$dataResourceID)
+table(xf$data$dataResourceName)
 ```
 ```{r save, echo=FALSE, include=FALSE, eval=FALSE}
 save(xf, file = "data/tmp_occdata_for compile.rdata")
@@ -51,9 +50,7 @@ load(file = "data/tmp_occdata_for compile.rdata")
 ```
 
 ## Plotting data on a map
-
 You can quickly plot all the observations as a PDF file with the function `ocurrence_plot()`, one page per species:
-
 ```{r pdf_plot, eval=FALSE}
 occurrences_plot(xf, "obsPlot.pdf", 
                  grouped=FALSE, 
@@ -61,9 +58,7 @@ occurrences_plot(xf, "obsPlot.pdf",
                  pch='.')
 ```
 
-Note that the plot is saved to a pdf file in the current working directory. You can find that with `getwd()`.
-
-#### Leaflet
+**Note** that the plot is saved to a .pdf file in the current working directory. You can find that with `getwd()`.
 
 There are many other ways of producing spatial plots in R. The leaflet package provides a simple method of producing browser-based maps with panning, zooming, and background layers:
 
@@ -130,7 +125,7 @@ every observation point. First we need to overlay the observations with a grid.
 Here we are using the standard Swedish grids with grid square size of 50, 25, 10 or 5 km provided as 
 data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326).
 
-```{r overlay}
+```{r overlay, warning=FALSE, message=FALSE}
 library(sp) # the function coordinates() and proj4string() are in sp
 library(rgeos) # the function over() is in package rgeos
 # load some shapes over Sweden's political borders
@@ -148,9 +143,7 @@ obs <- as.data.frame(xf$data)
 coordinates(obs) <- obs[,c("longitude","latitude")]
 wkt <- sf::st_crs(4326)[[2]]
 proj4string(obs) <- sp::CRS(wkt) #CRS("+init=epsg:4326")
-
 nObs <- nrow(obs)
-
 # overlay the occurrence data with the grid
 ObsInGridList <- over(grid, obs, returnList=TRUE)
 wNonEmpty <- unname( which( unlist(lapply(ObsInGridList, nrow)) != 0) )
@@ -165,7 +158,6 @@ sum(unlist(lapply(ObsInGridList, nrow)))
 
 # apply a summary over the grid cells 
 nCells <- length(ObsInGridList)
-
 res <- data.frame("nObs"=as.numeric(rep(NA,nCells)),
                   "nYears"=as.numeric(rep(NA,nCells)),
                   "nSpp"=as.numeric(rep(NA,nCells)),
@@ -173,7 +165,6 @@ res <- data.frame("nObs"=as.numeric(rep(NA,nCells)),
                   stringsAsFactors = FALSE)
 
 cols2use <- c("scientificName", "year")
-
 dataRes <- lapply(ObsInGridList[wNonEmpty], 
                   function(x){
                     x <- x[,cols2use]
@@ -185,11 +176,8 @@ dataRes <- lapply(ObsInGridList[wNonEmpty],
                            )
                     }
                   )
-
 dataRes <- as.data.frame(dplyr::bind_rows(dataRes, .id = "gridID"))
-
 res[wNonEmpty,] <- dataRes[,-1]
-
 resSp <- sp::SpatialPolygonsDataFrame(grid, res)
 ```
 
@@ -208,7 +196,7 @@ legend("bottomleft",
        title = "Number of \nspecies", pch = 15, bty="n")
 par(oldpar)
 ```
-```{r gridPlot, fig.height=6, fig.width=6, include=FALSE}
+```{r gridPlot, fig.height=6, fig.width=6, echo=FALSE}
 palBW <- leaflet::colorNumeric(c("white", "navyblue"),
                                c(0, max(resSp@data$nSpp, na.rm = TRUE)),
                                na.color = "transparent")
