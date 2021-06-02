@@ -6,7 +6,7 @@ bookdown::gitbook:
     toc:
       before: |
         <li><a href="./"><strong>R tools for biodiversity data</strong></a></li>
-    collapse: chapter
+      collapse: chapter
   edit: 
     link: https\://github.com/biodiversitydata-se/r-tools-tutorial/edit/master/%s
     text: "Suggest an edit"
