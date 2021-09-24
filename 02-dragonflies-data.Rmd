@@ -310,7 +310,7 @@ legend("bottomleft", inset = c(0,0.05),
        border = "grey",
        title = "Number of \nobservations", pch = 15, bty="n")
 
-maxC <- max(yearlySp'2010', na.rm = TRUE)
+maxC <- max(yearlySp$'2010', na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
