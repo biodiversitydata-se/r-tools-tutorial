@@ -206,12 +206,12 @@ Additionally we want the data to be summarized over a grid of 25 km
 perform many different summaries at the same time. Please refer to the
 BIRDS package documentation for more detail.
 
-```{r birds, message=FALSE, warning=FALSE}
+```{r birds, message=FALSE, warning=FALSE, eval=FALSE}
 remotes::install_github("Greensway/BIRDS")
 library(BIRDS)
 ```
 
-```{r organisebirds, message=FALSE}
+```{r organisebirds, eval=FALSE}
 OB <- organiseBirds(xf$data, sppCol = "species" , 
                     # We only want observations identified at the species level
                     taxonRankCol = "rank", taxonRank = "species", 
@@ -225,6 +225,13 @@ wInt <- unlist(st_intersects(gotaland, Sweden_Grid_25km_Wgs84))
 gotaland_grid25 <- Sweden_Grid_25km_Wgs84[wInt,]
 
 SB <- summariseBirds(OB, grid = gotaland_grid25, spillOver = "unique")
+```
+
+```{r save_birds, eval=FALSE, include=FALSE}
+save(list=c("OB", "SB"), file = "output/BIRDS_summary.rdata")
+```
+```{r load_birds, include=FALSE}
+load(file = "output/BIRDS_summary.rdata")
 ```
 
 Once summarised, we can see over space and for a few selected years how

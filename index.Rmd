@@ -124,7 +124,7 @@ sbdi_config(warn_on_empty=TRUE)
 
 Some additional packages are needed for these examples. Install them if necessary with the following script:
 
-```{r, message=FALSE}
+```{r, message=FALSE, eval=FALSE}
 to_install <- c("colorRamps", "cowplot","dplyr","ggplot2", 
                 "leaflet", "maps", "mapdata", "maptools", "sf", 
                 "remotes","rgeos","tidyr", "xts")
