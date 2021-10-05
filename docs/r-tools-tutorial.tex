@@ -6,14 +6,13 @@
 \documentclass[
   10pt,
 ]{article}
+\usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{amsmath}
 \usepackage{ifxetex,ifluatex}
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
-  \usepackage{amssymb}
 \else % if luatex or xetex
   \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
@@ -89,7 +88,7 @@
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\usepackage{longtable,booktabs}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -124,7 +123,7 @@
 
 \title{Using R tools for analysis of primary biodiversity data provided by SBDI}
 \author{Debora Arlt and Alejandro Ruete for the Swedish Biodiversity Data Infrastructure}
-\date{2021-06-01}
+\date{2021-10-05}
 
 \begin{document}
 \maketitle
@@ -271,15 +270,18 @@ Some additional packages are needed for these examples. Install them if necessar
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{to\_install }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"BIRDS"}\NormalTok{,}\StringTok{"colorRamps"}\NormalTok{, }\StringTok{"cowplot"}\NormalTok{,}\StringTok{"dplyr"}\NormalTok{,}\StringTok{"ggplot2"}\NormalTok{, }
-                \StringTok{"leaflet"}\NormalTok{, }\StringTok{"maps"}\NormalTok{, }\StringTok{"mapdata"}\NormalTok{, }\StringTok{"maptools"}\NormalTok{, }\StringTok{"sf"}\NormalTok{, }\StringTok{"sp"}\NormalTok{,}
-                \StringTok{"rgeos"}\NormalTok{, }\StringTok{"tidyr"}\NormalTok{, }\StringTok{"xts"}\NormalTok{)}
+\NormalTok{to\_install }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"colorRamps"}\NormalTok{, }\StringTok{"cowplot"}\NormalTok{,}\StringTok{"dplyr"}\NormalTok{,}\StringTok{"ggplot2"}\NormalTok{, }
+                \StringTok{"leaflet"}\NormalTok{, }\StringTok{"maps"}\NormalTok{, }\StringTok{"mapdata"}\NormalTok{, }\StringTok{"maptools"}\NormalTok{, }\StringTok{"sf"}\NormalTok{, }
+                \StringTok{"remotes"}\NormalTok{,}\StringTok{"rgeos"}\NormalTok{,}\StringTok{"tidyr"}\NormalTok{, }\StringTok{"xts"}\NormalTok{)}
 \NormalTok{to\_install }\OtherTok{\textless{}{-}}\NormalTok{ to\_install[}\SpecialCharTok{!}\FunctionTok{sapply}\NormalTok{(to\_install, }
 \NormalTok{                                 requireNamespace, }
                                  \AttributeTok{quietly=}\ConstantTok{TRUE}\NormalTok{)]}
 \ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(to\_install)}\SpecialCharTok{\textgreater{}}\DecValTok{0}\NormalTok{)}
     \FunctionTok{install.packages}\NormalTok{(to\_install, }
                      \AttributeTok{repos=}\StringTok{"http://cran.us.r{-}project.org"}\NormalTok{)}
+
+\NormalTok{remotes}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"AtlasOfLivingAustralia/ALA4R"}\NormalTok{)}
+\NormalTok{remotes}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"Greensway/BIRDS"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -329,7 +331,7 @@ SBDI is a collection of many biodiversity databases. We start by searching for t
 \end{Highlighting}
 \end{Shaded}
 
-Follow the instructions. Your choices here would have been ``in3'' --\textgreater{} ``dr10'' (data resource 10 = SERS). Your variable \texttt{fq\_str} will now contain a string ``data\_resource\_uid:dr10''.
+Follow the instructions. Your choices here would have been ``in3'' :arrow\_right: ``dr10'' (data resource 10 = SERS). Your variable \texttt{fq\_str} will now contain a string ``data\_resource\_uid:dr10''.
 
 But we are not interested in the complete database, we only want to look at the data from the last 10 years. For this we concatenate (add to a vector) another filter string. Both filter strings (for data resource and for time period) will be treated as AND factors.
 
@@ -374,8 +376,8 @@ You can quickly plot all the observations as a PDF file with the function \textt
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{occurrences\_plot}\NormalTok{(xf, }\StringTok{"obsPlot.pdf"}\NormalTok{, }
-                 \AttributeTok{grouped=}\ConstantTok{FALSE}\NormalTok{, }
-                 \AttributeTok{taxon\_level=}\StringTok{"species"}\NormalTok{, }
+                 \AttributeTok{grouped =} \ConstantTok{FALSE}\NormalTok{, }
+                 \AttributeTok{taxon\_level =} \StringTok{"species"}\NormalTok{, }
                  \AttributeTok{pch=}\StringTok{\textquotesingle{}.\textquotesingle{}}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -396,10 +398,10 @@ There are many other ways of producing spatial plots in R. The leaflet package p
   \CommentTok{\# add markers}
   \FunctionTok{addCircleMarkers}\NormalTok{(xfl}\SpecialCharTok{$}\NormalTok{longitude, xfl}\SpecialCharTok{$}\NormalTok{latitude,  }
                    \AttributeTok{radius =} \DecValTok{1}\NormalTok{, }
-                   \AttributeTok{fillOpacity =}\NormalTok{.}\DecValTok{5}\NormalTok{, }
+                   \AttributeTok{fillOpacity =}\NormalTok{ .}\DecValTok{5}\NormalTok{, }
                    \AttributeTok{opacity =} \DecValTok{1}\NormalTok{,}
-                   \AttributeTok{col=}\NormalTok{marker\_colour,}
-                  \AttributeTok{clusterOptions =} \FunctionTok{markerClusterOptions}\NormalTok{())}
+                   \AttributeTok{col =}\NormalTok{ marker\_colour,}
+                   \AttributeTok{clusterOptions =} \FunctionTok{markerClusterOptions}\NormalTok{())}
 \end{Highlighting}
 \end{Shaded}
 
@@ -490,19 +492,16 @@ Perhaps, you want to send this table as a .CSV file to a colleague. Save the tab
 
 Let's now ask: How does the species richness vary across Sweden?
 
-For this we want to summarise occurrences species-wise over a defined grid instead of plotting
-every observation point. First we need to overlay the observations with a grid.
-Here we are using the standard Swedish grids with grid square size of 50, 25, 10 or 5 km provided as
-data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326).
+For this we want to summarise occurrences species-wise over a defined grid instead of plotting every observation point. First we need to overlay the observations with a grid. Here we are using the standard Swedish grids with grid square size of 50, 25, 10 or 5 km provided as data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326).
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(sp) }\CommentTok{\# the function coordinates() and proj4string() are in sp}
+\FunctionTok{library}\NormalTok{(sf) }\CommentTok{\# the function coordinates() and proj4string() are in sp}
 \FunctionTok{library}\NormalTok{(rgeos) }\CommentTok{\# the function over() is in package rgeos}
 \CommentTok{\# load some shapes over Sweden\textquotesingle{}s political borders}
-\FunctionTok{data}\NormalTok{(}\StringTok{"swe\_wgs84"}\NormalTok{, }\AttributeTok{package=}\StringTok{"SBDI4R"}\NormalTok{, }\AttributeTok{envir=}\FunctionTok{environment}\NormalTok{())}
+\FunctionTok{data}\NormalTok{(}\StringTok{"swe\_wgs84"}\NormalTok{, }\AttributeTok{package =} \StringTok{"SBDI4R"}\NormalTok{, }\AttributeTok{envir =} \FunctionTok{environment}\NormalTok{())}
 \CommentTok{\# a standard 50 km grid}
-\FunctionTok{data}\NormalTok{(}\StringTok{"Sweden\_Grid\_50km\_Wgs84"}\NormalTok{, }\AttributeTok{package=}\StringTok{"SBDI4R"}\NormalTok{, }\AttributeTok{envir=}\FunctionTok{environment}\NormalTok{())}
+\FunctionTok{data}\NormalTok{(}\StringTok{"Sweden\_Grid\_50km\_Wgs84"}\NormalTok{, }\AttributeTok{package =} \StringTok{"SBDI4R"}\NormalTok{, }\AttributeTok{envir =} \FunctionTok{environment}\NormalTok{())}
 
 \NormalTok{grid }\OtherTok{\textless{}{-}}\NormalTok{ Sweden\_Grid\_50km\_Wgs84}
 
@@ -510,15 +509,14 @@ data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326)
 \CommentTok{\# }\AlertTok{NOTE}\CommentTok{: make sure there are no NAs in the columns defining the coordinates}
 \CommentTok{\# xf$data[!is.na(xf$data$longitude) | !is.na(xf$data$latitude),]}
 
-\NormalTok{obs }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(xf}\SpecialCharTok{$}\NormalTok{data)}
-\FunctionTok{coordinates}\NormalTok{(obs) }\OtherTok{\textless{}{-}}\NormalTok{ obs[,}\FunctionTok{c}\NormalTok{(}\StringTok{"longitude"}\NormalTok{,}\StringTok{"latitude"}\NormalTok{)]}
-\NormalTok{wkt }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_crs}\NormalTok{(}\DecValTok{4326}\NormalTok{)[[}\DecValTok{2}\NormalTok{]]}
-\FunctionTok{proj4string}\NormalTok{(obs) }\OtherTok{\textless{}{-}}\NormalTok{ sp}\SpecialCharTok{::}\FunctionTok{CRS}\NormalTok{(wkt) }\CommentTok{\#CRS("+init=epsg:4326")}
-\NormalTok{nObs }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(obs)}
+\NormalTok{obs }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(}\FunctionTok{as.data.frame}\NormalTok{(xf}\SpecialCharTok{$}\NormalTok{data),}
+                \AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"longitude"}\NormalTok{,}\StringTok{"latitude"}\NormalTok{),}
+                \AttributeTok{crs =} \FunctionTok{st\_crs}\NormalTok{(}\DecValTok{4326}\NormalTok{))}
+
 \CommentTok{\# overlay the occurrence data with the grid}
-\NormalTok{ObsInGridList }\OtherTok{\textless{}{-}} \FunctionTok{over}\NormalTok{(grid, obs, }\AttributeTok{returnList=}\ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{ObsInGridListID }\OtherTok{\textless{}{-}} \FunctionTok{st\_intersects}\NormalTok{(grid, obs)}
+\NormalTok{ObsInGridList }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(ObsInGridListID, }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{st\_drop\_geometry}\NormalTok{(obs[x,]))}
 \NormalTok{wNonEmpty }\OtherTok{\textless{}{-}} \FunctionTok{unname}\NormalTok{( }\FunctionTok{which}\NormalTok{( }\FunctionTok{unlist}\NormalTok{(}\FunctionTok{lapply}\NormalTok{(ObsInGridList, nrow)) }\SpecialCharTok{!=} \DecValTok{0}\NormalTok{) )}
-\ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(wNonEmpty)}\SpecialCharTok{==}\DecValTok{0}\NormalTok{) }\FunctionTok{message}\NormalTok{(}\StringTok{"Observations don\textquotesingle{}t overlap any grid cell."}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -539,9 +537,9 @@ The result \texttt{ObsInGridList} is a \texttt{list} object with a subset of the
 \begin{Highlighting}[]
 \CommentTok{\# apply a summary over the grid cells }
 \NormalTok{nCells }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(ObsInGridList)}
-\NormalTok{res }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\StringTok{"nObs"}\OtherTok{=}\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{,nCells)),}
-                  \StringTok{"nYears"}\OtherTok{=}\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{,nCells)),}
-                  \StringTok{"nSpp"}\OtherTok{=}\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{,nCells)),}
+\NormalTok{res }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\StringTok{"nObs"} \OtherTok{=} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{,nCells)),}
+                  \StringTok{"nYears"} \OtherTok{=} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{,nCells)),}
+                  \StringTok{"nSpp"} \OtherTok{=} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{,nCells)),}
                   \AttributeTok{row.names =} \FunctionTok{row.names}\NormalTok{(grid),}
                   \AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)}
 
@@ -559,7 +557,7 @@ The result \texttt{ObsInGridList} is a \texttt{list} object with a subset of the
 \NormalTok{                  )}
 \NormalTok{dataRes }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(dplyr}\SpecialCharTok{::}\FunctionTok{bind\_rows}\NormalTok{(dataRes, }\AttributeTok{.id =} \StringTok{"gridID"}\NormalTok{))}
 \NormalTok{res[wNonEmpty,] }\OtherTok{\textless{}{-}}\NormalTok{ dataRes[,}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
-\NormalTok{resSp }\OtherTok{\textless{}{-}}\NormalTok{ sp}\SpecialCharTok{::}\FunctionTok{SpatialPolygonsDataFrame}\NormalTok{(grid, res)}
+\NormalTok{resSf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(res, }\FunctionTok{st\_geometry}\NormalTok{(grid)))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -568,15 +566,15 @@ And finally plot the grid summary as a map:
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{palBW }\OtherTok{\textless{}{-}}\NormalTok{ leaflet}\SpecialCharTok{::}\FunctionTok{colorNumeric}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\StringTok{"navyblue"}\NormalTok{),}
-                               \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(resSp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nSpp, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)),}
+                               \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(resSf}\SpecialCharTok{$}\NormalTok{nSpp, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)),}
                                \AttributeTok{na.color =} \StringTok{"transparent"}\NormalTok{)}
 \NormalTok{oldpar }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{()}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{))}
-\FunctionTok{plot}\NormalTok{(resSp, }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(resSp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nSpp), }\AttributeTok{border =} \ConstantTok{NA}\NormalTok{)}
-\FunctionTok{plot}\NormalTok{(swe\_wgs84}\SpecialCharTok{$}\NormalTok{Border, }\AttributeTok{border=}\DecValTok{1}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{1}\NormalTok{, }\AttributeTok{add=}\NormalTok{T)}
+\FunctionTok{plot}\NormalTok{(resSf}\SpecialCharTok{$}\NormalTok{geometry, }\AttributeTok{col =} \FunctionTok{palBW}\NormalTok{(resSf}\SpecialCharTok{$}\NormalTok{nSpp), }\AttributeTok{border =} \ConstantTok{NA}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(swe\_wgs84}\SpecialCharTok{$}\NormalTok{Border}\SpecialCharTok{$}\NormalTok{geometry, }\AttributeTok{border =} \DecValTok{1}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{1}\NormalTok{, }\AttributeTok{add =}\NormalTok{ T)}
 \FunctionTok{legend}\NormalTok{(}\StringTok{"bottomleft"}\NormalTok{, }
-       \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(resSp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nSpp, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
-       \AttributeTok{col =} \FunctionTok{palBW}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(resSp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nSpp, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
+       \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(resSf}\SpecialCharTok{$}\NormalTok{nSpp, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
+       \AttributeTok{col =} \FunctionTok{palBW}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(resSf}\SpecialCharTok{$}\NormalTok{nSpp, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
        \AttributeTok{title =} \StringTok{"Number of }\SpecialCharTok{\textbackslash{}n}\StringTok{species"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{15}\NormalTok{, }\AttributeTok{bty=}\StringTok{"n"}\NormalTok{)}
 \FunctionTok{par}\NormalTok{(oldpar)}
 \end{Highlighting}
@@ -584,7 +582,7 @@ And finally plot the grid summary as a map:
 
 \includegraphics{r-tools-tutorial_files/figure-latex/gridPlot-1.pdf}
 
-We may now ask wether species richness varies across latitude. So we go further by arranging the observations by latitude:
+We may now ask whether species richness varies across latitude. So we go further by arranging the observations by latitude:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -599,13 +597,13 @@ We may now ask wether species richness varies across latitude. So we go further 
     \DocumentationTok{\#\# take one row per cell per species (presence)}
     \FunctionTok{distinct}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
     \DocumentationTok{\#\# calculate species richness}
-    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{richness=}\FunctionTok{n}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{richness =} \FunctionTok{n}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%}
     \DocumentationTok{\#\# convert to wide format (sites by species)}
-    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{present=}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{do}\NormalTok{(tidyr}\SpecialCharTok{::}\FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{data=}\NormalTok{.,  }
-                          \AttributeTok{names\_from=}\NormalTok{species, }
-                          \AttributeTok{values\_from=}\NormalTok{present, }
-                          \AttributeTok{values\_fill=}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{present =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{do}\NormalTok{(tidyr}\SpecialCharTok{::}\FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{data =}\NormalTok{ .,  }
+                          \AttributeTok{names\_from =}\NormalTok{ species, }
+                          \AttributeTok{values\_from =}\NormalTok{ present, }
+                          \AttributeTok{values\_fill =} \DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
     \FunctionTok{ungroup}\NormalTok{()}
 \DocumentationTok{\#\# where a species was not present, it will have NA: convert these to 0}
 \NormalTok{sppcols }\OtherTok{\textless{}{-}} \FunctionTok{setdiff}\NormalTok{(}\FunctionTok{names}\NormalTok{(xgridded),}
@@ -635,14 +633,16 @@ And plot it accordingly:
 \hypertarget{example-with-opportunistic-data-on-dragonflies}{%
 \section{Example with opportunistic data on Dragonflies}\label{example-with-opportunistic-data-on-dragonflies}}
 
-In this example we are interested in exploring opportunistically collected data
-from the Swedish citizen science species observation portal - Artportalen.
+In this example we are interested in exploring opportunistically
+collected data from the Swedish citizen science species observation
+portal - Artportalen.
 
 \hypertarget{name-searching}{%
 \subsection{Name searching}\label{name-searching}}
 
-To begin with, we want be sure there is an unequivocal way to find the species within
-the order Odonata (dragonflies) and nothing else, so let's search for ``odonata'':
+To begin with, we want be sure there is an unequivocal way to find the
+species within the order Odonata (dragonflies) and nothing else, so
+let's search for ``odonata'':
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -657,21 +657,23 @@ the order Odonata (dragonflies) and nothing else, so let's search for ``odonata'
 
 \begin{verbatim}
 ##       guid                          scientificName    rank occurrenceCount
-## 1  9829523  Odonata associated gemycircularvirus 1 species               0
-## 2 10072832  Odonata associated gemycircularvirus 2 species               0
-## 3  8062407 Bdellodes odonata Wallace & Mahon, 1976 species               0
-## 4      789                                 Odonata   order          207680
-## 5  7367071    Ramalina fastigiata var. odonata Hue variety               0
+## 1 10072832  Odonata associated gemycircularvirus 2 species               0
+## 2  7367071    Ramalina fastigiata var. odonata Hue variety               0
+## 3      789                                 Odonata   order           14121
+## 4  8062407 Bdellodes odonata Wallace & Mahon, 1976 species               0
+## 5  9829523  Odonata associated gemycircularvirus 1 species               0
 \end{verbatim}
 
-We quickly see there that other taxonomic levels appear too, and also species that look suspiciously as not belonging to
-dragonsflies. But there is only one order. Let's refine the search. To know which search fields we can use
-to filter the search we use the function \texttt{sbdi\_fields(fields\_type\ =\ "general")}.
-The search field we are looking for is ``order\_s''.
+We quickly see there that other taxonomic levels appear too, and also
+species that look suspiciously as not belonging to dragonflies. But
+there is only one order. Let's refine the search. To know which search
+fields we can use to filter the search we use the function
+\texttt{sbdi\_fields(fields\_type\ =\ "general")}. The search field we are looking
+for is ``order\_s''.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{sx }\OtherTok{\textless{}{-}} \FunctionTok{search\_fulltext}\NormalTok{(}\AttributeTok{fq=}\StringTok{"order\_s:Odonata"}\NormalTok{, }\AttributeTok{page\_size =} \DecValTok{10}\NormalTok{)}
+\NormalTok{sx }\OtherTok{\textless{}{-}} \FunctionTok{search\_fulltext}\NormalTok{(}\AttributeTok{fq =} \StringTok{"order\_s:Odonata"}\NormalTok{, }\AttributeTok{page\_size =} \DecValTok{10}\NormalTok{)}
 \NormalTok{sx}\SpecialCharTok{$}\NormalTok{data[, }\FunctionTok{c}\NormalTok{(}\StringTok{"scientificName"}\NormalTok{, }\StringTok{"rank"}\NormalTok{, }\StringTok{"occurrenceCount"}\NormalTok{)]}
 \end{Highlighting}
 \end{Shaded}
@@ -681,20 +683,21 @@ The search field we are looking for is ``order\_s''.
 \end{verbatim}
 
 \begin{verbatim}
-##       guid                             scientificName  rank occurrenceCount
-## 1  1429753                Gomphomacromia Brauer, 1864 genus               1
-## 2  1426725               Austropetalia Tillyard, 1916 genus               0
-## 3  4799335                 Sogjutella Pritykina, 1980 genus               0
-## 4  4302686                    Neuragrion Karsch, 1891 genus               0
-## 5  4799353              Xamenophlebia Pritykina, 1981 genus               0
-## 6  1429769               Lauromacromia Geijskes, 1970 genus               0
-## 7  1428195                     Sympetrum Newman, 1833 genus           27050
-## 8  4798599 Corduliochlora Marinov & Seidenbusch, 2007 genus               0
-## 9  1423625             Torrenticnemis Lieftinck, 1949 genus               0
-## 10 1423468                  Cyanallagma Kennedy, 1920 genus               0
+##        guid                        scientificName    rank occurrenceCount
+## 1  11034676      Notoneura xanthe Lieftinck, 1938 species               0
+## 2  11034731   Protoneura bifurcata Sjöstedt, 1918 species               0
+## 3  11034937        Oxygomphus chapini Klots, 1944 species               0
+## 4  11035128    Xerolestes pallidus (Rambur, 1842) species               0
+## 5  11035335    Mesothemis mithroides Brauer, 1900 species               0
+## 6  11029091 Paracercion luzonicum (Asahina, 1968) species               0
+## 7  11029136         Onychargia stellata Ris, 1915 species               0
+## 8  11029184         Nehalennia sophia Selys, 1840 species               0
+## 9  11029206     Lestes lundquisti Lieftinck, 1949 species               0
+## 10 11029310                Lestes concinnus Selys species               0
 \end{verbatim}
 
-Now we can download the taxonomic data (note that the search is case-sensitive):
+Now we can download the taxonomic data (note that the search is
+case-sensitive):
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -712,9 +715,9 @@ You can save the \texttt{tx} object as the complete species list for later use.
 \subsection{Filter the search to get the observations}\label{filter-the-search-to-get-the-observations}}
 
 We start by searching for the data resource we are interested in using
-the function \texttt{pick\_filter()}. This is an interactive query guiding you through
-the many resources available to filtering your query (data resources, spatial
-layers, and curated species lists).
+the function \texttt{pick\_filter()}. This is an interactive query guiding you
+through the many resources available to filtering your query (data
+resources, spatial layers, and curated species lists).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -723,8 +726,9 @@ layers, and curated species lists).
 \end{Highlighting}
 \end{Shaded}
 
-Follow the instructions. Your choices here would have been ``in3'' --\textgreater{} ``dr5''.
-Your variable \texttt{fq\_str} will now contain a string ``data\_resource\_uid:dr5''.
+Follow the instructions. Your choices here would have been ``in3'' --\textgreater{}
+``dr5''. Your variable \texttt{fq\_str} will now contain a string
+``data\_resource\_uid:dr5''.
 
 We only want to look at data from year 2000 to 2010:
 
@@ -737,12 +741,16 @@ We only want to look at data from year 2000 to 2010:
 \end{Highlighting}
 \end{Shaded}
 
-We also want to filter spatially for Southern Sweden (\href{https://en.wikipedia.org/wiki/G\%C3\%B6taland}{Götaland}).
+We also want to filter spatially for Southern Sweden
+(\href{https://en.wikipedia.org/wiki/G\%C3\%B6taland}{Götaland}).
 
-Vector spatial layers (eg. polygons) can be imported in a number of different ways.
-SBDI APIs take as search input polygons in the so-called WKT \href{https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html}{Well Known Text}
-format. So the first step is to load a vector layer and transform it into a WKT string.
-You could instead use the data we provid in the SBDI4R package \texttt{data("swe")}.
+Vector spatial layers (eg. polygons) can be imported in a number of
+different ways. SBDI APIs take as search input polygons in the so-called
+WKT \href{https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html}{Well Known
+Text}
+format. So the first step is to load a vector layer and transform it
+into a WKT string. You could instead use the data we provid in the
+SBDI4R package \texttt{data("swe")}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -754,63 +762,53 @@ You could instead use the data we provid in the SBDI4R package \texttt{data("swe
 \end{Highlighting}
 \end{Shaded}
 
-There are details about this polygon that we need to take care before. The WKT
-string should not be too long to be accepted by the API service. Also, the polygon
-we just got is projected in the coordinate system SWEREF99 TM, and the API service
-only accepts coordinates in a geodesic coordinate system WGS84. Let's construct
-the WKT string:
+There are details about this polygon that we need to take care before.
+The WKT string should not be too long to be accepted by the API service.
+Also, the polygon we just got is projected in the coordinate system
+SWEREF99 TM, and the API service only accepts coordinates in a geodesic
+coordinate system WGS84. Let's construct the WKT string:
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# transform the CRS}
-\NormalTok{gotaland\_c }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{as\_Spatial}\NormalTok{(}
-\NormalTok{                sf}\SpecialCharTok{::}\FunctionTok{st\_transform}\NormalTok{(}
-\NormalTok{                  sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{(gotaland\_c), }
-                  \AttributeTok{crs =}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_crs}\NormalTok{(}\DecValTok{4326}\NormalTok{)}\SpecialCharTok{$}\NormalTok{wkt) )}
+\NormalTok{gotaland\_c }\OtherTok{\textless{}{-}} \FunctionTok{st\_transform}\NormalTok{(gotaland\_c,}
+                           \AttributeTok{crs =} \FunctionTok{st\_crs}\NormalTok{(}\DecValTok{4326}\NormalTok{))}
 
 \CommentTok{\# disolve the counties into one polygon}
-\NormalTok{gotaland }\OtherTok{\textless{}{-}}\NormalTok{ rgeos}\SpecialCharTok{::}\FunctionTok{gUnaryUnion}\NormalTok{(gotaland\_c)}
-
-\CommentTok{\# extract the polygons coordinates}
-\NormalTok{nPol }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(gotaland}\SpecialCharTok{@}\NormalTok{polygons[[}\DecValTok{1}\NormalTok{]]}\SpecialCharTok{@}\NormalTok{Polygons) }
-\NormalTok{lonlat }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
-\ControlFlowTok{for}\NormalTok{(p }\ControlFlowTok{in} \FunctionTok{seq}\NormalTok{(nPol))\{}
-\NormalTok{  lonlat[[p]] }\OtherTok{\textless{}{-}}\NormalTok{ gotaland}\SpecialCharTok{@}\NormalTok{polygons[[}\DecValTok{1}\NormalTok{]]}\SpecialCharTok{@}\NormalTok{Polygons[[p]]}\SpecialCharTok{@}\NormalTok{coords}
-\NormalTok{\}}
-\NormalTok{lonlat }\OtherTok{\textless{}{-}} \FunctionTok{do.call}\NormalTok{(rbind, lonlat)}
+\NormalTok{gotaland }\OtherTok{\textless{}{-}} \FunctionTok{st\_union}\NormalTok{(gotaland\_c)}
 
 \CommentTok{\# create a convex hull of the polygon to simplify the geometry and }
 \CommentTok{\# reduce the length of the WKT string}
-\NormalTok{gotaland\_ch }\OtherTok{\textless{}{-}} \FunctionTok{chull}\NormalTok{(lonlat)}
-\NormalTok{lonlat }\OtherTok{\textless{}{-}}\NormalTok{ lonlat[}\FunctionTok{c}\NormalTok{(gotaland\_ch, gotaland\_ch[}\DecValTok{1}\NormalTok{]), ]}
+\NormalTok{gotaland\_ch }\OtherTok{\textless{}{-}} \FunctionTok{st\_convex\_hull}\NormalTok{(gotaland)}
 
-\CommentTok{\# create WKT string}
-\CommentTok{\# first join each lon{-}lat coordinate pair}
-\NormalTok{wkt\_temp }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(lonlat, }\DecValTok{1}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(z) }\FunctionTok{paste}\NormalTok{(}\FunctionTok{round}\NormalTok{(z,}\DecValTok{4}\NormalTok{), }\AttributeTok{collapse=}\StringTok{" "}\NormalTok{))}
-\CommentTok{\# now build the WKT string}
-\NormalTok{wkt }\OtherTok{\textless{}{-}} \FunctionTok{paste}\NormalTok{(}\StringTok{"MULTIPOLYGON((("}\NormalTok{, }\FunctionTok{paste}\NormalTok{(wkt\_temp, }\AttributeTok{collapse=}\StringTok{","}\NormalTok{), }\StringTok{")))"}\NormalTok{, }\AttributeTok{sep=}\StringTok{""}\NormalTok{)}
+\CommentTok{\# cast it as MULTIPOLYGON as this is what SBDIs API need}
 \CommentTok{\# }\AlertTok{NOTE}\CommentTok{: as of today, the SBDI APIs will only work properly if the polygon is }
 \CommentTok{\# submitted as a MULTIPOLYGON}
+\NormalTok{gotaland\_ch }\OtherTok{\textless{}{-}} \FunctionTok{st\_cast}\NormalTok{(gotaland\_ch, }\AttributeTok{to =} \StringTok{"MULTIPOLYGON"}\NormalTok{)}
+
+\CommentTok{\# create WKT string}
+\NormalTok{wkt }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_text}\NormalTok{(gotaland\_ch)}
 \end{Highlighting}
 \end{Shaded}
 
 The WKT string then looks like this:
 
 \begin{verbatim}
-## [1] "MULTIPOLYGON(((18.9004 57.4401,18.867 57.3975,18.3725 57.0068,18.3004 56.9528,16.408 56.2023,14.1906 55.3856,13.3357 55.34,12.8163 55.3859,11.2534 58.3579,11.1316 58.9094,11.1314 59.0118,11.2114 59.0897,11.3157 59.1165,11.8203 59.2355,11.9483 59.2624,12.062 59.2716,12.231 59.2736,15.7938 59.0388,15.8431 59.025,19.2889 57.9904,19.3058 57.9689,18.9004 57.4401)))"
+## [1] "MULTIPOLYGON (((13.33575 55.34003, 12.81633 55.38594, 11.25342 58.35786, 11.13161 58.90942, 11.13145 59.01184, 11.21142 59.0897, 11.31566 59.11651, 11.82032 59.23553, 11.94833 59.26237, 12.06197 59.27159, 12.23104 59.27357, 15.79383 59.03876, 15.84306 59.02498, 19.2889 57.99043, 19.3058 57.96888, 18.90037 57.44014, 18.86704 57.39753, 18.3725 57.00678, 18.30044 56.9528, 16.40805 56.20229, 14.19057 55.38557, 13.33575 55.34003)))"
 \end{verbatim}
 
 \includegraphics{r-tools-tutorial_files/figure-latex/searchpoly-1.pdf}
 
-Next, we download the observations using the command \texttt{occurrences()}, but be aware that
-the search fields may not be the same as those used to search for taxa. We therefore
-recommend using the function \texttt{sbdi\_fields("occurrence")} to find out which search fields we can use
-to filter for occurrences. Here we see that the field
-we need this time is ``order''.
+Next, we download the observations using the command \texttt{occurrences()},
+but be aware that the search fields may not be the same as those used to
+search for taxa. We therefore recommend using the function
+\texttt{sbdi\_fields("occurrence")} to find out which search fields we can use
+to filter for occurrences. Here we see that the field we need this time
+is ``order''.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{xf }\OtherTok{\textless{}{-}}\NormalTok{ SBDI4R}\SpecialCharTok{::}\FunctionTok{occurrences}\NormalTok{(}\AttributeTok{taxon =} \StringTok{"order:Odonata"}\NormalTok{, }
+\NormalTok{xf }\OtherTok{\textless{}{-}} \FunctionTok{occurrences}\NormalTok{(}\AttributeTok{taxon =} \StringTok{"order:Odonata"}\NormalTok{, }
                   \AttributeTok{fq =}\NormalTok{ fq\_str,}
                   \AttributeTok{wkt =}\NormalTok{ wkt,}
                   \AttributeTok{extra =} \StringTok{"collector"}\NormalTok{,}
@@ -819,28 +817,77 @@ we need this time is ``order''.
 \end{Highlighting}
 \end{Shaded}
 
-We have now downloaded the data locally and depending on your configuration this
-will be cached on your computer. However, as the search and download could take
-long time, we recommend to save the data locally.
+We have now downloaded the data locally and depending on your
+configuration this will be cached on your computer. However, as the
+search and download could take long time, we recommend to save the data
+locally. appropriate
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{save}\NormalTok{(xf, }\AttributeTok{file =} \StringTok{"an\_approprieted\_name.rdata"}\NormalTok{)}
-\FunctionTok{load}\NormalTok{(}\AttributeTok{file =} \StringTok{"an\_approprieted\_name.rdata"}\NormalTok{)}
+\FunctionTok{save}\NormalTok{(xf, }\AttributeTok{file =} \StringTok{"an\_appropriate\_name.rdata"}\NormalTok{)}
+\FunctionTok{load}\NormalTok{(}\AttributeTok{file =} \StringTok{"an\_appropriate\_name.rdata"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \hypertarget{quality-and-fit-for-use-check}{%
 \subsection{Quality and fit-for-use check}\label{quality-and-fit-for-use-check}}
 
-Before we can use the observation records we need to know if the observation
-effort (sampling effort) has varied over time and in space. We can approximate observation effort from the data by
-defining field visits i.e.~occasions at which an observer has sampled observations. We reconstruct field visits
-(that is, assign each observation a visitUID) using using the package
-\href{https://greensway.github.io/BIRDS/}{BIRDS}. Additionally we want the data to be summarized
-over a grid of 25 km (provided through the SBDI4R package). The following functions
-will perform many different summaries at the same time. Please refer to the BIRDS package
-documentation for more detail.
+Before we can use the observation records we need to know if the
+observation effort (sampling effort) has varied over time and in space.
+We can approximate observation effort from the data by defining field
+visits i.e.~occasions at which an observer has sampled observations. We
+reconstruct field visits (that is, assign each observation a visitUID)
+using using the package \href{https://greensway.github.io/BIRDS/}{BIRDS}.
+Additionally we want the data to be summarized over a grid of 25 km
+(provided through the SBDI4R package). The following functions will
+perform many different summaries at the same time. Please refer to the
+BIRDS package documentation for more detail.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{remotes}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"Greensway/BIRDS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## xfun        (0.24   -> 0.26  ) [CRAN]
+## digest      (0.6.27 -> 0.6.28) [CRAN]
+## stringi     (1.7.4  -> 1.7.5 ) [CRAN]
+## mime        (0.11   -> 0.12  ) [CRAN]
+## tibble      (3.1.3  -> 3.1.5 ) [CRAN]
+## matrixStats (0.59.0 -> 0.61.0) [CRAN]
+## e1071       (1.7-7  -> 1.7-9 ) [CRAN]
+## robustbase  (0.93-8 -> 0.93-9) [CRAN]
+## tidyr       (1.1.3  -> 1.1.4 ) [CRAN]
+## rgdal       (1.5-23 -> 1.5-27) [CRAN]
+## 
+##   There are binary versions available but the source versions are later:
+##         binary source needs_compilation
+## stringi  1.7.4  1.7.5              TRUE
+## tibble   3.1.4  3.1.5              TRUE
+## 
+## package 'xfun' successfully unpacked and MD5 sums checked
+## package 'digest' successfully unpacked and MD5 sums checked
+## package 'mime' successfully unpacked and MD5 sums checked
+## package 'matrixStats' successfully unpacked and MD5 sums checked
+## package 'e1071' successfully unpacked and MD5 sums checked
+## package 'robustbase' successfully unpacked and MD5 sums checked
+## package 'rgdal' successfully unpacked and MD5 sums checked
+## 
+## The downloaded binary packages are in
+##  C:\Users\Alejandro\AppData\Local\Temp\RtmpgZgCeb\downloaded_packages
+##       v  checking for file 'C:\Users\Alejandro\AppData\Local\Temp\RtmpgZgCeb\remotes3b383d262504\Greensway-BIRDS-8a336fd/DESCRIPTION'
+##       -  preparing 'BIRDS': (1.8s)
+##    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   v  checking DESCRIPTION meta-information
+##       -  installing the package to process help pages
+##       -  saving partial Rd database (14.2s)
+##       -  checking for LF line-endings in source and make files and shell scripts
+##       -  checking for empty or unneeded directories
+##   Removed empty directory      Removed empty directory 'BIRDS/data-raw'
+##       -  building 'BIRDS_0.2.2.tar.gz'
+##      
+## 
+\end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -856,32 +903,28 @@ documentation for more detail.
                     \CommentTok{\# the visits are defined by collector and named locality}
                     \AttributeTok{idCols =} \FunctionTok{c}\NormalTok{(}\StringTok{"locality"}\NormalTok{, }\StringTok{"collector"}\NormalTok{), }
                     \AttributeTok{timeCols =} \FunctionTok{c}\NormalTok{(}\StringTok{"year"}\NormalTok{, }\StringTok{"month"}\NormalTok{, }\StringTok{"day"}\NormalTok{), }
-                    \AttributeTok{xyCols =}\FunctionTok{c}\NormalTok{(}\StringTok{"longitude"}\NormalTok{,}\StringTok{"latitude"}\NormalTok{) )}
+                    \AttributeTok{xyCols =} \FunctionTok{c}\NormalTok{(}\StringTok{"longitude"}\NormalTok{,}\StringTok{"latitude"}\NormalTok{) )}
 
 \CommentTok{\# We don\textquotesingle{}t need the whole grid, just the piece that overlaps our searching polygon}
-\NormalTok{gotaland\_grid25 }\OtherTok{\textless{}{-}}\NormalTok{ raster}\SpecialCharTok{::}\FunctionTok{intersect}\NormalTok{(gotaland, Sweden\_Grid\_25km\_Wgs84)}
-
-\CommentTok{\# This is another way of doing it.}
-\CommentTok{\# gotaland\_grid25 \textless{}{-} gIntersection(gotaland,}
-\CommentTok{\#                                  spTransform(Sweden\_Grid\_25km\_Wgs84, }
-\CommentTok{\#                                              CRSobj = CRS(sf::st\_crs(4326)$wkt)))}
+\NormalTok{wInt }\OtherTok{\textless{}{-}} \FunctionTok{unlist}\NormalTok{(}\FunctionTok{st\_intersects}\NormalTok{(gotaland, Sweden\_Grid\_25km\_Wgs84))}
+\NormalTok{gotaland\_grid25 }\OtherTok{\textless{}{-}}\NormalTok{ Sweden\_Grid\_25km\_Wgs84[wInt,]}
 
 \NormalTok{SB }\OtherTok{\textless{}{-}} \FunctionTok{summariseBirds}\NormalTok{(OB, }\AttributeTok{grid =}\NormalTok{ gotaland\_grid25, }\AttributeTok{spillOver =} \StringTok{"unique"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-Once summarised, we can see over space and for a few selected years how the
-number of observations is distributed:
+Once summarised, we can see over space and for a few selected years how
+the number of observations is distributed:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{maxC }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nObs, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{maxC }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial}\SpecialCharTok{$}\NormalTok{nObs, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{palBW }\OtherTok{\textless{}{-}}\NormalTok{ leaflet}\SpecialCharTok{::}\FunctionTok{colorNumeric}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\StringTok{"navyblue"}\NormalTok{), }
                                \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC), }
                                \AttributeTok{na.color =} \StringTok{"transparent"}\NormalTok{)}
 \NormalTok{oldpar }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{()}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{), }\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{))}
-\FunctionTok{plot}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial, }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{nObs),}
+\FunctionTok{plot}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial}\SpecialCharTok{$}\NormalTok{geometry, }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial}\SpecialCharTok{$}\NormalTok{nObs),}
      \AttributeTok{border =} \StringTok{"grey"}\NormalTok{, }\AttributeTok{main=}\StringTok{"All years"}\NormalTok{) }\DocumentationTok{\#\# with palette}
 \FunctionTok{legend}\NormalTok{(}\StringTok{"bottomleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
        \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
@@ -895,12 +938,12 @@ number of observations is distributed:
                         \AttributeTok{variable =} \StringTok{"nObs"}\NormalTok{, }
                         \AttributeTok{method =} \StringTok{"sum"}\NormalTok{)}
 
-\NormalTok{maxC }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(yearlySp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\StringTok{\textquotesingle{}2005\textquotesingle{}}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{maxC }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(yearlySp}\SpecialCharTok{$}\StringTok{\textquotesingle{}2005\textquotesingle{}}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{palBW }\OtherTok{\textless{}{-}}\NormalTok{ leaflet}\SpecialCharTok{::}\FunctionTok{colorNumeric}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\StringTok{"navyblue"}\NormalTok{), }
                                \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC), }
                                \AttributeTok{na.color =} \StringTok{"transparent"}\NormalTok{)}
 
-\FunctionTok{plot}\NormalTok{(yearlySp[}\StringTok{"2005"}\NormalTok{], }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(yearlySp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\StringTok{\textquotesingle{}2005\textquotesingle{}}\NormalTok{), }
+\FunctionTok{plot}\NormalTok{(yearlySp}\SpecialCharTok{$}\NormalTok{geometry, }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(yearlySp}\SpecialCharTok{$}\StringTok{\textquotesingle{}2005\textquotesingle{}}\NormalTok{), }
      \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}\AttributeTok{main=}\StringTok{"2005"}\NormalTok{)}
 \FunctionTok{legend}\NormalTok{(}\StringTok{"bottomleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
        \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
@@ -908,12 +951,12 @@ number of observations is distributed:
        \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}
        \AttributeTok{title =} \StringTok{"Number of }\SpecialCharTok{\textbackslash{}n}\StringTok{observations"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{15}\NormalTok{, }\AttributeTok{bty=}\StringTok{"n"}\NormalTok{)}
 
-\NormalTok{maxC }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(yearlySp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\StringTok{\textquotesingle{}2010\textquotesingle{}}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{maxC }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(yearlySp}\StringTok{\textquotesingle{}2010\textquotesingle{}}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{palBW }\OtherTok{\textless{}{-}}\NormalTok{ leaflet}\SpecialCharTok{::}\FunctionTok{colorNumeric}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\StringTok{"navyblue"}\NormalTok{), }
                                \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC), }
                                \AttributeTok{na.color =} \StringTok{"transparent"}\NormalTok{)}
 
-\FunctionTok{plot}\NormalTok{(yearlySp[}\StringTok{"2010"}\NormalTok{], }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(yearlySp}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\StringTok{\textquotesingle{}2010\textquotesingle{}}\NormalTok{), }
+\FunctionTok{plot}\NormalTok{(yearlySp}\SpecialCharTok{$}\NormalTok{geometry, }\AttributeTok{col=}\FunctionTok{palBW}\NormalTok{(yearlySp}\SpecialCharTok{$}\StringTok{\textquotesingle{}2010\textquotesingle{}}\NormalTok{), }
      \AttributeTok{border =} \StringTok{"grey"}\NormalTok{,}\AttributeTok{main=}\StringTok{"2010"}\NormalTok{)}
 \FunctionTok{legend}\NormalTok{(}\StringTok{"bottomleft"}\NormalTok{, }\AttributeTok{inset =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FloatTok{0.05}\NormalTok{),}
        \AttributeTok{legend =} \FunctionTok{round}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, maxC, }\AttributeTok{length.out =} \DecValTok{5}\NormalTok{)),}
@@ -926,21 +969,17 @@ number of observations is distributed:
 
 \includegraphics{r-tools-tutorial_files/figure-latex/plotBIRDSspatial-1.pdf}
 
-We now want to use the number of field visits as the measure
-for sampling effort. And since there are other ways to plot spatial data, we this time
-use the package \texttt{sf} instead of \texttt{sp}:
+We now want to use the number of field visits as the measure for
+sampling effort. :
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(sf)}
 \FunctionTok{library}\NormalTok{(cowplot)}
 \FunctionTok{library}\NormalTok{(ggplot2)}
 \FunctionTok{library}\NormalTok{(colorRamps)}
 \FunctionTok{library}\NormalTok{(gridExtra)}
 
-\NormalTok{spatial\_sf }\OtherTok{\textless{}{-}} \FunctionTok{st\_as\_sf}\NormalTok{(SB}\SpecialCharTok{$}\NormalTok{spatial)}
-
-\NormalTok{vis }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ spatial\_sf, }\FunctionTok{aes}\NormalTok{( }\AttributeTok{fill =}\NormalTok{ nVis)) }\SpecialCharTok{+}
+\NormalTok{vis }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ SB}\SpecialCharTok{$}\NormalTok{spatial, }\FunctionTok{aes}\NormalTok{( }\AttributeTok{fill =}\NormalTok{ nVis)) }\SpecialCharTok{+}
   \FunctionTok{geom\_sf}\NormalTok{() }\SpecialCharTok{+}
   \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Visits"}\NormalTok{) }\SpecialCharTok{+}
   \FunctionTok{scale\_fill\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"\#56B1F7"}\NormalTok{,}
@@ -949,16 +988,16 @@ use the package \texttt{sf} instead of \texttt{sp}:
   \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.margin =} \FunctionTok{margin}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\StringTok{"pt"}\NormalTok{)) }\SpecialCharTok{+}
   \FunctionTok{theme\_cowplot}\NormalTok{()}
 
-\NormalTok{spp }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ spatial\_sf ,}\FunctionTok{aes}\NormalTok{( }\AttributeTok{fill =}\NormalTok{ nSpp))}\SpecialCharTok{+}
-  \FunctionTok{geom\_sf}\NormalTok{()}\SpecialCharTok{+}
-  \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Number of species"}\NormalTok{)}\SpecialCharTok{+}
+\NormalTok{spp }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ SB}\SpecialCharTok{$}\NormalTok{spatial, }\FunctionTok{aes}\NormalTok{( }\AttributeTok{fill =}\NormalTok{ nSpp)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_sf}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Number of species"}\NormalTok{) }\SpecialCharTok{+}
   \FunctionTok{scale\_fill\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"\#56B1F7"}\NormalTok{,}
                       \AttributeTok{high =} \StringTok{"\#132B43"}\NormalTok{,}
                       \AttributeTok{na.value =} \ConstantTok{NA}\NormalTok{) }\SpecialCharTok{+}
   \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.margin =} \FunctionTok{margin}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\StringTok{"pt"}\NormalTok{)) }\SpecialCharTok{+}
   \FunctionTok{theme\_cowplot}\NormalTok{()}
 
-\FunctionTok{grid.arrange}\NormalTok{(vis, spp, }\AttributeTok{ncol=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{grid.arrange}\NormalTok{(vis, spp, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -967,9 +1006,10 @@ use the package \texttt{sf} instead of \texttt{sp}:
 \hypertarget{temporal-check}{%
 \paragraph{Temporal check}\label{temporal-check}}
 
-We see that \texttt{SB} contains an element called \texttt{SB\$temporal} that contains a daily
-time series with time-specific rows when there is information. \texttt{xts} also supports
-day time, but dating below day resolution is not yet implemented in the \texttt{BIRDS} package.
+We see that \texttt{SB} contains an element called \texttt{SB\$temporal} that contains
+a daily time series with time-specific rows when there is information.
+\texttt{xts} also supports day time, but dating below day resolution is not yet
+implemented in the \texttt{BIRDS} package.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -987,8 +1027,8 @@ day time, but dating below day resolution is not yet implemented in the \texttt{
 ## 2000-04-12    3    3    1
 \end{verbatim}
 
-Sub-setting is convenient in \texttt{xts} as you can do it with its dates and with a \texttt{/}
-for a range of dates.
+Sub-setting is convenient in \texttt{xts} as you can do it with its dates and
+with a \texttt{/} for a range of dates.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -998,7 +1038,7 @@ for a range of dates.
 
 \begin{verbatim}
 ##            nObs nVis nSpp
-## 2010-09-07    9    7    5
+## 2010-09-07   19   10   12
 \end{verbatim}
 
 \begin{Shaded}
@@ -1009,18 +1049,18 @@ for a range of dates.
 
 \begin{verbatim}
 ##            nObs nVis nSpp
-## 2010-09-01   38   15   14
-## 2010-09-02   26   12   12
-## 2010-09-03   20    9   10
-## 2010-09-04   63   19   18
-## 2010-09-05   71   25   12
-## 2010-09-06   16    4    9
-## 2010-09-07    9    7    5
+## 2010-09-01   46   19   14
+## 2010-09-02   28   14   12
+## 2010-09-03   23   10   10
+## 2010-09-04   64   20   18
+## 2010-09-05   74   27   12
+## 2010-09-06   18    5   11
+## 2010-09-07   19   10   12
 ## 2010-09-08   13    6    8
 ## 2010-09-09   32   12   14
 ## 2010-09-10    1    1    1
-## 2010-09-11   15    8    8
-## 2010-09-12   15    7    8
+## 2010-09-11   16    9    8
+## 2010-09-12   20   10    8
 ## 2010-09-13   14    5    9
 ## 2010-09-14    1    1    1
 ## 2010-09-15    3    3    2
@@ -1034,18 +1074,18 @@ for a range of dates.
 
 \begin{verbatim}
 ##            nObs nVis nSpp
-## 2010-09-01   38   15   14
-## 2010-09-02   26   12   12
-## 2010-09-03   20    9   10
-## 2010-09-04   63   19   18
-## 2010-09-05   71   25   12
-## 2010-09-06   16    4    9
-## 2010-09-07    9    7    5
+## 2010-09-01   46   19   14
+## 2010-09-02   28   14   12
+## 2010-09-03   23   10   10
+## 2010-09-04   64   20   18
+## 2010-09-05   74   27   12
+## 2010-09-06   18    5   11
+## 2010-09-07   19   10   12
 ## 2010-09-08   13    6    8
 ## 2010-09-09   32   12   14
 ## 2010-09-10    1    1    1
-## 2010-09-11   15    8    8
-## 2010-09-12   15    7    8
+## 2010-09-11   16    9    8
+## 2010-09-12   20   10    8
 ## 2010-09-13   14    5    9
 ## 2010-09-14    1    1    1
 ## 2010-09-15    3    3    2
@@ -1056,29 +1096,24 @@ for a range of dates.
 ## 2010-09-22    4    4    2
 ## 2010-09-23    3    3    2
 ## 2010-09-24   10    5    5
-## 2010-09-25    6    3    6
+## 2010-09-25    7    4    6
 ## 2010-09-26    7    6    2
 ## 2010-09-28    2    2    2
 ## 2010-09-29    5    3    4
 ## 2010-09-30    2    2    2
 \end{verbatim}
 
-The package \texttt{xts} has several tools for converting to different time periods.
-Here we use \texttt{apply.monthly} to obtain the total number of observations and visits
-per month. The plot command for an object of calss \texttt{xts} provides a many features.
-This makes it fairly easy to customize your plots. Read more in \texttt{?plot.xts}.
+The package \texttt{xts} has several tools for converting to different time
+periods. Here we use \texttt{apply.monthly} to obtain the total number of
+observations and visits per month. The plot command for an object of
+calss \texttt{xts} provides a many features. This makes it fairly easy to
+customize your plots. Read more in \texttt{?plot.xts}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(xts)}
 \NormalTok{obs.m }\OtherTok{\textless{}{-}} \FunctionTok{apply.monthly}\NormalTok{(sb.xts}\SpecialCharTok{$}\NormalTok{nObs, }\StringTok{"sum"}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
-
-\CommentTok{\# alternative for more summary options but slower}
-\CommentTok{\# obs.m \textless{}{-} exportBirds(SB,}
-\CommentTok{\#                      dimension = "temporal",}
-\CommentTok{\#                      timeRes = "monthly",}
-\CommentTok{\#                      variable = "nObs",}
-\CommentTok{\#                      method = "sum")}
+\NormalTok{vis.m }\OtherTok{\textless{}{-}} \FunctionTok{apply.monthly}\NormalTok{(sb.xts}\SpecialCharTok{$}\NormalTok{nVis, }\StringTok{"sum"}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
 
 \FunctionTok{plot}\NormalTok{(obs.m, }
      \AttributeTok{col =} \StringTok{"darkblue"}\NormalTok{, }
@@ -1087,8 +1122,7 @@ This makes it fairly easy to customize your plots. Read more in \texttt{?plot.xt
      \AttributeTok{grid.col =} \StringTok{"lightgrey"}\NormalTok{,  }
      \AttributeTok{main =} \StringTok{"Total number of daily observations and visits per month"}\NormalTok{)}
 
-\NormalTok{vis.m }\OtherTok{\textless{}{-}} \FunctionTok{apply.monthly}\NormalTok{(sb.xts}\SpecialCharTok{$}\NormalTok{nVis, }\StringTok{"sum"}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
-\FunctionTok{lines}\NormalTok{(vis.m, }\AttributeTok{col =} \StringTok{"orange"}\NormalTok{, }\AttributeTok{lwd=}\DecValTok{2}\NormalTok{, }\AttributeTok{on=}\DecValTok{1}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(vis.m, }\AttributeTok{col =} \StringTok{"orange"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{on =} \DecValTok{1}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1097,8 +1131,8 @@ This makes it fairly easy to customize your plots. Read more in \texttt{?plot.xt
 \hypertarget{species-trends}{%
 \subsection{Species trends}\label{species-trends}}
 
-We can now look at some particular species and ask whether those have changed in
-occurrence over time:
+We can now look at some particular species and ask whether those have
+changed in occurrence over time:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1110,103 +1144,94 @@ occurrence over time:
 ##                       species nCells nObs nVis
 ## 1              Aeshna affinis      3   32   27
 ## 2             Aeshna caerulea      6   13   13
-## 3               Aeshna cyanea    119  833  800
-## 4              Aeshna grandis    141 1687 1659
-## 5             Aeshna isoceles     24  159  156
-## 6               Aeshna juncea     90  332  321
-## 7                Aeshna mixta     75  554  529
-## 8              Aeshna serrata     11   33   32
-## 9           Aeshna subarctica     34  107   98
-## 10             Aeshna viridis     11   38   33
-## 11             Anax imperator     48  524  481
-## 12            Anax parthenope      1    1    1
-## 13        Brachytron pratense     88  477  465
-## 14       Calopteryx splendens    101  676  623
-## 15           Calopteryx virgo    123 1045  993
-## 16         Coenagrion armatum     21   70   63
-## 17      Coenagrion hastulatum    112  921  889
+## 3               Aeshna cyanea    128  896  861
+## 4              Aeshna grandis    156 1765 1735
+## 5             Aeshna isoceles     25  172  169
+## 6               Aeshna juncea    101  366  353
+## 7                Aeshna mixta     81  677  646
+## 8              Aeshna serrata     13   39   38
+## 9           Aeshna subarctica     35  108   99
+## 10             Aeshna viridis     13   40   35
+## 11             Anax imperator     51  559  515
+## 12            Anax parthenope      2    5    5
+## 13        Brachytron pratense     93  505  492
+## 14       Calopteryx splendens    102  682  628
+## 15           Calopteryx virgo    124 1061 1007
+## 16         Coenagrion armatum     23   74   67
+## 17      Coenagrion hastulatum    118  941  908
 ## 18      Coenagrion johanssoni     15   75   70
-## 19       Coenagrion lunulatum     40  109  102
-## 20          Coenagrion puella    119 1377 1322
-## 21      Coenagrion pulchellum    116 1400 1353
-## 22     Cordulegaster boltonii     71  490  483
-## 23             Cordulia aenea    115 1041 1022
-## 24      Enallagma cyathigerum    139 1610 1528
-## 25        Epitheca bimaculata     14   34   33
-## 26           Erythromma najas     93  756  723
-## 27       Erythromma viridulum     12  137  121
-## 28      Gomphus vulgatissimus     47  159  154
-## 29           Ischnura elegans    117 1242 1187
-## 30           Ischnura pumilio     18   93   82
-## 31               Lestes dryas     50  205  197
-## 32              Lestes sponsa    137 1380 1313
-## 33              Lestes virens     49  191  179
-## 34     Leucorrhinia albifrons     43  174  170
-## 35      Leucorrhinia caudalis     33  140  133
-## 36         Leucorrhinia dubia     83  331  313
-## 37    Leucorrhinia pectoralis     81  354  337
-## 38     Leucorrhinia rubicunda     89  423  410
-## 39         Libellula depressa    104  534  513
+## 19       Coenagrion lunulatum     42  111  104
+## 20          Coenagrion puella    124 1415 1360
+## 21      Coenagrion pulchellum    124 1439 1392
+## 22     Cordulegaster boltonii     75  500  493
+## 23             Cordulia aenea    122 1072 1053
+## 24      Enallagma cyathigerum    149 1717 1630
+## 25        Epitheca bimaculata     16   36   35
+## 26           Erythromma najas     97  774  741
+## 27       Erythromma viridulum     13  143  126
+## 28      Gomphus vulgatissimus     48  160  155
+## 29           Ischnura elegans    124 1351 1294
+## 30           Ischnura pumilio     22  110   95
+## 31               Lestes dryas     52  214  206
+## 32              Lestes sponsa    147 1454 1385
+## 33              Lestes virens     50  201  188
+## 34     Leucorrhinia albifrons     47  185  180
+## 35      Leucorrhinia caudalis     34  143  136
+## 36         Leucorrhinia dubia     85  338  320
+## 37    Leucorrhinia pectoralis     85  368  351
+## 38     Leucorrhinia rubicunda     96  445  432
+## 39         Libellula depressa    110  569  546
 ## 40            Libellula fulva      9  101   90
-## 41   Libellula quadrimaculata    148 2004 1958
+## 41   Libellula quadrimaculata    160 2096 2047
 ## 42        Nehalennia speciosa      3   34   33
-## 43   Onychogomphus forcipatus     69  432  431
-## 44      Orthetrum cancellatum    124  971  927
-## 45     Orthetrum coerulescens     76  251  244
-## 46       Platycnemis pennipes     89  541  525
-## 47        Pyrrhosoma nymphula    125  958  929
-## 48       Somatochlora arctica     27   44   41
-## 49 Somatochlora flavomaculata     85  418  411
-## 50     Somatochlora metallica    102  604  595
-## 51             Sympecma fusca     43  253  248
+## 43   Onychogomphus forcipatus     76  447  445
+## 44      Orthetrum cancellatum    129 1079 1025
+## 45     Orthetrum coerulescens     76  253  246
+## 46       Platycnemis pennipes     92  545  529
+## 47        Pyrrhosoma nymphula    127  974  945
+## 48       Somatochlora arctica     28   45   42
+## 49 Somatochlora flavomaculata     90  427  420
+## 50     Somatochlora metallica    109  621  612
+## 51             Sympecma fusca     50  269  264
 ## 52          Sympecma paedisca      2    5    5
-## 53            Sympetrum danae    122  752  719
-## 54        Sympetrum flaveolum     76  273  267
+## 53            Sympetrum danae    136  803  768
+## 54        Sympetrum flaveolum     82  302  295
 ## 55     Sympetrum fonscolombii      2    2    2
-## 56       Sympetrum sanguineum    127 1204 1162
-## 57       Sympetrum striolatum     77  271  261
-## 58         Sympetrum vulgatum    119  988  933
+## 56       Sympetrum sanguineum    137 1268 1224
+## 57       Sympetrum striolatum     84  311  298
+## 58         Sympetrum vulgatum    128 1072 1016
 \end{verbatim}
 
-We pick two species and compare their trends in number of visits where the species where reported, relative to the total number of visits.
+We pick two species and compare their trends in number of visits where
+the species where reported, relative to the total number of visits.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(dplyr)}
-\NormalTok{sppCountLq }\OtherTok{\textless{}{-}} \FunctionTok{obsData}\NormalTok{(OB) }\SpecialCharTok{\%\textgreater{}\%} 
-            \FunctionTok{group\_by}\NormalTok{(year,visitUID) }\SpecialCharTok{\%\textgreater{}\%} 
-            \FunctionTok{summarise}\NormalTok{(}\StringTok{"focalCount"} \OtherTok{=} \FunctionTok{sum}\NormalTok{(scientificName }\SpecialCharTok{==} \StringTok{"Libellula quadrimaculata"}\NormalTok{),}
-                      \StringTok{"sppLength"} \OtherTok{=} \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(scientificName)), }
-                      \AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-            \FunctionTok{ungroup}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-            \FunctionTok{group\_by}\NormalTok{(year) }\SpecialCharTok{\%\textgreater{}\%} 
-            \FunctionTok{summarise}\NormalTok{(}\StringTok{"focalCount"} \OtherTok{=} \FunctionTok{sum}\NormalTok{(focalCount),}
-                      \StringTok{"nVis"} \OtherTok{=} \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(visitUID)), }
-                      \AttributeTok{.groups =} \ConstantTok{NULL}\NormalTok{)}
-
-\NormalTok{sppCountLq}\SpecialCharTok{$}\NormalTok{relCount }\OtherTok{\textless{}{-}}\NormalTok{ sppCountLq}\SpecialCharTok{$}\NormalTok{focalCount}\SpecialCharTok{/}\NormalTok{sppCountLq}\SpecialCharTok{$}\NormalTok{nVis}
-
-\NormalTok{sppCountSd }\OtherTok{\textless{}{-}} \FunctionTok{obsData}\NormalTok{(OB) }\SpecialCharTok{\%\textgreater{}\%} 
-            \FunctionTok{group\_by}\NormalTok{(year,visitUID) }\SpecialCharTok{\%\textgreater{}\%} 
-            \FunctionTok{summarise}\NormalTok{(}\StringTok{"focalCount"} \OtherTok{=} \FunctionTok{sum}\NormalTok{(scientificName }\SpecialCharTok{==} \StringTok{"Sympetrum sanguineum"}\NormalTok{),}
-                      \StringTok{"sppLength"} \OtherTok{=} \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(scientificName)), }
-                      \AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-            \FunctionTok{ungroup}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
-            \FunctionTok{group\_by}\NormalTok{(year) }\SpecialCharTok{\%\textgreater{}\%} 
-            \FunctionTok{summarise}\NormalTok{(}\StringTok{"focalCount"} \OtherTok{=} \FunctionTok{sum}\NormalTok{(focalCount),}
-                      \StringTok{"nVis"} \OtherTok{=} \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(visitUID)), }
-                      \AttributeTok{.groups =} \ConstantTok{NULL}\NormalTok{)}
-
-\NormalTok{sppCountSd}\SpecialCharTok{$}\NormalTok{relCount }\OtherTok{\textless{}{-}}\NormalTok{ sppCountSd}\SpecialCharTok{$}\NormalTok{focalCount}\SpecialCharTok{/}\NormalTok{sppCountSd}\SpecialCharTok{$}\NormalTok{nVis}
+\NormalTok{sppCount }\OtherTok{\textless{}{-}} \FunctionTok{obsData}\NormalTok{(OB) }\SpecialCharTok{|}\ErrorTok{\textgreater{}} 
+    \FunctionTok{group\_by}\NormalTok{(year, visitUID) }\SpecialCharTok{|}\ErrorTok{\textgreater{}} 
+    \FunctionTok{summarise}\NormalTok{(}\StringTok{"focalCountLq"} \OtherTok{=} \FunctionTok{sum}\NormalTok{(scientificName }\SpecialCharTok{==} \StringTok{"Libellula quadrimaculata"}\NormalTok{),}
+              \StringTok{"focalCountSd"} \OtherTok{=} \FunctionTok{sum}\NormalTok{(scientificName }\SpecialCharTok{==} \StringTok{"Sympetrum sanguineum"}\NormalTok{),}
+              \StringTok{"sppLength"} \OtherTok{=} \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(scientificName)), }
+              \AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{) }\SpecialCharTok{|}\ErrorTok{\textgreater{}} 
+    \FunctionTok{ungroup}\NormalTok{() }\SpecialCharTok{|}\ErrorTok{\textgreater{}} 
+    \FunctionTok{group\_by}\NormalTok{(year) }\SpecialCharTok{|}\ErrorTok{\textgreater{}} 
+    \FunctionTok{summarise}\NormalTok{(}\StringTok{"focalCountLq"} \OtherTok{=} \FunctionTok{sum}\NormalTok{(focalCountLq),}
+              \StringTok{"focalCountSd"} \OtherTok{=} \FunctionTok{sum}\NormalTok{(focalCountSd),}
+              \StringTok{"nVis"} \OtherTok{=} \FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(visitUID)),}
+              \StringTok{"relCountLq"} \OtherTok{=}\NormalTok{ focalCountLq }\SpecialCharTok{/}\NormalTok{ nVis,}
+              \StringTok{"relCountSd"} \OtherTok{=}\NormalTok{ focalCountSd }\SpecialCharTok{/}\NormalTok{ nVis,}
+              \AttributeTok{.groups =} \ConstantTok{NULL}\NormalTok{)}
 
 \NormalTok{oldpar }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\AttributeTok{no.readonly =} \ConstantTok{TRUE}\NormalTok{)}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mar=}\FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{), }\AttributeTok{las=}\DecValTok{1}\NormalTok{)}
-\FunctionTok{plot}\NormalTok{(sppCountLq}\SpecialCharTok{$}\NormalTok{year, sppCountLq}\SpecialCharTok{$}\NormalTok{relCount, }\AttributeTok{type =} \StringTok{"l"}\NormalTok{, }
-     \AttributeTok{lwd =} \DecValTok{3}\NormalTok{, }\AttributeTok{xlab =} \StringTok{"Year"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Relative number of visits with observations"}\NormalTok{, }
-     \AttributeTok{ylim=}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(sppCountLq}\SpecialCharTok{$}\NormalTok{relCount)), }\AttributeTok{xaxp=}\FunctionTok{c}\NormalTok{(}\DecValTok{2000}\NormalTok{, }\DecValTok{2010}\NormalTok{, }\DecValTok{10}\NormalTok{))}
-\FunctionTok{lines}\NormalTok{(sppCountSd}\SpecialCharTok{$}\NormalTok{year, sppCountSd}\SpecialCharTok{$}\NormalTok{relCount, }\AttributeTok{lwd=}\DecValTok{3}\NormalTok{, }\AttributeTok{col=}\StringTok{"\#78D2EB"}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(sppCount}\SpecialCharTok{$}\NormalTok{year, sppCount}\SpecialCharTok{$}\NormalTok{relCountLq, }
+     \AttributeTok{type =} \StringTok{"l"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{3}\NormalTok{, }\AttributeTok{xlab =} \StringTok{"Year"}\NormalTok{, }
+     \AttributeTok{ylab =} \StringTok{"Relative number of visits with observations"}\NormalTok{, }
+     \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(sppCount}\SpecialCharTok{$}\NormalTok{relCountLq)), }
+     \AttributeTok{xaxp =} \FunctionTok{c}\NormalTok{(}\DecValTok{2000}\NormalTok{, }\DecValTok{2010}\NormalTok{, }\DecValTok{10}\NormalTok{))}
+\FunctionTok{lines}\NormalTok{(sppCount}\SpecialCharTok{$}\NormalTok{year, sppCount}\SpecialCharTok{$}\NormalTok{relCountSd, }\AttributeTok{lwd =} \DecValTok{3}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#78D2EB"}\NormalTok{)}
 \FunctionTok{legend}\NormalTok{(}\StringTok{"bottomright"}\NormalTok{, }
-       \AttributeTok{legend=}\FunctionTok{c}\NormalTok{(}\StringTok{"Libellula quadrimaculata"}\NormalTok{,}\StringTok{"Sympetrum sanguineum"}\NormalTok{), }
+       \AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Libellula quadrimaculata"}\NormalTok{,}\StringTok{"Sympetrum sanguineum"}\NormalTok{), }
        \AttributeTok{text.font =} \DecValTok{3}\NormalTok{, }\AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"black"}\NormalTok{, }\StringTok{"\#78D2EB"}\NormalTok{), }\AttributeTok{lwd =} \DecValTok{3}\NormalTok{, }\AttributeTok{bty =} \StringTok{"n"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}

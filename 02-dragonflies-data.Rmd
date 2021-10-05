@@ -2,42 +2,58 @@
 output: html_document
 editor_options: 
   chunk_output_type: inline
+  markdown: 
+    wrap: 72
 ---
+
 # Example with opportunistic data on Dragonflies
 
-In this example we are interested in exploring opportunistically collected data 
-from the Swedish citizen science species observation portal - Artportalen.
+In this example we are interested in exploring opportunistically
+collected data from the Swedish citizen science species observation
+portal - Artportalen.
 
 ## Name searching
-To begin with, we want be sure there is an unequivocal way to find the species within 
-the order Odonata (dragonflies) and nothing else, so let's search for "odonata":
+
+To begin with, we want be sure there is an unequivocal way to find the
+species within the order Odonata (dragonflies) and nothing else, so
+let's search for "odonata":
+
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE, include=FALSE}
 library(SBDI4R)
+library(sf)
+library(BIRDS)
 ```
 
 ```{r search1, echo=TRUE, eval=FALSE}
 sx <- search_fulltext("odonata")
 sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
-```  
+```
 
 ```{r search1eval, echo=FALSE}
 sx <- search_fulltext("odonata")
 sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
-```  
+```
 
-We quickly see there that other taxonomic levels appear too, and also species that look suspiciously as not belonging to 
-dragonsflies. But there is only one order. Let's refine the search. To know which search fields we can use 
-to filter the search we use the function `sbdi_fields(fields_type = "general")`.
-The search field we are looking for is "order_s".  
+We quickly see there that other taxonomic levels appear too, and also
+species that look suspiciously as not belonging to dragonflies. But
+there is only one order. Let's refine the search. To know which search
+fields we can use to filter the search we use the function
+`sbdi_fields(fields_type = "general")`. The search field we are looking
+for is "order_s".
+
 ```{r search2,  echo=TRUE, eval=FALSE}
-sx <- search_fulltext(fq="order_s:Odonata", page_size = 10)
+sx <- search_fulltext(fq = "order_s:Odonata", page_size = 10)
 sx$data[, c("scientificName", "rank", "occurrenceCount")]
-```  
+```
+
 ```{r search2eval, echo=FALSE}
-sx <- search_fulltext(fq="order_s:Odonata", page_size = 10)
+sx <- search_fulltext(fq = "order_s:Odonata", page_size = 10)
 sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
-```  
-Now we can download the taxonomic data (note that the search is case-sensitive):
+```
+
+Now we can download the taxonomic data (note that the search is
+case-sensitive):
+
 ```{r, message=FALSE, results=FALSE}
 tx <- taxinfo_download("order_s:Odonata", 
                        fields = c("guid", "order_s","genus_s", "specificEpithet_s", 
@@ -45,21 +61,24 @@ tx <- taxinfo_download("order_s:Odonata",
                        verbose = FALSE)
 tx <- tx[tx$rank == "species" & tx$genusS != "",] ## restrict to species and not hybrids
 ```
-You can save the `tx` object as the complete species list for later use. 
+
+You can save the `tx` object as the complete species list for later use.
 
 ## Filter the search to get the observations
-We start by searching for the data resource we are interested in using 
-the function `pick_filter()`. This is an interactive query guiding you through 
-the many resources available to filtering your query (data resources, spatial 
-layers, and curated species lists).
+
+We start by searching for the data resource we are interested in using
+the function `pick_filter()`. This is an interactive query guiding you
+through the many resources available to filtering your query (data
+resources, spatial layers, and curated species lists).
 
 ```{r filter2.1, message=FALSE, eval=FALSE}
 # follow the instructions 
 fq_str <- pick_filter("resource") 
-``` 
+```
 
-Follow the instructions. Your choices here would have been "in3" --> "dr5". 
-Your variable `fq_str` will now contain a string "data_resource_uid:dr5".
+Follow the instructions. Your choices here would have been "in3" --\>
+"dr5". Your variable `fq_str` will now contain a string
+"data_resource_uid:dr5".
 
 ```{r filter2.2, echo=FALSE, eval=TRUE}
 # we cant do it interactive here so we force it
@@ -67,6 +86,7 @@ fq_str <- "data_resource_uid:dr5"
 ```
 
 We only want to look at data from year 2000 to 2010:
+
 ```{r filter2.3}
 y1 <- 2000
 y2 <- 2010
@@ -74,12 +94,16 @@ fq_str <- c(fq_str, paste0("year:[", y1, " TO ", y2,"]"))
 # Note the square brackets are hard limits
 ```
 
-We also want to filter spatially for Southern Sweden ([Götaland](https://en.wikipedia.org/wiki/G%C3%B6taland)).
+We also want to filter spatially for Southern Sweden
+([Götaland](https://en.wikipedia.org/wiki/G%C3%B6taland)).
 
-Vector spatial layers (eg. polygons) can be imported  in a number of different ways. 
-SBDI APIs take as search input polygons in the so-called WKT [Well Known Text](https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html) 
-format. So the first step is to load a vector layer and transform it into a WKT string. 
-You could instead use the data we provid in the SBDI4R package `data("swe")`. 
+Vector spatial layers (eg. polygons) can be imported in a number of
+different ways. SBDI APIs take as search input polygons in the so-called
+WKT [Well Known
+Text](https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html)
+format. So the first step is to load a vector layer and transform it
+into a WKT string. You could instead use the data we provid in the
+SBDI4R package `data("swe")`.
 
 ```{r sweshape}
 data("swe",package = "SBDI4R")
@@ -89,129 +113,138 @@ wGotaland <- swe$Counties$LnNamn %in% c("Blekinge", "Gotlands", "Hallands",
 gotaland_c <- swe$Counties[wGotaland,]
 ```
 
-There are details about this polygon that we need to take care before. The WKT 
-string should not be too long to be accepted by the API service. Also, the polygon
-we just got is projected in the coordinate system SWEREF99 TM, and the API service 
-only accepts coordinates in a geodesic coordinate system WGS84. Let's construct 
-the WKT string:
+There are details about this polygon that we need to take care before.
+The WKT string should not be too long to be accepted by the API service.
+Also, the polygon we just got is projected in the coordinate system
+SWEREF99 TM, and the API service only accepts coordinates in a geodesic
+coordinate system WGS84. Let's construct the WKT string:
+
 ```{r searchpoly2WKT, warning=FALSE}
 # transform the CRS
-gotaland_c <- sf::as_Spatial(
-                sf::st_transform(
-                  sf::st_as_sf(gotaland_c), 
-                  crs = sf::st_crs(4326)$wkt) )
+gotaland_c <- st_transform(gotaland_c,
+                           crs = st_crs(4326))
 
 # disolve the counties into one polygon
-gotaland <- rgeos::gUnaryUnion(gotaland_c)
-
-# extract the polygons coordinates
-nPol <- length(gotaland@polygons[[1]]@Polygons) 
-lonlat <- list()
-for(p in seq(nPol)){
-  lonlat[[p]] <- gotaland@polygons[[1]]@Polygons[[p]]@coords
-}
-lonlat <- do.call(rbind, lonlat)
+gotaland <- st_union(gotaland_c)
 
 # create a convex hull of the polygon to simplify the geometry and 
 # reduce the length of the WKT string
-gotaland_ch <- chull(lonlat)
-lonlat <- lonlat[c(gotaland_ch, gotaland_ch[1]), ]
+gotaland_ch <- st_convex_hull(gotaland)
 
-# create WKT string
-# first join each lon-lat coordinate pair
-wkt_temp <- apply(lonlat, 1, function(z) paste(round(z,4), collapse=" "))
-# now build the WKT string
-wkt <- paste("MULTIPOLYGON(((", paste(wkt_temp, collapse=","), ")))", sep="")
+# cast it as MULTIPOLYGON as this is what SBDIs API need
 # NOTE: as of today, the SBDI APIs will only work properly if the polygon is 
 # submitted as a MULTIPOLYGON
+gotaland_ch <- st_cast(gotaland_ch, to = "MULTIPOLYGON")
+
+# create WKT string
+wkt <- st_as_text(gotaland_ch)
+
 ```
+
 The WKT string then looks like this:
+
 ```{r, echo=FALSE}
 wkt
 ```
+
 ```{r searchpoly, fig.width=7, echo=FALSE, warning=FALSE}
-library(sp)
+#library(sf)
 oldpar <- par()
 par(mar = c(0,0,0,0))
-plot(gotaland_c, border="blue")
-plot(gotaland, lwd=2, add=TRUE)
-plot(rgeos::readWKT(wkt), lwd=2, border="red", add=TRUE)
+plot(gotaland_c$geometry, border = "blue")
+plot(gotaland, lwd = 2, add = TRUE)
+plot(rgeos::readWKT(wkt), lwd = 2, border = "red", add = TRUE)
 legend("bottomleft", inset = c(0,0.05),
        legend = c("counties", "Götaland", "search polygon"),
        col = c("blue","black", "red"),
        lwd = c(1,2,1),
-       title = "Polygons",bty="n")
+       title = NULL,bty = "n")
 suppressWarnings(par(oldpar))
 ```
 
-Next, we download the observations using the command `occurrences()`, but be aware that 
-the search fields may not be the same as those used to search for taxa. We therefore
-recommend using the function `sbdi_fields("occurrence")` to find out which search fields we can use 
-to filter for occurrences. Here we see that the field 
-we need this time is "order".
+Next, we download the observations using the command `occurrences()`,
+but be aware that the search fields may not be the same as those used to
+search for taxa. We therefore recommend using the function
+`sbdi_fields("occurrence")` to find out which search fields we can use
+to filter for occurrences. Here we see that the field we need this time
+is "order".
 
 ```{r getData, cache=TRUE}
-xf <- SBDI4R::occurrences(taxon = "order:Odonata", 
+xf <- occurrences(taxon = "order:Odonata", 
                   fq = fq_str,
                   wkt = wkt,
                   extra = "collector",
                   email = "sbdi4r-test@biodiversitydata.se", 
                   download_reason_id = 10)
 ```
+
 ```{r localtmp, echo=FALSE, eval=FALSE}
 save(xf, file = "data/tmp_occdata2_for compile.rdata")
 load(file = "data/tmp_occdata2_for compile.rdata")
 ```
-We have now downloaded the data locally and depending on your configuration this
-will be cached on your computer. However, as the search and download could take
-long time, we recommend to save the data locally. 
-```{r save2, eval=FALSE}
-save(xf, file = "an_approprieted_name.rdata")
-load(file = "an_approprieted_name.rdata")
-```
-## Quality and fit-for-use check
-Before we can use the observation records we need to know if the observation 
-effort (sampling effort) has varied over time and in space. We can approximate observation effort from the data by 
-defining field visits i.e. occasions at which an observer has sampled observations. We reconstruct field visits
-(that is, assign each observation a visitUID) using using the package 
-[BIRDS](https://greensway.github.io/BIRDS/). Additionally we want the data to be summarized 
-over a grid of 25 km (provided through the SBDI4R package). The following functions 
-will perform many different summaries at the same time. Please refer to the BIRDS package 
-documentation for more detail. 
 
-```{r birds, message=FALSE, warning=FALSE}
+We have now downloaded the data locally and depending on your
+configuration this will be cached on your computer. However, as the
+search and download could take long time, we recommend to save the data
+locally. appropriate
+
+```{r save2, eval=FALSE}
+save(xf, file = "an_appropriate_name.rdata")
+load(file = "an_appropriate_name.rdata")
+```
+
+## Quality and fit-for-use check
+
+Before we can use the observation records we need to know if the
+observation effort (sampling effort) has varied over time and in space.
+We can approximate observation effort from the data by defining field
+visits i.e. occasions at which an observer has sampled observations. We
+reconstruct field visits (that is, assign each observation a visitUID)
+using using the package [BIRDS](https://greensway.github.io/BIRDS/).
+Additionally we want the data to be summarized over a grid of 25 km
+(provided through the SBDI4R package). The following functions will
+perform many different summaries at the same time. Please refer to the
+BIRDS package documentation for more detail.
+
+```{r birds, message=FALSE, warning=FALSE, eval=FALSE}
+remotes::install_github("Greensway/BIRDS")
 library(BIRDS)
 ```
-```{r organisebirds, message=FALSE}
+
+```{r organisebirds, eval=FALSE}
 OB <- organiseBirds(xf$data, sppCol = "species" , 
                     # We only want observations identified at the species level
                     taxonRankCol = "rank", taxonRank = "species", 
                     # the visits are defined by collector and named locality
                     idCols = c("locality", "collector"), 
                     timeCols = c("year", "month", "day"), 
-                    xyCols =c("longitude","latitude") )
+                    xyCols = c("longitude","latitude") )
 
 # We don't need the whole grid, just the piece that overlaps our searching polygon
-gotaland_grid25 <- raster::intersect(gotaland, Sweden_Grid_25km_Wgs84)
-
-# This is another way of doing it.
-# gotaland_grid25 <- gIntersection(gotaland,
-#                                  spTransform(Sweden_Grid_25km_Wgs84, 
-#                                              CRSobj = CRS(sf::st_crs(4326)$wkt)))
+wInt <- unlist(st_intersects(gotaland, Sweden_Grid_25km_Wgs84))
+gotaland_grid25 <- Sweden_Grid_25km_Wgs84[wInt,]
 
 SB <- summariseBirds(OB, grid = gotaland_grid25, spillOver = "unique")
 ```
 
-Once summarised, we can see over space and for a few selected years how the 
-number of observations is distributed:
+```{r save_birds, eval=FALSE, include=FALSE}
+save(list=c("OB", "SB"), file = "data/BIRDS_summary.rdata")
+```
+```{r load_birds, include=FALSE}
+load(file = "data/BIRDS_summary.rdata")
+```
+
+Once summarised, we can see over space and for a few selected years how
+the number of observations is distributed:
+
 ```{r plotBIRDSspatial_cose, eval=FALSE}
-maxC <- max(SB$spatial@data$nObs, na.rm = TRUE)
+maxC <- max(SB$spatial$nObs, na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
 oldpar <- par()
 par(mar = c(1,1,1,1), mfrow=c(1,3))
-plot(SB$spatial, col=palBW(SB$spatial@data$nObs),
+plot(SB$spatial$geometry, col=palBW(SB$spatial$nObs),
      border = "grey", main="All years") ## with palette
 legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
@@ -225,12 +258,12 @@ yearlySp <- exportBirds(SB,
                         variable = "nObs", 
                         method = "sum")
 
-maxC <- max(yearlySp@data$'2005', na.rm = TRUE)
+maxC <- max(yearlySp$'2005', na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
 
-plot(yearlySp["2005"], col=palBW(yearlySp@data$'2005'), 
+plot(yearlySp$geometry, col=palBW(yearlySp$'2005'), 
      border = "grey",main="2005")
 legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
@@ -238,12 +271,12 @@ legend("bottomleft", inset = c(0,0.05),
        border = "grey",
        title = "Number of \nobservations", pch = 15, bty="n")
 
-maxC <- max(yearlySp@data$'2010', na.rm = TRUE)
+maxC <- max(yearlySp'2010', na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
 
-plot(yearlySp["2010"], col=palBW(yearlySp@data$'2010'), 
+plot(yearlySp$geometry, col=palBW(yearlySp$'2010'), 
      border = "grey",main="2010")
 legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
@@ -252,19 +285,20 @@ legend("bottomleft", inset = c(0,0.05),
        title = "Number of \nobservations", pch = 15, bty="n")
 par(oldpar)
 ```
+
 ```{r plotBIRDSspatial, echo=FALSE, fig.width=8}
-maxC <- max(SB$spatial@data$nObs, na.rm = TRUE)
+maxC <- max(SB$spatial$nObs, na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
 oldpar <- par()
-par(mar = c(1,1,1,1), mfrow=c(1,3))
-plot(SB$spatial, col=palBW(SB$spatial@data$nObs),
-     border = "grey", main="All years") ## with palette
+par(mar = c(1,1,1,1), mfrow = c(1,3))
+plot(SB$spatial$geometry, col = palBW(SB$spatial$nObs),
+     border = "grey", main = "All years") ## with palette
 legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
-       title = "Number of \nobservations", pch = 15, bty="n")
+       title = "Number of \nobservations", pch = 15, bty = "n")
 
 ## or export other combinations, e.g. one map per observed year
 yearlySp <- exportBirds(SB, 
@@ -273,47 +307,44 @@ yearlySp <- exportBirds(SB,
                         variable = "nObs", 
                         method = "sum")
 
-maxC <- max(yearlySp@data$'2005', na.rm = TRUE)
+maxC <- max(yearlySp$'2005', na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
 
-plot(yearlySp["2005"], col=palBW(yearlySp@data$'2005'), 
-     border = "grey",main="2005")
+plot(yearlySp$geometry, col = palBW(yearlySp$'2005'), 
+     border = "grey", main = "2005")
 legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
        border = "grey",
-       title = "Number of \nobservations", pch = 15, bty="n")
+       title = "Number of \nobservations", pch = 15, bty = "n")
 
-maxC <- max(yearlySp@data$'2010', na.rm = TRUE)
+maxC <- max(yearlySp$'2010', na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
 
-plot(yearlySp["2010"], col=palBW(yearlySp@data$'2010'), 
-     border = "grey",main="2010")
+plot(yearlySp$geometry, col = palBW(yearlySp$'2010'), 
+     border = "grey",main = "2010")
 legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
        border = "grey",
-       title = "Number of \nobservations", pch = 15, bty="n")
+       title = "Number of \nobservations", pch = 15, bty = "n")
 suppressWarnings(par(oldpar))
 ```
 
-We now want to use the number of field visits as the measure
-for sampling effort. And since there are other ways to plot spatial data, we this time
-use the package `sf` instead of `sp`:  
+We now want to use the number of field visits as the measure for
+sampling effort. :
+
 ```{r ggplot1, message=FALSE, warning=FALSE, fig.width=8}
-library(sf)
 library(cowplot)
 library(ggplot2)
 library(colorRamps)
 library(gridExtra)
 
-spatial_sf <- st_as_sf(SB$spatial)
-
-vis <- ggplot(data = spatial_sf, aes( fill = nVis)) +
+vis <- ggplot(data = SB$spatial, aes( fill = nVis)) +
   geom_sf() +
   ggtitle("Visits") +
   scale_fill_gradient(low = "#56B1F7",
@@ -322,51 +353,49 @@ vis <- ggplot(data = spatial_sf, aes( fill = nVis)) +
   theme(plot.margin = margin(1, 1, 1, 1, "pt")) +
   theme_cowplot()
 
-spp <- ggplot(data = spatial_sf ,aes( fill = nSpp))+
-  geom_sf()+
-  ggtitle("Number of species")+
+spp <- ggplot(data = SB$spatial, aes( fill = nSpp)) +
+  geom_sf() +
+  ggtitle("Number of species") +
   scale_fill_gradient(low = "#56B1F7",
                       high = "#132B43",
                       na.value = NA) +
   theme(plot.margin = margin(1, 1, 1, 1, "pt")) +
   theme_cowplot()
 
-grid.arrange(vis, spp, ncol=2)
+grid.arrange(vis, spp, ncol = 2)
 ```
 
 #### Temporal check
-We see that `SB` contains an element called `SB$temporal` that contains a daily 
-time series with time-specific rows when there is information. `xts` also supports 
-day time, but dating below day resolution is not yet implemented in the `BIRDS` package.  
+
+We see that `SB` contains an element called `SB$temporal` that contains
+a daily time series with time-specific rows when there is information.
+`xts` also supports day time, but dating below day resolution is not yet
+implemented in the `BIRDS` package.
 
 ```{r temporal}
 sb.xts <- SB$temporal
 head(sb.xts, 5)
 ```
 
-Sub-setting is convenient in `xts` as you can do it with its dates and with a `/` 
-for a range of dates.  
+Sub-setting is convenient in `xts` as you can do it with its dates and
+with a `/` for a range of dates.
+
 ```{r subsetting, message=FALSE, warning=FALSE}
 sb.xts["2010-09-07"] #a specific day
 sb.xts["2010-09-01/2010-09-15"] #for a period
 sb.xts["2010-09"] #a specific month
 ```
 
-The package `xts` has several tools for converting to different time periods. 
-Here we use `apply.monthly` to obtain the total number of observations and visits
-per month. The plot command for an object of calss `xts` provides a many features. 
-This makes it fairly easy to customize your plots. Read more in `?plot.xts`.  
+The package `xts` has several tools for converting to different time
+periods. Here we use `apply.monthly` to obtain the total number of
+observations and visits per month. The plot command for an object of
+calss `xts` provides a many features. This makes it fairly easy to
+customize your plots. Read more in `?plot.xts`.
 
 ```{r monthlyPlotcode, eval=FALSE}
 library(xts)
 obs.m <- apply.monthly(sb.xts$nObs, "sum", na.rm = TRUE)
-
-# alternative for more summary options but slower
-# obs.m <- exportBirds(SB,
-#                      dimension = "temporal",
-#                      timeRes = "monthly",
-#                      variable = "nObs",
-#                      method = "sum")
+vis.m <- apply.monthly(sb.xts$nVis, "sum", na.rm = TRUE)
 
 plot(obs.m, 
      col = "darkblue", 
@@ -375,13 +404,13 @@ plot(obs.m,
      grid.col = "lightgrey",  
      main = "Total number of daily observations and visits per month")
 
-vis.m <- apply.monthly(sb.xts$nVis, "sum", na.rm = TRUE)
-lines(vis.m, col = "orange", lwd=2, on=1)
+lines(vis.m, col = "orange", lwd = 2, on = 1)
 ```
 
 ```{r monthlyPlot, echo=FALSE, include=FALSE}
 library(xts)
 obs.m <- apply.monthly(sb.xts$nObs, "sum", na.rm = TRUE)
+vis.m <- apply.monthly(sb.xts$nVis, "sum", na.rm = TRUE)
 
 plot(obs.m, 
      col = "darkblue", 
@@ -390,86 +419,53 @@ plot(obs.m,
      grid.col = "lightgrey",  
      main = "Total number of daily observations and visits per month")
 
-vis.m <- apply.monthly(sb.xts$nVis, "sum", na.rm = TRUE)
-lines(vis.m, col = "orange", lwd=2, on=1)
+lines(vis.m, col = "orange", lwd = 2, on = 1)
 ```
+
 ```{r, echo=FALSE, fig.width=8}
 addLegend("topleft", c("Observations", "Visits"), 
-          col=c("darkblue","orange"), 
-          lwd=2)
+          col = c("darkblue","orange"), 
+          lwd = 2)
 ```
 
 ## Species trends
-We can now look at some particular species and ask whether those have changed in 
-occurrence over time:
+
+We can now look at some particular species and ask whether those have
+changed in occurrence over time:
+
 ```{r sppTrends, message=FALSE}
 speciesSummary(SB)[,1:4]
 ```
-We pick two species and compare their trends in number of visits where the species where reported, relative to the total number of visits.
+
+We pick two species and compare their trends in number of visits where
+the species where reported, relative to the total number of visits.
 
 ```{r trends, fig.width=8}
 library(dplyr)
-sppCountLq <- obsData(OB) %>% 
-            group_by(year,visitUID) %>% 
-            summarise("focalCount" = sum(scientificName == "Libellula quadrimaculata"),
-                      "sppLength" = length(unique(scientificName)), 
-                      .groups = "drop") %>% 
-            ungroup() %>% 
-            group_by(year) %>% 
-            summarise("focalCount" = sum(focalCount),
-                      "nVis" = length(unique(visitUID)), 
-                      .groups = NULL)
-
-sppCountLq$relCount <- sppCountLq$focalCount/sppCountLq$nVis
-
-sppCountSd <- obsData(OB) %>% 
-            group_by(year,visitUID) %>% 
-            summarise("focalCount" = sum(scientificName == "Sympetrum sanguineum"),
-                      "sppLength" = length(unique(scientificName)), 
-                      .groups = "drop") %>% 
-            ungroup() %>% 
-            group_by(year) %>% 
-            summarise("focalCount" = sum(focalCount),
-                      "nVis" = length(unique(visitUID)), 
-                      .groups = NULL)
-
-sppCountSd$relCount <- sppCountSd$focalCount/sppCountSd$nVis
+sppCount <- obsData(OB) |> 
+    group_by(year, visitUID) |> 
+    summarise("focalCountLq" = sum(scientificName == "Libellula quadrimaculata"),
+              "focalCountSd" = sum(scientificName == "Sympetrum sanguineum"),
+              "sppLength" = length(unique(scientificName)), 
+              .groups = "drop") |> 
+    ungroup() |> 
+    group_by(year) |> 
+    summarise("focalCountLq" = sum(focalCountLq),
+              "focalCountSd" = sum(focalCountSd),
+              "nVis" = length(unique(visitUID)),
+              "relCountLq" = focalCountLq / nVis,
+              "relCountSd" = focalCountSd / nVis,
+              .groups = NULL)
 
 oldpar <- par(no.readonly = TRUE)
-par(mar=c(4,4,1,1), las=1)
-plot(sppCountLq$year, sppCountLq$relCount, type = "l", 
-     lwd = 3, xlab = "Year", ylab = "Relative number of visits with observations", 
-     ylim=c(0, max(sppCountLq$relCount)), xaxp=c(2000, 2010, 10))
-lines(sppCountSd$year, sppCountSd$relCount, lwd=3, col="#78D2EB")
+plot(sppCount$year, sppCount$relCountLq, 
+     type = "l", lwd = 3, xlab = "Year", 
+     ylab = "Relative number of visits with observations", 
+     ylim = c(0, max(sppCount$relCountLq)), 
+     xaxp = c(2000, 2010, 10))
+lines(sppCount$year, sppCount$relCountSd, lwd = 3, col = "#78D2EB")
 legend("bottomright", 
-       legend=c("Libellula quadrimaculata","Sympetrum sanguineum"), 
+       legend = c("Libellula quadrimaculata","Sympetrum sanguineum"), 
        text.font = 3, col = c("black", "#78D2EB"), lwd = 3, bty = "n")
 par(oldpar)
 ```
-
-<!-- Plot no. gridcells with visits for species x and no. gridcells with visits for all species over years (we simply explore by comparing records for a species with no visits, can assume that species has increased of stronger positive trend than for no. visits) -->
-<!-- (species x: Tvåfläckad trollslända Epitheca bimaculata) -->
-
-<!-- ```{r} -->
-<!-- sppCountGrid <- lapply(SB$overlaid, function(x, focalSpp="Libellula quadrimaculata"){ -->
-<!--   tmp <- x %>%  -->
-<!--             group_by(year, visitUID) %>%  -->
-<!--             summarise("focalCount" = sum(scientificName == focalSpp), -->
-<!--                       "sppLength" = length(unique(scientificName)), -->
-<!--                       .groups = "drop") %>%  -->
-<!--             ungroup() %>%  -->
-<!--             group_by(year) %>%  -->
-<!--             summarise("focalCount" = sum(focalCount), -->
-<!--                       "nVis" = length(unique(visitUID)),  -->
-<!--                       .groups = NULL) -->
-<!--   res <- as.data.frame(tmp) -->
-<!--   return(res) -->
-<!-- } ) -->
-
-<!-- sppCountGrid <- bind_rows(sppCountGrid, .id = "grid_label") -->
-<!-- sppCountGrid %>%  -->
-<!--             group_by(year, grid_label) %>%  -->
-<!--             summarise("ngrid"= length(unique(grid_label)), -->
-<!--                       "ngridSpp" = ,  -->
-<!--                       .groups = "drop") -->
-<!-- ``` -->
