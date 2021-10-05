@@ -228,10 +228,10 @@ SB <- summariseBirds(OB, grid = gotaland_grid25, spillOver = "unique")
 ```
 
 ```{r save_birds, eval=FALSE, include=FALSE}
-save(list=c("OB", "SB"), file = "output/BIRDS_summary.rdata")
+save(list=c("OB", "SB"), file = "data/BIRDS_summary.rdata")
 ```
 ```{r load_birds, include=FALSE}
-load(file = "output/BIRDS_summary.rdata")
+load(file = "data/BIRDS_summary.rdata")
 ```
 
 Once summarised, we can see over space and for a few selected years how

@@ -130,7 +130,6 @@ For this we want to summarise occurrences species-wise over a defined grid inste
 
 ```{r overlay, warning=FALSE, message=FALSE}
 library(sf) # the function coordinates() and proj4string() are in sp
-library(rgeos) # the function over() is in package rgeos
 # load some shapes over Sweden's political borders
 data("swe_wgs84", package = "SBDI4R", envir = environment())
 # a standard 50 km grid
