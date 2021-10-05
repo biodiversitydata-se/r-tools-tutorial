@@ -10,7 +10,7 @@ fq_str <- pick_filter("resource")
 # follow the instructions 
 ```
 
-Follow the instructions. Your choices here would have been "in3" --\> "dr10" (data resource 10 = SERS). Your variable `fq_str` will now contain a string "data_resource_uid:dr10".
+Follow the instructions. Your choices here would have been "in3" :arrow_right: "dr10" (data resource 10 = SERS). Your variable `fq_str` will now contain a string "data_resource_uid:dr10".
 
 ```{r filter2, echo=FALSE, eval=TRUE}
 # we can't do it interactive here so we force it
@@ -56,8 +56,8 @@ You can quickly plot all the observations as a PDF file with the function `ocurr
 
 ```{r pdf_plot, eval=FALSE}
 occurrences_plot(xf, "obsPlot.pdf", 
-                 grouped=FALSE, 
-                 taxon_level="species", 
+                 grouped = FALSE, 
+                 taxon_level = "species", 
                  pch='.')
 ```
 
@@ -76,10 +76,10 @@ leaflet(width = "100%") %>%
   # add markers
   addCircleMarkers(xfl$longitude, xfl$latitude,  
                    radius = 1, 
-                   fillOpacity =.5, 
+                   fillOpacity = .5, 
                    opacity = 1,
-                   col=marker_colour,
-                  clusterOptions = markerClusterOptions())
+                   col = marker_colour,
+                   clusterOptions = markerClusterOptions())
 ```
 
 ## Temporal summary
@@ -132,9 +132,9 @@ For this we want to summarise occurrences species-wise over a defined grid inste
 library(sf) # the function coordinates() and proj4string() are in sp
 library(rgeos) # the function over() is in package rgeos
 # load some shapes over Sweden's political borders
-data("swe_wgs84", package="SBDI4R", envir=environment())
+data("swe_wgs84", package = "SBDI4R", envir = environment())
 # a standard 50 km grid
-data("Sweden_Grid_50km_Wgs84", package="SBDI4R", envir=environment())
+data("Sweden_Grid_50km_Wgs84", package = "SBDI4R", envir = environment())
 
 grid <- Sweden_Grid_50km_Wgs84
 
@@ -142,17 +142,14 @@ grid <- Sweden_Grid_50km_Wgs84
 # NOTE: make sure there are no NAs in the columns defining the coordinates
 # xf$data[!is.na(xf$data$longitude) | !is.na(xf$data$latitude),]
 
-obs <- as.data.frame(xf$data)
 obs <- st_as_sf(as.data.frame(xf$data),
                 coords = c("longitude","latitude"),
-                crs = st_crs(4326)
-)
-nObs <- nrow(obs)
+                crs = st_crs(4326))
+
 # overlay the occurrence data with the grid
 ObsInGridListID <- st_intersects(grid, obs)
 ObsInGridList <- lapply(ObsInGridListID, function(x) st_drop_geometry(obs[x,]))
 wNonEmpty <- unname( which( unlist(lapply(ObsInGridList, nrow)) != 0) )
-if(length(wNonEmpty)==0) message("Observations don't overlap any grid cell.")
 ```
 
 The result `ObsInGridList` is a `list` object with a subset of the data for each grid cell. Now summarise occurrences within grid cells:
@@ -163,9 +160,9 @@ sum(unlist(lapply(ObsInGridList, nrow)))
 
 # apply a summary over the grid cells 
 nCells <- length(ObsInGridList)
-res <- data.frame("nObs"=as.numeric(rep(NA,nCells)),
-                  "nYears"=as.numeric(rep(NA,nCells)),
-                  "nSpp"=as.numeric(rep(NA,nCells)),
+res <- data.frame("nObs" = as.numeric(rep(NA,nCells)),
+                  "nYears" = as.numeric(rep(NA,nCells)),
+                  "nSpp" = as.numeric(rep(NA,nCells)),
                   row.names = row.names(grid),
                   stringsAsFactors = FALSE)
 
@@ -194,8 +191,8 @@ palBW <- leaflet::colorNumeric(c("white", "navyblue"),
                                na.color = "transparent")
 oldpar <- par()
 par(mar = c(1,1,0,0))
-plot(resSf$geometry, col=palBW(resSf$nSpp), border = NA)
-plot(swe_wgs84$Border$geometry, border=1, lwd=1, add=T)
+plot(resSf$geometry, col = palBW(resSf$nSpp), border = NA)
+plot(swe_wgs84$Border$geometry, border = 1, lwd = 1, add = T)
 legend("bottomleft", 
        legend = round(seq(0, max(resSf$nSpp, na.rm = TRUE), length.out = 5)),
        col = palBW(seq(0, max(resSf$nSpp, na.rm = TRUE), length.out = 5)),
@@ -209,12 +206,12 @@ palBW <- leaflet::colorNumeric(c("white", "navyblue"),
                                na.color = "transparent")
 oldpar <- par()
 par(mar = c(1,1,0,0))
-plot(resSf$geometry, col=palBW(resSf$nSpp), border = NA)
-plot(swe_wgs84$Border$geometry, border=1, lwd=1, add=T)
+plot(resSf$geometry, col = palBW(resSf$nSpp), border = NA)
+plot(swe_wgs84$Border$geometry, border = 1, lwd = 1, add = TRUE)
 legend("bottomleft", 
        legend = round(seq(0, max(resSf$nSpp, na.rm = TRUE), length.out = 5)),
        col = palBW(seq(0, max(resSf$nSpp, na.rm = TRUE), length.out = 5)),
-       title = "Number of \nspecies", pch = 15, bty="n")
+       title = "Number of \nspecies", pch = 15, bty = "n")
 suppressWarnings(par(oldpar))
 ```
 
@@ -232,13 +229,13 @@ xgridded <- xf$data %>%
     ## take one row per cell per species (presence)
     distinct() %>%
     ## calculate species richness
-    mutate(richness=n()) %>%
+    mutate(richness = n()) %>%
     ## convert to wide format (sites by species)
-    mutate(present=1) %>%
-    do(tidyr::pivot_wider(data=.,  
-                          names_from=species, 
-                          values_from=present, 
-                          values_fill=0)) %>%
+    mutate(present = 1) %>%
+    do(tidyr::pivot_wider(data = .,  
+                          names_from = species, 
+                          values_from = present, 
+                          values_fill = 0)) %>%
     ungroup()
 ## where a species was not present, it will have NA: convert these to 0
 sppcols <- setdiff(names(xgridded),

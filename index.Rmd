@@ -45,7 +45,7 @@ library(SBDI4R)
 
 ```{r, echo=FALSE, include=FALSE}
 library(SBDI4R)
-library(sp)
+library(sf)
 library(BIRDS)
 ```
 
@@ -125,15 +125,18 @@ sbdi_config(warn_on_empty=TRUE)
 Some additional packages are needed for these examples. Install them if necessary with the following script:
 
 ```{r, message=FALSE}
-to_install <- c("BIRDS","colorRamps", "cowplot","dplyr","ggplot2", 
-                "leaflet", "maps", "mapdata", "maptools", "sf", "sp",
-                "rgeos", "tidyr", "xts")
+to_install <- c("colorRamps", "cowplot","dplyr","ggplot2", 
+                "leaflet", "maps", "mapdata", "maptools", "sf", 
+                "remotes","rgeos","tidyr", "xts")
 to_install <- to_install[!sapply(to_install, 
                                  requireNamespace, 
                                  quietly=TRUE)]
 if(length(to_install)>0)
     install.packages(to_install, 
                      repos="http://cran.us.r-project.org")
+
+remotes::install_github("AtlasOfLivingAustralia/ALA4R")
+remotes::install_github("Greensway/BIRDS")
 ```
 
 ## Your collaboration is appreciated {.unnumbered}
