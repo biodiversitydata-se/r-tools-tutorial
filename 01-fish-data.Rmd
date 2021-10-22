@@ -32,8 +32,8 @@ Using the function `occurrences()` we can now query for the observations fulfill
 
 ```{r getOcc, cache=TRUE, message=FALSE}
 xf <- occurrences(fq = fq_str,
-                 email = "sbdi4r-test@biodiversitydata.se", 
-                 download_reason_id = 10)
+                  email = "sbdi4r-test@biodiversitydata.se", 
+                  download_reason_id = 10)
 
 # Remove what is not a species
 xf$data <- xf$data[xf$data$rank == "species",]
