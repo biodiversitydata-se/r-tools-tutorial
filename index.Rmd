@@ -45,6 +45,8 @@ library(SBDI4R)
 
 ```{r, echo=FALSE, include=FALSE}
 library(SBDI4R)
+sbdi_config(email = "sbdi4r-test@biodiversitydata.se", 
+            download_reason_id = 10)
 library(sf)
 library(BIRDS)
 ```
@@ -89,7 +91,7 @@ or set to "refresh", meaning that the cached results will re-downloaded from the
 Each download request to SBDI servers is also accompanied by an "e-mail address" string that identifies the user making the request. You will need to provide an email address registered with the SBDI. You can create an account [here](https://auth.biodiversitydata.se/cas/login). Once an email is registered with the SBDI, it should be stored in the config:
 
 ```{r}
-sbdi_config(email="your.valid@emailaddress.com")
+sbdi_config(email="your.registered@emailaddress.com")
 ```
 
 Else you can provide this e-mail address as a parameter directly to each call of the function occurrences().
@@ -126,8 +128,8 @@ Some additional packages are needed for these examples. Install them if necessar
 
 ```{r, message=FALSE, eval=FALSE}
 to_install <- c("colorRamps", "cowplot","dplyr","ggplot2", 
-                "leaflet", "maps", "mapdata", "maptools", "sf", 
-                "remotes","rgeos","tidyr", "xts")
+                "leaflet", "maps", "mapdata", "maptools",
+                "remotes", "sf", "rgeos","tidyr", "xts")
 to_install <- to_install[!sapply(to_install, 
                                  requireNamespace, 
                                  quietly=TRUE)]
