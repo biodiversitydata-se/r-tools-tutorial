@@ -24,7 +24,7 @@
 <meta name="author" content="Debora Arlt and Alejandro Ruete  for the Swedish Biodiversity Data Infrastructure" />
 
 
-<meta name="date" content="2021-10-05" />
+<meta name="date" content="2021-10-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -189,7 +189,7 @@ code span.wa { color: #008000; font-weight: bold; } /* Warning */
 <div id="header">
 <h1 class="title">Using R tools for analysis <br>of primary biodiversity data provided by SBDI</h1>
 <p class="author"><em>Debora Arlt and Alejandro Ruete <br>for the Swedish Biodiversity Data Infrastructure</em></p>
-<p class="date"><em>2021-10-05</em></p>
+<p class="date"><em>2021-10-22</em></p>
 </div>
 <div id="introduction" class="section level1 unnumbered">
 <h1>Introduction</h1>
@@ -227,7 +227,7 @@ code span.wa { color: #008000; font-weight: bold; } /* Warning */
 <div id="e-mail-address" class="section level4 unnumbered">
 <h4>E-mail address</h4>
 <p>Each download request to SBDI servers is also accompanied by an “e-mail address” string that identifies the user making the request. You will need to provide an email address registered with the SBDI. You can create an account <a href="https://auth.biodiversitydata.se/cas/login">here</a>. Once an email is registered with the SBDI, it should be stored in the config:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="index.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sbdi_config</span>(<span class="at">email=</span><span class="st">&quot;your.valid@emailaddress.com&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="index.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sbdi_config</span>(<span class="at">email=</span><span class="st">&quot;your.registered@emailaddress.com&quot;</span>)</span></code></pre></div>
 <p>Else you can provide this e-mail address as a parameter directly to each call of the function occurrences().</p>
 </div>
 <div id="setting-the-download-reason" class="section level4 unnumbered">
@@ -251,8 +251,8 @@ code span.wa { color: #008000; font-weight: bold; } /* Warning */
 <h2>Other packages needed</h2>
 <p>Some additional packages are needed for these examples. Install them if necessary with the following script:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="index.html#cb10-1" aria-hidden="true" tabindex="-1"></a>to_install <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;colorRamps&quot;</span>, <span class="st">&quot;cowplot&quot;</span>,<span class="st">&quot;dplyr&quot;</span>,<span class="st">&quot;ggplot2&quot;</span>, </span>
-<span id="cb10-2"><a href="index.html#cb10-2" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;leaflet&quot;</span>, <span class="st">&quot;maps&quot;</span>, <span class="st">&quot;mapdata&quot;</span>, <span class="st">&quot;maptools&quot;</span>, <span class="st">&quot;sf&quot;</span>, </span>
-<span id="cb10-3"><a href="index.html#cb10-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;remotes&quot;</span>,<span class="st">&quot;rgeos&quot;</span>,<span class="st">&quot;tidyr&quot;</span>, <span class="st">&quot;xts&quot;</span>)</span>
+<span id="cb10-2"><a href="index.html#cb10-2" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;leaflet&quot;</span>, <span class="st">&quot;maps&quot;</span>, <span class="st">&quot;mapdata&quot;</span>, <span class="st">&quot;maptools&quot;</span>,</span>
+<span id="cb10-3"><a href="index.html#cb10-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;remotes&quot;</span>, <span class="st">&quot;sf&quot;</span>, <span class="st">&quot;rgeos&quot;</span>,<span class="st">&quot;tidyr&quot;</span>, <span class="st">&quot;xts&quot;</span>)</span>
 <span id="cb10-4"><a href="index.html#cb10-4" aria-hidden="true" tabindex="-1"></a>to_install <span class="ot">&lt;-</span> to_install[<span class="sc">!</span><span class="fu">sapply</span>(to_install, </span>
 <span id="cb10-5"><a href="index.html#cb10-5" aria-hidden="true" tabindex="-1"></a>                                 requireNamespace, </span>
 <span id="cb10-6"><a href="index.html#cb10-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">quietly=</span><span class="cn">TRUE</span>)]</span>
