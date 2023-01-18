@@ -321,7 +321,7 @@ Additionally we want the data to be summarized over a grid of 25 km
 (provided through the SBDI4R package). The following functions will
 perform many different summaries at the same time. Please refer to the
 BIRDS package documentation for more detail.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb46-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;Greensway/BIRDS&quot;</span>)</span>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb46-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;GreenswayAB/BIRDS&quot;</span>)</span>
 <span id="cb46-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(BIRDS)</span></code></pre></div>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-1" aria-hidden="true" tabindex="-1"></a>OB <span class="ot">&lt;-</span> <span class="fu">organiseBirds</span>(xf<span class="sc">$</span>data, <span class="at">sppCol =</span> <span class="st">&quot;species&quot;</span> , </span>
 <span id="cb47-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-2" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># We only want observations identified at the species level</span></span>
