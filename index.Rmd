@@ -33,74 +33,43 @@ Compared to running R Studio on your own machine, Mirroreum offers more computat
 
 [![Mirroreum - An RStudio session on a server](images/Mirroreum.png "Mirroreum - An RStudio session on a server")](https://mirroreum.biodiversitydata.se/auth-sign-in)
 
-## SBDI4R - an R 📦 to search an access data {.unnumbered}
+## sbdi4r2 - a new R 📦 to search an access data {.unnumbered}
 
-The SBDI4R package enables the R community to directly access data and resources hosted by SBDI. The goal is to enable observations of species to be queried and output in a range of standard formats. It includes some filter functions that allow you to filter prior to download. It also includes some simple summary functions, and some function for some simple data exploration. The examples included in this tutorial also show you how you can continue exploring and analyzing using other R package.
+The sbdi4r2 package enables the R community to directly access data and resources hosted by SBDI. The goal is to enable observations of species to be queried and output in a range of standard formats. It includes some filter functions that allow you to filter prior to download. It also includes some simple summary functions, and some function for some simple data exploration. The examples included in this tutorial also show you how you can continue exploring and analyzing using other R package.
 
-Please refer to the [package documentation](https://biodiversitydata-se.github.io/SBDI4R) for details on how to install it. Once installed the SBDI4R package must be loaded for each new R session:
+Please refer to the [package documentation](https://biodiversitydata-se.github.io/sbdi4r2) for details on how to install it. Once installed the sbdi4r2 package must be loaded for each new R session:
 
-```{r, eval=FALSE}
-library(SBDI4R)
+```{r loadshow, eval=FALSE}
+library(sbdi4r2)
 ```
 
-```{r, echo=FALSE, include=FALSE}
-library(SBDI4R)
+```{r start00, echo=FALSE, include=FALSE}
+library(sbdi4r2)
 sbdi_config(email = "sbdi4r-test@biodiversitydata.se", 
             download_reason_id = 10)
 library(sf)
+library(dplyr)
+library(lubridate)
 library(BIRDS)
 ```
 
-Various aspects of the SBDI4R package can be customized.
-
-#### Caching {.unnumbered}
-
-SBDI4R can cache most results to local files. This means that if the same code is run multiple times, the second and subsequent iterations will be faster. This will also reduce load on the web servers. By default, this caching is session-based, meaning that the local files are stored in a temporary directory that is automatically deleted when the R session is ended. This behavior can be altered so that caching is permanent, by setting the caching directory to a non-temporary location. For example, under Windows, use something like:
-
-```{r, eval=FALSE}
-sbdi_config(cache_directory = file.path("c:","mydata","sbdi_cache")) ## Windows
-```
-
-or for Linux:
-
-```{r, eval=FALSE}
-sbdi_config(cache_directory = "~/mydata/sbdi_cache") ## Linux
-```
-
-Note that this directory must exist (you need to create it yourself).
-
-All results will be stored in that cache directory and will be used from one session to the next. They won't be re-downloaded from the server unless the user specifically deletes those files or changes the caching setting to "refresh".
-
-If you change the cache_directory to a permanent location, you may wish to add something like this to your .Rprofile file, so that it happens automatically each time the SBDI4R package is loaded:
-
-```{r, eval=FALSE}
-setHook(packageEvent("SBDI4R", "onLoad"), 
-        function(...) sbdi_config(cache_directory=file.path("~","mydata","sbdi_cache")))
-```
-
-Caching can also be turned off entirely by:
-
-```{r}
-sbdi_config(caching="off")
-```
-
-or set to "refresh", meaning that the cached results will re-downloaded from the SBDI servers and the cache updated. (This will happen for as long as caching is set to "refresh" --- so you may wish to switch back to normal "on" caching behavior once you have updated your cache with the data you are working on).
+Various aspects of the sbdi4r2 package can be customized.
 
 #### E-mail address {.unnumbered}
 
 Each download request to SBDI servers is also accompanied by an "e-mail address" string that identifies the user making the request. You will need to provide an email address registered with the SBDI. You can create an account [here](https://auth.biodiversitydata.se/cas/login). Once an email is registered with the SBDI, it should be stored in the config:
 
-```{r}
-sbdi_config(email="your.registered@emailaddress.com")
+```{r config, eval=FALSE}
+sbdi_config(email = "your.registered@emailaddress.com")
 ```
 
 Else you can provide this e-mail address as a parameter directly to each call of the function occurrences().
 
 #### Setting the download reason {.unnumbered}
 
-SBDI requires that you provide a reason when downloading occurrence data (via the SBDI4R `occurrences()` function). You can provide this as a parameter directly to each call of `occurrences()`, or you can set it once per session using:
+SBDI requires that you provide a reason when downloading occurrence data (via the sbdi4r2 `atlas_occurrences()` function). You can provide this as a parameter directly to each call of `atlas_occurrences()`, or you can set it once per session using:
 
-```{r, eval=FALSE}
+```{r config2, eval=FALSE}
 sbdi_config(download_reason_id = "your_reason_id")
 ```
 
@@ -110,34 +79,25 @@ sbdi_config(download_reason_id = "your_reason_id")
 
 ***NO*** other personal identification information is sent. You can see all configuration settings, including the the user-agent string that is being used, with the command:
 
-```{r, eval=FALSE}
+```{r config3, eval=FALSE}
 sbdi_config()
-```
-
-#### Other options {.unnumbered}
-
-If you make a request that returns an empty result set (e.g. an un-matched name), by default you will simply get an empty data structure returned to you without any special notification. If you would like to be warned about empty result sets, you can use:
-
-```{r}
-sbdi_config(warn_on_empty=TRUE)
 ```
 
 ## Other packages needed {.unnumbered}
 
 Some additional packages are needed for these examples. Install them if necessary with the following script:
 
-```{r, message=FALSE, eval=FALSE}
-to_install <- c("colorRamps", "cowplot","dplyr","ggplot2", 
-                "leaflet", "maps", "mapdata", "maptools",
-                "remotes", "sf", "rgeos","tidyr", "xts")
+```{r packages, message=FALSE, eval=FALSE}
+to_install <- c("colorRamps", "cowplot","dplyr",
+                "ggplot2", "leaflet", "maps", "mapdata", 
+                "remotes", "sf", "tidyr", "xts")
 to_install <- to_install[!sapply(to_install, 
                                  requireNamespace, 
-                                 quietly=TRUE)]
-if(length(to_install)>0)
+                                 quietly = TRUE)]
+if (length(to_install) > 0)
     install.packages(to_install, 
-                     repos="http://cran.us.r-project.org")
+                     repos = "http://cran.us.r-project.org")
 
-remotes::install_github("AtlasOfLivingAustralia/ALA4R")
 remotes::install_github("Greensway/BIRDS")
 ```
 
@@ -152,6 +112,6 @@ Open Source also means that you can contribute. You don't need to know how to pr
 The repositories you can contribute to are:
 
 -   Mirroreum <https://github.com/mskyttner/mirroreum>\
--   SBDI4R <https://github.com/biodiversitydata-se/SBDI4R> (NOTE: we may not develop this package but instead move to a new one)\
+-   sbdi4r2 <https://github.com/biodiversitydata-se/sbdi4r2> 
 -   the general analysis workflows <https://github.com/biodiversitydata-se/biodiversity-analysis-tools>\
 -   this R-tools tutorial <https://github.com/biodiversitydata-se/r-tools-tutorial>

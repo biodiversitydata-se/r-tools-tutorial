@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>2 Example with opportunistic data on Dragonflies | Using R tools for analysis  of primary biodiversity data provided by SBDI</title>
   <meta name="description" content="R tools for biodiversity data" />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
 
   <meta property="og:title" content="2 Example with opportunistic data on Dragonflies | Using R tools for analysis  of primary biodiversity data provided by SBDI" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://biodiversitydata-se.github.io/r-tools-tutorial/" />
   
   <meta property="og:description" content="R tools for biodiversity data" />
   <meta name="github-repo" content="biodiversitydata-se/r-tools-tutorial" />
@@ -24,7 +23,7 @@
 <meta name="author" content="Debora Arlt and Alejandro Ruete  for the Swedish Biodiversity Data Infrastructure" />
 
 
-<meta name="date" content="2021-10-22" />
+<meta name="date" content="2024-05-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,6 @@
   <link rel="shortcut icon" href="images/favicon_io/favicon.ico" type="image/x-icon" />
 <link rel="prev" href="example-with-fish-data-from-sers.html"/>
 
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -51,28 +49,14 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
-<script src="libs/leaflet-1.3.1/leaflet.js"></script>
-<link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
-<script src="libs/proj4-2.6.2/proj4.min.js"></script>
-<script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
-<link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
-<script src="libs/leaflet-binding-2.0.4.1/leaflet.js"></script>
-<script src="libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
-<script src="libs/leaflet-providers-plugin-2.0.4.1/leaflet-providers-plugin.js"></script>
-<link href="libs/leaflet-markercluster-1.0.5/MarkerCluster.css" rel="stylesheet" />
-<link href="libs/leaflet-markercluster-1.0.5/MarkerCluster.Default.css" rel="stylesheet" />
-<script src="libs/leaflet-markercluster-1.0.5/leaflet.markercluster.js"></script>
-<script src="libs/leaflet-markercluster-1.0.5/leaflet.markercluster.freezable.js"></script>
-<script src="libs/leaflet-markercluster-1.0.5/leaflet.markercluster.layersupport.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -130,6 +114,10 @@ code span.vs { color: #008080; } /* VerbatimString */
 code span.wa { color: #008000; font-weight: bold; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 <link rel="stylesheet" href="toc.css" type="text/css" />
@@ -151,7 +139,7 @@ code span.wa { color: #008000; font-weight: bold; } /* Warning */
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a>
 <ul>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#r-and-mirroreum"><i class="fa fa-check"></i>R and Mirroreum</a></li>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#sbdi4r---an-r-to-search-an-access-data"><i class="fa fa-check"></i>SBDI4R - an R 📦 to search an access data</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#sbdi4r2---a-new-r-to-search-an-access-data"><i class="fa fa-check"></i>sbdi4r2 - a new R 📦 to search an access data</a></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#other-packages-needed"><i class="fa fa-check"></i>Other packages needed</a></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#your-collaboration-is-appreciated"><i class="fa fa-check"></i>Your collaboration is appreciated</a></li>
 </ul></li>
@@ -186,284 +174,240 @@ code span.wa { color: #008000; font-weight: bold; } /* Warning */
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="example-with-opportunistic-data-on-dragonflies" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Example with opportunistic data on Dragonflies</h1>
+<div id="example-with-opportunistic-data-on-dragonflies" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> Example with opportunistic data on Dragonflies<a href="example-with-opportunistic-data-on-dragonflies.html#example-with-opportunistic-data-on-dragonflies" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>In this example we are interested in exploring opportunistically
 collected data from the Swedish citizen science species observation
 portal - Artportalen.</p>
-<div id="name-searching" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Name searching</h2>
+<div id="name-searching" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Name searching<a href="example-with-opportunistic-data-on-dragonflies.html#name-searching" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>To begin with, we want be sure there is an unequivocal way to find the
 species within the order Odonata (dragonflies) and nothing else, so
 let’s search for “odonata”:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb32-1" aria-hidden="true" tabindex="-1"></a>sx <span class="ot">&lt;-</span> <span class="fu">search_fulltext</span>(<span class="st">&quot;odonata&quot;</span>)</span>
-<span id="cb32-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb32-2" aria-hidden="true" tabindex="-1"></a>sx<span class="sc">$</span>data[, <span class="fu">c</span>(<span class="st">&quot;guid&quot;</span>, <span class="st">&quot;scientificName&quot;</span>, <span class="st">&quot;rank&quot;</span>, <span class="st">&quot;occurrenceCount&quot;</span>)]</span></code></pre></div>
-<pre><code>## [1] &quot;https://species.biodiversitydata.se/ws/search.json?q=odonata&amp;fq=idxtype%3ATAXON&quot;</code></pre>
-<pre><code>##       guid                          scientificName    rank occurrenceCount
-## 1 10072832  Odonata associated gemycircularvirus 2 species               0
-## 2  7367071    Ramalina fastigiata var. odonata Hue variety               0
-## 3      789                                 Odonata   order           14121
-## 4  8062407 Bdellodes odonata Wallace &amp; Mahon, 1976 species               0
-## 5  9829523  Odonata associated gemycircularvirus 1 species               0</code></pre>
-<p>We quickly see there that other taxonomic levels appear too, and also
-species that look suspiciously as not belonging to dragonflies. But
-there is only one order. Let’s refine the search. To know which search
-fields we can use to filter the search we use the function
-<code>sbdi_fields(fields_type = "general")</code>. The search field we are looking
-for is “order_s.”</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb35-1" aria-hidden="true" tabindex="-1"></a>sx <span class="ot">&lt;-</span> <span class="fu">search_fulltext</span>(<span class="at">fq =</span> <span class="st">&quot;order_s:Odonata&quot;</span>, <span class="at">page_size =</span> <span class="dv">10</span>)</span>
-<span id="cb35-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb35-2" aria-hidden="true" tabindex="-1"></a>sx<span class="sc">$</span>data[, <span class="fu">c</span>(<span class="st">&quot;scientificName&quot;</span>, <span class="st">&quot;rank&quot;</span>, <span class="st">&quot;occurrenceCount&quot;</span>)]</span></code></pre></div>
-<pre><code>## [1] &quot;https://species.biodiversitydata.se/ws/search.json?fq=order_s%3AOdonata&amp;fq=idxtype%3ATAXON&amp;pageSize=10&quot;</code></pre>
-<pre><code>##        guid                        scientificName    rank occurrenceCount
-## 1  11034676      Notoneura xanthe Lieftinck, 1938 species               0
-## 2  11034731   Protoneura bifurcata Sjöstedt, 1918 species               0
-## 3  11034937        Oxygomphus chapini Klots, 1944 species               0
-## 4  11035128    Xerolestes pallidus (Rambur, 1842) species               0
-## 5  11035335    Mesothemis mithroides Brauer, 1900 species               0
-## 6  11029091 Paracercion luzonicum (Asahina, 1968) species               0
-## 7  11029136         Onychargia stellata Ris, 1915 species               0
-## 8  11029184         Nehalennia sophia Selys, 1840 species               0
-## 9  11029206     Lestes lundquisti Lieftinck, 1949 species               0
-## 10 11029310                Lestes concinnus Selys species               0</code></pre>
-<p>Now we can download the taxonomic data (note that the search is
-case-sensitive):</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-1" aria-hidden="true" tabindex="-1"></a>tx <span class="ot">&lt;-</span> <span class="fu">taxinfo_download</span>(<span class="st">&quot;order_s:Odonata&quot;</span>, </span>
-<span id="cb38-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">fields =</span> <span class="fu">c</span>(<span class="st">&quot;guid&quot;</span>, <span class="st">&quot;order_s&quot;</span>,<span class="st">&quot;genus_s&quot;</span>, <span class="st">&quot;specificEpithet_s&quot;</span>, </span>
-<span id="cb38-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;scientificName&quot;</span>,  <span class="st">&quot;canonicalName_s&quot;</span>, <span class="st">&quot;rank&quot;</span>), </span>
-<span id="cb38-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb38-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-5" aria-hidden="true" tabindex="-1"></a>tx <span class="ot">&lt;-</span> tx[tx<span class="sc">$</span>rank <span class="sc">==</span> <span class="st">&quot;species&quot;</span> <span class="sc">&amp;</span> tx<span class="sc">$</span>genusS <span class="sc">!=</span> <span class="st">&quot;&quot;</span>,] <span class="do">## restrict to species and not hybrids</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb26-1" tabindex="-1"></a>sx <span class="ot">&lt;-</span> <span class="fu">sbdi_call</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb26-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb26-2" tabindex="-1"></a>    <span class="fu">sbdi_identify</span>(<span class="st">&quot;Odonata&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb26-3" tabindex="-1"></a>    <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span> </span>
+<span id="cb26-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb26-4" tabindex="-1"></a>    <span class="fu">atlas_counts</span>()</span></code></pre></div>
+<p>Now we can download the taxonomic data (note that the search is case-sensitive):</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb27-1" tabindex="-1"></a>tx <span class="ot">&lt;-</span> <span class="fu">sbdi_call</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb27-2" tabindex="-1"></a>  <span class="fu">sbdi_identify</span>(<span class="st">&quot;Odonata&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb27-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb27-3" tabindex="-1"></a>  <span class="fu">atlas_species</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb27-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb27-4" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">&quot;taxon_concept_id&quot;</span>, <span class="st">&quot;species_name&quot;</span>, <span class="st">&quot;taxon_rank&quot;</span>,<span class="st">&quot;order&quot;</span>, <span class="st">&quot;family&quot;</span>,<span class="st">&quot;genus&quot;</span>, <span class="st">&quot;vernacular_name&quot;</span>)</span></code></pre></div>
 <p>You can save the <code>tx</code> object as the complete species list for later use.</p>
 </div>
-<div id="filter-the-search-to-get-the-observations" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> Filter the search to get the observations</h2>
+<div id="filter-the-search-to-get-the-observations" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Filter the search to get the observations<a href="example-with-opportunistic-data-on-dragonflies.html#filter-the-search-to-get-the-observations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>We start by searching for the data resource we are interested in using
 the function <code>pick_filter()</code>. This is an interactive query guiding you
 through the many resources available to filtering your query (data
 resources, spatial layers, and curated species lists).</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># follow the instructions </span></span>
-<span id="cb39-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-2" aria-hidden="true" tabindex="-1"></a>fq_str <span class="ot">&lt;-</span> <span class="fu">pick_filter</span>(<span class="st">&quot;resource&quot;</span>) </span></code></pre></div>
-<p>Follow the instructions. Your choices here would have been “in3” –&gt;
-“dr5.” Your variable <code>fq_str</code> will now contain a string
-“data_resource_uid:dr5.”</p>
-<p>We only want to look at data from year 2000 to 2010:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-1" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
-<span id="cb40-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-2" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">&lt;-</span> <span class="dv">2010</span></span>
-<span id="cb40-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-3" aria-hidden="true" tabindex="-1"></a>fq_str <span class="ot">&lt;-</span> <span class="fu">c</span>(fq_str, <span class="fu">paste0</span>(<span class="st">&quot;year:[&quot;</span>, y1, <span class="st">&quot; TO &quot;</span>, y2,<span class="st">&quot;]&quot;</span>))</span>
-<span id="cb40-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Note the square brackets are hard limits</span></span></code></pre></div>
-<p>We also want to filter spatially for Southern Sweden
-(<a href="https://en.wikipedia.org/wiki/G%C3%B6taland">Götaland</a>).</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb28-1" tabindex="-1"></a><span class="co"># follow the instructions </span></span>
+<span id="cb28-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb28-2" tabindex="-1"></a>fq_str <span class="ot">&lt;-</span> <span class="fu">pick_filter</span>(<span class="st">&quot;resource&quot;</span>) </span></code></pre></div>
+<p>Follow the instructions. Your choices here would have been “in3” –&gt; “dr5”.
+Your variable <code>fq_str</code> will now contain a string “data_resource_uid:dr5”.</p>
+<p><em>NOTE:</em> the function pick_filter() is temporarily disabled until it could be adapted to the new galah framework.</p>
+<p>We also want to filter spatially for Southern Sweden (<a href="https://en.wikipedia.org/wiki/G%C3%B6taland">Götaland</a>).</p>
 <p>Vector spatial layers (eg. polygons) can be imported in a number of
 different ways. SBDI APIs take as search input polygons in the so-called
-WKT <a href="https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html">Well Known
-Text</a>
+WKT <a href="https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html">Well Known Text</a>
 format. So the first step is to load a vector layer and transform it
-into a WKT string. You could instead use the data we provid in the
-SBDI4R package <code>data("swe")</code>.</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;swe&quot;</span>,<span class="at">package =</span> <span class="st">&quot;SBDI4R&quot;</span>)</span>
-<span id="cb41-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb41-2" aria-hidden="true" tabindex="-1"></a>wGotaland <span class="ot">&lt;-</span> swe<span class="sc">$</span>Counties<span class="sc">$</span>LnNamn <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Blekinge&quot;</span>, <span class="st">&quot;Gotlands&quot;</span>, <span class="st">&quot;Hallands&quot;</span>, </span>
-<span id="cb41-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb41-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">&quot;Jönköpings&quot;</span>, <span class="st">&quot;Kalmar&quot;</span>, <span class="st">&quot;Kronobergs&quot;</span>, </span>
-<span id="cb41-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb41-4" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">&quot;Östergötlands&quot;</span>, <span class="st">&quot;Skåne&quot;</span>, <span class="st">&quot;Västra Götalands&quot;</span>)</span>
-<span id="cb41-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb41-5" aria-hidden="true" tabindex="-1"></a>gotaland_c <span class="ot">&lt;-</span> swe<span class="sc">$</span>Counties[wGotaland,]</span></code></pre></div>
+into a WKT string. You could instead use the data we provided in the sbdi4r2 package <code>data("swe")</code>.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb29-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;swe&quot;</span>,<span class="at">package =</span> <span class="st">&quot;sbdi4r2&quot;</span>)</span>
+<span id="cb29-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb29-2" tabindex="-1"></a>wGotaland <span class="ot">&lt;-</span> swe<span class="sc">$</span>Counties<span class="sc">$</span>LnNamn <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Blekinge&quot;</span>, <span class="st">&quot;Gotlands&quot;</span>, <span class="st">&quot;Hallands&quot;</span>, </span>
+<span id="cb29-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb29-3" tabindex="-1"></a>                                        <span class="st">&quot;Jönköpings&quot;</span>, <span class="st">&quot;Kalmar&quot;</span>, <span class="st">&quot;Kronobergs&quot;</span>, </span>
+<span id="cb29-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb29-4" tabindex="-1"></a>                                        <span class="st">&quot;Östergötlands&quot;</span>, <span class="st">&quot;Skåne&quot;</span>, <span class="st">&quot;Västra Götalands&quot;</span>)</span>
+<span id="cb29-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb29-5" tabindex="-1"></a>gotaland_c <span class="ot">&lt;-</span> swe<span class="sc">$</span>Counties[wGotaland,]</span></code></pre></div>
 <p>There are details about this polygon that we need to take care before.
 The WKT string should not be too long to be accepted by the API service.
 Also, the polygon we just got is projected in the coordinate system
 SWEREF99 TM, and the API service only accepts coordinates in a geodesic
 coordinate system WGS84. Let’s construct the WKT string:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transform the CRS</span></span>
-<span id="cb42-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-2" aria-hidden="true" tabindex="-1"></a>gotaland_c <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(gotaland_c,</span>
-<span id="cb42-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">crs =</span> <span class="fu">st_crs</span>(<span class="dv">4326</span>))</span>
-<span id="cb42-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="co"># disolve the counties into one polygon</span></span>
-<span id="cb42-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-6" aria-hidden="true" tabindex="-1"></a>gotaland <span class="ot">&lt;-</span> <span class="fu">st_union</span>(gotaland_c)</span>
-<span id="cb42-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="co"># create a convex hull of the polygon to simplify the geometry and </span></span>
-<span id="cb42-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="co"># reduce the length of the WKT string</span></span>
-<span id="cb42-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-10" aria-hidden="true" tabindex="-1"></a>gotaland_ch <span class="ot">&lt;-</span> <span class="fu">st_convex_hull</span>(gotaland)</span>
-<span id="cb42-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="co"># cast it as MULTIPOLYGON as this is what SBDIs API need</span></span>
-<span id="cb42-13"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: as of today, the SBDI APIs will only work properly if the polygon is </span></span>
-<span id="cb42-14"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="co"># submitted as a MULTIPOLYGON</span></span>
-<span id="cb42-15"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-15" aria-hidden="true" tabindex="-1"></a>gotaland_ch <span class="ot">&lt;-</span> <span class="fu">st_cast</span>(gotaland_ch, <span class="at">to =</span> <span class="st">&quot;MULTIPOLYGON&quot;</span>)</span>
-<span id="cb42-16"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-17"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-17" aria-hidden="true" tabindex="-1"></a><span class="co"># create WKT string</span></span>
-<span id="cb42-18"><a href="example-with-opportunistic-data-on-dragonflies.html#cb42-18" aria-hidden="true" tabindex="-1"></a>wkt <span class="ot">&lt;-</span> <span class="fu">st_as_text</span>(gotaland_ch)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-1" tabindex="-1"></a><span class="co"># transform the CRS</span></span>
+<span id="cb30-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-2" tabindex="-1"></a>gotaland_c <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(gotaland_c,</span>
+<span id="cb30-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-3" tabindex="-1"></a>                           <span class="at">crs =</span> <span class="fu">st_crs</span>(<span class="dv">4326</span>))</span>
+<span id="cb30-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-4" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-5" tabindex="-1"></a><span class="co"># disolve the counties into one polygon</span></span>
+<span id="cb30-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-6" tabindex="-1"></a>gotaland <span class="ot">&lt;-</span> <span class="fu">st_union</span>(gotaland_c)</span>
+<span id="cb30-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-7" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-8" tabindex="-1"></a><span class="co"># create a convex hull of the polygon to simplify the geometry and </span></span>
+<span id="cb30-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-9" tabindex="-1"></a><span class="co"># reduce the length of the WKT string</span></span>
+<span id="cb30-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-10" tabindex="-1"></a>gotaland_ch <span class="ot">&lt;-</span> <span class="fu">st_convex_hull</span>(gotaland)</span>
+<span id="cb30-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-11" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-12" tabindex="-1"></a><span class="co"># create WKT string</span></span>
+<span id="cb30-13"><a href="example-with-opportunistic-data-on-dragonflies.html#cb30-13" tabindex="-1"></a>wkt <span class="ot">&lt;-</span> <span class="fu">st_as_text</span>(gotaland_ch)</span></code></pre></div>
 <p>The WKT string then looks like this:</p>
-<pre><code>## [1] &quot;MULTIPOLYGON (((13.33575 55.34003, 12.81633 55.38594, 11.25342 58.35786, 11.13161 58.90942, 11.13145 59.01184, 11.21142 59.0897, 11.31566 59.11651, 11.82032 59.23553, 11.94833 59.26237, 12.06197 59.27159, 12.23104 59.27357, 15.79383 59.03876, 15.84306 59.02498, 19.2889 57.99043, 19.3058 57.96888, 18.90037 57.44014, 18.86704 57.39753, 18.3725 57.00678, 18.30044 56.9528, 16.40805 56.20229, 14.19057 55.38557, 13.33575 55.34003)))&quot;</code></pre>
+<pre><code>## [1] &quot;POLYGON ((11.13145 59.01184, 11.13161 58.90942, 11.25342 58.35786, 11.25893 58.34821, 12.81633 55.38594, 13.33575 55.34003, 14.19057 55.38557, 16.40805 56.20229, 18.30044 56.9528, 18.3725 57.00678, 18.86704 57.39753, 18.90037 57.44014, 19.3058 57.96888, 19.2889 57.99043, 15.79383 59.03876, 12.23104 59.27357, 12.06197 59.27159, 11.94833 59.26237, 11.82032 59.23553, 11.31566 59.11651, 11.21142 59.0897, 11.13145 59.01184))&quot;</code></pre>
 <p><img src="r-tools-tutorial_files/figure-html/searchpoly-1.png" width="672" /></p>
-<p>Next, we download the observations using the command <code>occurrences()</code>,
-but be aware that the search fields may not be the same as those used to
-search for taxa. We therefore recommend using the function
-<code>sbdi_fields("occurrence")</code> to find out which search fields we can use
-to filter for occurrences. Here we see that the field we need this time
-is “order.”</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb44-1" aria-hidden="true" tabindex="-1"></a>xf <span class="ot">&lt;-</span> <span class="fu">occurrences</span>(<span class="at">taxon =</span> <span class="st">&quot;order:Odonata&quot;</span>, </span>
-<span id="cb44-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb44-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">fq =</span> fq_str,</span>
-<span id="cb44-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb44-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">wkt =</span> wkt,</span>
-<span id="cb44-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb44-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">extra =</span> <span class="st">&quot;collector&quot;</span>,</span>
-<span id="cb44-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb44-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">email =</span> <span class="st">&quot;sbdi4r-test@biodiversitydata.se&quot;</span>, </span>
-<span id="cb44-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb44-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">download_reason_id =</span> <span class="dv">10</span>)</span></code></pre></div>
-<p>We have now downloaded the data locally and depending on your
-configuration this will be cached on your computer. However, as the
-search and download could take long time, we recommend to save the data
-locally. appropriate</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(xf, <span class="at">file =</span> <span class="st">&quot;an_appropriate_name.rdata&quot;</span>)</span>
-<span id="cb45-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file =</span> <span class="st">&quot;an_appropriate_name.rdata&quot;</span>)</span></code></pre></div>
+<p>Next, we download the observations using the command <code>sbdi_call()</code>,
+but this time using <code>sbdi_geolocate()</code> to pass the search area.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb32-1" tabindex="-1"></a>xf <span class="ot">&lt;-</span> <span class="fu">sbdi_call</span>() <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb32-2" tabindex="-1"></a>  <span class="fu">sbdi_identify</span>(<span class="st">&quot;Odonata&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb32-3" tabindex="-1"></a>  <span class="fu">sbdi_geolocate</span>(wkt, <span class="at">type =</span> <span class="st">&quot;polygon&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb32-4" tabindex="-1"></a>  <span class="fu">filter</span>(dataResourceUid <span class="sc">==</span> <span class="st">&quot;dr5&quot;</span>,</span>
+<span id="cb32-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb32-5" tabindex="-1"></a>         year <span class="sc">&gt;=</span> <span class="dv">2010</span>, year <span class="sc">&lt;=</span> <span class="dv">2020</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb32-6" tabindex="-1"></a>  <span class="fu">select</span>(locality, recordedBy, taxonRank, <span class="at">group =</span> <span class="st">&quot;basic&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb32-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb32-7" tabindex="-1"></a>  <span class="fu">atlas_occurrences</span>()</span></code></pre></div>
+<pre><code>## Request for 107107 occurrences placed in queue
+## Current queue length: 1</code></pre>
+<pre><code>## ----</code></pre>
+<pre><code>## Downloading</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb36-1" tabindex="-1"></a><span class="fu">save</span>(xf, <span class="at">file =</span> <span class="st">&quot;an_appropriate_name.rdata&quot;</span>)</span>
+<span id="cb36-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb36-2" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file =</span> <span class="st">&quot;an_appropriate_name.rdata&quot;</span>)</span></code></pre></div>
 </div>
-<div id="quality-and-fit-for-use-check" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> Quality and fit-for-use check</h2>
+<div id="quality-and-fit-for-use-check" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Quality and fit-for-use check<a href="example-with-opportunistic-data-on-dragonflies.html#quality-and-fit-for-use-check" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Before we can use the observation records we need to know if the
 observation effort (sampling effort) has varied over time and in space.
 We can approximate observation effort from the data by defining field
 visits i.e. occasions at which an observer has sampled observations. We
 reconstruct field visits (that is, assign each observation a visitUID)
-using using the package <a href="https://greenswayab.github.io/BIRDS/">BIRDS</a>.
+using using the package <a href="https://greensway.github.io/BIRDS/">BIRDS</a>.
 Additionally we want the data to be summarized over a grid of 25 km
-(provided through the SBDI4R package). The following functions will
+(provided through the sbdi4r2 package). The following functions will
 perform many different summaries at the same time. Please refer to the
 BIRDS package documentation for more detail.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb46-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;Greensway/BIRDS&quot;</span>)</span>
-<span id="cb46-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(BIRDS)</span></code></pre></div>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-1" aria-hidden="true" tabindex="-1"></a>OB <span class="ot">&lt;-</span> <span class="fu">organiseBirds</span>(xf<span class="sc">$</span>data, <span class="at">sppCol =</span> <span class="st">&quot;species&quot;</span> , </span>
-<span id="cb47-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-2" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># We only want observations identified at the species level</span></span>
-<span id="cb47-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">taxonRankCol =</span> <span class="st">&quot;rank&quot;</span>, <span class="at">taxonRank =</span> <span class="st">&quot;species&quot;</span>, </span>
-<span id="cb47-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-4" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># the visits are defined by collector and named locality</span></span>
-<span id="cb47-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">idCols =</span> <span class="fu">c</span>(<span class="st">&quot;locality&quot;</span>, <span class="st">&quot;collector&quot;</span>), </span>
-<span id="cb47-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">timeCols =</span> <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;month&quot;</span>, <span class="st">&quot;day&quot;</span>), </span>
-<span id="cb47-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-7" aria-hidden="true" tabindex="-1"></a>                    <span class="at">xyCols =</span> <span class="fu">c</span>(<span class="st">&quot;longitude&quot;</span>,<span class="st">&quot;latitude&quot;</span>) )</span>
-<span id="cb47-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="co"># We don&#39;t need the whole grid, just the piece that overlaps our searching polygon</span></span>
-<span id="cb47-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-10" aria-hidden="true" tabindex="-1"></a>wInt <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">st_intersects</span>(gotaland, Sweden_Grid_25km_Wgs84))</span>
-<span id="cb47-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-11" aria-hidden="true" tabindex="-1"></a>gotaland_grid25 <span class="ot">&lt;-</span> Sweden_Grid_25km_Wgs84[wInt,]</span>
-<span id="cb47-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-13"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-13" aria-hidden="true" tabindex="-1"></a>SB <span class="ot">&lt;-</span> <span class="fu">summariseBirds</span>(OB, <span class="at">grid =</span> gotaland_grid25, <span class="at">spillOver =</span> <span class="st">&quot;unique&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb37-1" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;Greensway/BIRDS&quot;</span>)</span>
+<span id="cb37-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb37-2" tabindex="-1"></a><span class="fu">library</span>(BIRDS)</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-1" tabindex="-1"></a>OB <span class="ot">&lt;-</span> <span class="fu">organiseBirds</span>(xf, <span class="at">sppCol =</span> <span class="st">&quot;scientificName&quot;</span> , </span>
+<span id="cb38-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-2" tabindex="-1"></a>                    <span class="co"># We only want observations identified at the species level</span></span>
+<span id="cb38-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-3" tabindex="-1"></a>                    <span class="at">taxonRankCol =</span> <span class="st">&quot;taxonRank&quot;</span>, <span class="at">taxonRank =</span> <span class="st">&quot;species&quot;</span>, </span>
+<span id="cb38-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-4" tabindex="-1"></a>                    <span class="co"># the visits are defined by collector and named locality</span></span>
+<span id="cb38-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-5" tabindex="-1"></a>                    <span class="at">idCols =</span> <span class="fu">c</span>(<span class="st">&quot;locality&quot;</span>, <span class="st">&quot;recordedBy&quot;</span>), </span>
+<span id="cb38-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-6" tabindex="-1"></a>                    <span class="at">timeCols =</span> <span class="st">&quot;eventDate&quot;</span>, </span>
+<span id="cb38-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-7" tabindex="-1"></a>                    <span class="at">xyCols =</span> <span class="fu">c</span>(<span class="st">&quot;decimalLongitude&quot;</span>,<span class="st">&quot;decimalLatitude&quot;</span>) )</span>
+<span id="cb38-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-8" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-9" tabindex="-1"></a><span class="co"># We don&#39;t need the whole grid, just the piece that overlaps our searching polygon</span></span>
+<span id="cb38-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-10" tabindex="-1"></a>wInt <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">st_intersects</span>(gotaland, Sweden_Grid_25km_Wgs84))</span>
+<span id="cb38-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-11" tabindex="-1"></a>gotaland_grid25 <span class="ot">&lt;-</span> Sweden_Grid_25km_Wgs84[wInt,]</span>
+<span id="cb38-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-12" tabindex="-1"></a></span>
+<span id="cb38-13"><a href="example-with-opportunistic-data-on-dragonflies.html#cb38-13" tabindex="-1"></a>SB <span class="ot">&lt;-</span> <span class="fu">summariseBirds</span>(OB, <span class="at">grid =</span> gotaland_grid25, <span class="at">spillOver =</span> <span class="st">&quot;unique&quot;</span>)</span></code></pre></div>
 <p>Once summarised, we can see over space and for a few selected years how
 the number of observations is distributed:</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-1" aria-hidden="true" tabindex="-1"></a>maxC <span class="ot">&lt;-</span> <span class="fu">max</span>(SB<span class="sc">$</span>spatial<span class="sc">$</span>nObs, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb48-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-2" aria-hidden="true" tabindex="-1"></a>palBW <span class="ot">&lt;-</span> leaflet<span class="sc">::</span><span class="fu">colorNumeric</span>(<span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;navyblue&quot;</span>), </span>
-<span id="cb48-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-3" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">c</span>(<span class="dv">0</span>, maxC), </span>
-<span id="cb48-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">na.color =</span> <span class="st">&quot;transparent&quot;</span>)</span>
-<span id="cb48-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-5" aria-hidden="true" tabindex="-1"></a>oldpar <span class="ot">&lt;-</span> <span class="fu">par</span>()</span>
-<span id="cb48-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
-<span id="cb48-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(SB<span class="sc">$</span>spatial<span class="sc">$</span>geometry, <span class="at">col=</span><span class="fu">palBW</span>(SB<span class="sc">$</span>spatial<span class="sc">$</span>nObs),</span>
-<span id="cb48-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">&quot;grey&quot;</span>, <span class="at">main=</span><span class="st">&quot;All years&quot;</span>) <span class="do">## with palette</span></span>
-<span id="cb48-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="at">inset =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.05</span>),</span>
-<span id="cb48-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">round</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
-<span id="cb48-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">palBW</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
-<span id="cb48-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Number of </span><span class="sc">\n</span><span class="st">observations&quot;</span>, <span class="at">pch =</span> <span class="dv">15</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
-<span id="cb48-13"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-14"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-14" aria-hidden="true" tabindex="-1"></a><span class="do">## or export other combinations, e.g. one map per observed year</span></span>
-<span id="cb48-15"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-15" aria-hidden="true" tabindex="-1"></a>yearlySp <span class="ot">&lt;-</span> <span class="fu">exportBirds</span>(SB, </span>
-<span id="cb48-16"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-16" aria-hidden="true" tabindex="-1"></a>                        <span class="at">dimension =</span> <span class="st">&quot;spatial&quot;</span>, </span>
-<span id="cb48-17"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-17" aria-hidden="true" tabindex="-1"></a>                        <span class="at">timeRes =</span> <span class="st">&quot;yearly&quot;</span>, </span>
-<span id="cb48-18"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-18" aria-hidden="true" tabindex="-1"></a>                        <span class="at">variable =</span> <span class="st">&quot;nObs&quot;</span>, </span>
-<span id="cb48-19"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-19" aria-hidden="true" tabindex="-1"></a>                        <span class="at">method =</span> <span class="st">&quot;sum&quot;</span>)</span>
-<span id="cb48-20"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-21"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-21" aria-hidden="true" tabindex="-1"></a>maxC <span class="ot">&lt;-</span> <span class="fu">max</span>(yearlySp<span class="sc">$</span><span class="st">&#39;2005&#39;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb48-22"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-22" aria-hidden="true" tabindex="-1"></a>palBW <span class="ot">&lt;-</span> leaflet<span class="sc">::</span><span class="fu">colorNumeric</span>(<span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;navyblue&quot;</span>), </span>
-<span id="cb48-23"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-23" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">c</span>(<span class="dv">0</span>, maxC), </span>
-<span id="cb48-24"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-24" aria-hidden="true" tabindex="-1"></a>                               <span class="at">na.color =</span> <span class="st">&quot;transparent&quot;</span>)</span>
-<span id="cb48-25"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-26"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-26" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(yearlySp<span class="sc">$</span>geometry, <span class="at">col=</span><span class="fu">palBW</span>(yearlySp<span class="sc">$</span><span class="st">&#39;2005&#39;</span>), </span>
-<span id="cb48-27"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-27" aria-hidden="true" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">&quot;grey&quot;</span>,<span class="at">main=</span><span class="st">&quot;2005&quot;</span>)</span>
-<span id="cb48-28"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-28" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="at">inset =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.05</span>),</span>
-<span id="cb48-29"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">round</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
-<span id="cb48-30"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">palBW</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
-<span id="cb48-31"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-31" aria-hidden="true" tabindex="-1"></a>       <span class="at">border =</span> <span class="st">&quot;grey&quot;</span>,</span>
-<span id="cb48-32"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-32" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Number of </span><span class="sc">\n</span><span class="st">observations&quot;</span>, <span class="at">pch =</span> <span class="dv">15</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
-<span id="cb48-33"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-34"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-34" aria-hidden="true" tabindex="-1"></a>maxC <span class="ot">&lt;-</span> <span class="fu">max</span>(yearlySp<span class="st">&#39;2010&#39;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb48-35"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-35" aria-hidden="true" tabindex="-1"></a>palBW <span class="ot">&lt;-</span> leaflet<span class="sc">::</span><span class="fu">colorNumeric</span>(<span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;navyblue&quot;</span>), </span>
-<span id="cb48-36"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-36" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">c</span>(<span class="dv">0</span>, maxC), </span>
-<span id="cb48-37"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-37" aria-hidden="true" tabindex="-1"></a>                               <span class="at">na.color =</span> <span class="st">&quot;transparent&quot;</span>)</span>
-<span id="cb48-38"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-39"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-39" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(yearlySp<span class="sc">$</span>geometry, <span class="at">col=</span><span class="fu">palBW</span>(yearlySp<span class="sc">$</span><span class="st">&#39;2010&#39;</span>), </span>
-<span id="cb48-40"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-40" aria-hidden="true" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">&quot;grey&quot;</span>,<span class="at">main=</span><span class="st">&quot;2010&quot;</span>)</span>
-<span id="cb48-41"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-41" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="at">inset =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.05</span>),</span>
-<span id="cb48-42"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-42" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">round</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
-<span id="cb48-43"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-43" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">palBW</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
-<span id="cb48-44"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-44" aria-hidden="true" tabindex="-1"></a>       <span class="at">border =</span> <span class="st">&quot;grey&quot;</span>,</span>
-<span id="cb48-45"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-45" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Number of </span><span class="sc">\n</span><span class="st">observations&quot;</span>, <span class="at">pch =</span> <span class="dv">15</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
-<span id="cb48-46"><a href="example-with-opportunistic-data-on-dragonflies.html#cb48-46" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(oldpar)</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-1" tabindex="-1"></a>maxC <span class="ot">&lt;-</span> <span class="fu">max</span>(SB<span class="sc">$</span>spatial<span class="sc">$</span>nObs, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-2" tabindex="-1"></a>palBW <span class="ot">&lt;-</span> leaflet<span class="sc">::</span><span class="fu">colorNumeric</span>(<span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;navyblue&quot;</span>), </span>
+<span id="cb39-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-3" tabindex="-1"></a>                               <span class="fu">c</span>(<span class="dv">0</span>, maxC), </span>
+<span id="cb39-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-4" tabindex="-1"></a>                               <span class="at">na.color =</span> <span class="st">&quot;transparent&quot;</span>)</span>
+<span id="cb39-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-5" tabindex="-1"></a>oldpar <span class="ot">&lt;-</span> <span class="fu">par</span>()</span>
+<span id="cb39-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-6" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
+<span id="cb39-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-7" tabindex="-1"></a><span class="fu">plot</span>(SB<span class="sc">$</span>spatial<span class="sc">$</span>geometry, <span class="at">col=</span><span class="fu">palBW</span>(SB<span class="sc">$</span>spatial<span class="sc">$</span>nObs),</span>
+<span id="cb39-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-8" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">&quot;grey&quot;</span>, <span class="at">main=</span><span class="st">&quot;All years&quot;</span>) <span class="do">## with palette</span></span>
+<span id="cb39-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-9" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="at">inset =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.05</span>),</span>
+<span id="cb39-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-10" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">round</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
+<span id="cb39-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-11" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">palBW</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
+<span id="cb39-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-12" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Number of </span><span class="sc">\n</span><span class="st">observations&quot;</span>, <span class="at">pch =</span> <span class="dv">15</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
+<span id="cb39-13"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-13" tabindex="-1"></a></span>
+<span id="cb39-14"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-14" tabindex="-1"></a><span class="do">## or export other combinations, e.g. one map per observed year</span></span>
+<span id="cb39-15"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-15" tabindex="-1"></a>yearlySp <span class="ot">&lt;-</span> <span class="fu">exportBirds</span>(SB, </span>
+<span id="cb39-16"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-16" tabindex="-1"></a>                        <span class="at">dimension =</span> <span class="st">&quot;spatial&quot;</span>, </span>
+<span id="cb39-17"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-17" tabindex="-1"></a>                        <span class="at">timeRes =</span> <span class="st">&quot;yearly&quot;</span>, </span>
+<span id="cb39-18"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-18" tabindex="-1"></a>                        <span class="at">variable =</span> <span class="st">&quot;nObs&quot;</span>, </span>
+<span id="cb39-19"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-19" tabindex="-1"></a>                        <span class="at">method =</span> <span class="st">&quot;sum&quot;</span>)</span>
+<span id="cb39-20"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-20" tabindex="-1"></a></span>
+<span id="cb39-21"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-21" tabindex="-1"></a>maxC <span class="ot">&lt;-</span> <span class="fu">max</span>(yearlySp<span class="sc">$</span><span class="st">&#39;2010&#39;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-22"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-22" tabindex="-1"></a>palBW <span class="ot">&lt;-</span> leaflet<span class="sc">::</span><span class="fu">colorNumeric</span>(<span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;navyblue&quot;</span>), </span>
+<span id="cb39-23"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-23" tabindex="-1"></a>                               <span class="fu">c</span>(<span class="dv">0</span>, maxC), </span>
+<span id="cb39-24"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-24" tabindex="-1"></a>                               <span class="at">na.color =</span> <span class="st">&quot;transparent&quot;</span>)</span>
+<span id="cb39-25"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-25" tabindex="-1"></a></span>
+<span id="cb39-26"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-26" tabindex="-1"></a><span class="fu">plot</span>(yearlySp<span class="sc">$</span>geometry, <span class="at">col =</span> <span class="fu">palBW</span>(yearlySp<span class="sc">$</span><span class="st">&#39;2010&#39;</span>), </span>
+<span id="cb39-27"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-27" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">&quot;grey&quot;</span>,<span class="at">main =</span> <span class="st">&quot;2010&quot;</span>)</span>
+<span id="cb39-28"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-28" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="at">inset =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.05</span>),</span>
+<span id="cb39-29"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-29" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">round</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
+<span id="cb39-30"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-30" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">palBW</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
+<span id="cb39-31"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-31" tabindex="-1"></a>       <span class="at">border =</span> <span class="st">&quot;grey&quot;</span>,</span>
+<span id="cb39-32"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-32" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Number of </span><span class="sc">\n</span><span class="st">observations&quot;</span>, </span>
+<span id="cb39-33"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-33" tabindex="-1"></a>       <span class="at">pch =</span> <span class="dv">15</span>, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>)</span>
+<span id="cb39-34"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-34" tabindex="-1"></a></span>
+<span id="cb39-35"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-35" tabindex="-1"></a>maxC <span class="ot">&lt;-</span> <span class="fu">max</span>(yearlySp<span class="sc">$</span><span class="st">&#39;2020&#39;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-36"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-36" tabindex="-1"></a>palBW <span class="ot">&lt;-</span> leaflet<span class="sc">::</span><span class="fu">colorNumeric</span>(<span class="fu">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;navyblue&quot;</span>), </span>
+<span id="cb39-37"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-37" tabindex="-1"></a>                               <span class="fu">c</span>(<span class="dv">0</span>, maxC), </span>
+<span id="cb39-38"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-38" tabindex="-1"></a>                               <span class="at">na.color =</span> <span class="st">&quot;transparent&quot;</span>)</span>
+<span id="cb39-39"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-39" tabindex="-1"></a></span>
+<span id="cb39-40"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-40" tabindex="-1"></a><span class="fu">plot</span>(yearlySp<span class="sc">$</span>geometry, <span class="at">col =</span> <span class="fu">palBW</span>(yearlySp<span class="sc">$</span><span class="st">&#39;2020&#39;</span>), </span>
+<span id="cb39-41"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-41" tabindex="-1"></a>     <span class="at">border =</span> <span class="st">&quot;grey&quot;</span>,<span class="at">main =</span> <span class="st">&quot;2020&quot;</span>)</span>
+<span id="cb39-42"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-42" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomleft&quot;</span>, <span class="at">inset =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.05</span>),</span>
+<span id="cb39-43"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-43" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">round</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
+<span id="cb39-44"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-44" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">palBW</span>(<span class="fu">seq</span>(<span class="dv">0</span>, maxC, <span class="at">length.out =</span> <span class="dv">5</span>)),</span>
+<span id="cb39-45"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-45" tabindex="-1"></a>       <span class="at">border =</span> <span class="st">&quot;grey&quot;</span>,</span>
+<span id="cb39-46"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-46" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Number of </span><span class="sc">\n</span><span class="st">observations&quot;</span>, <span class="at">pch =</span> <span class="dv">15</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
+<span id="cb39-47"><a href="example-with-opportunistic-data-on-dragonflies.html#cb39-47" tabindex="-1"></a><span class="fu">par</span>(oldpar)</span></code></pre></div>
 <p><img src="r-tools-tutorial_files/figure-html/plotBIRDSspatial-1.png" width="768" /></p>
 <p>We now want to use the number of field visits as the measure for
 sampling effort. :</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cowplot)</span>
-<span id="cb49-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb49-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(colorRamps)</span>
-<span id="cb49-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
-<span id="cb49-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-6" aria-hidden="true" tabindex="-1"></a>vis <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> SB<span class="sc">$</span>spatial, <span class="fu">aes</span>( <span class="at">fill =</span> nVis)) <span class="sc">+</span></span>
-<span id="cb49-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>() <span class="sc">+</span></span>
-<span id="cb49-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Visits&quot;</span>) <span class="sc">+</span></span>
-<span id="cb49-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">&quot;#56B1F7&quot;</span>,</span>
-<span id="cb49-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-10" aria-hidden="true" tabindex="-1"></a>                      <span class="at">high =</span> <span class="st">&quot;#132B43&quot;</span>,</span>
-<span id="cb49-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-11" aria-hidden="true" tabindex="-1"></a>                      <span class="at">na.value =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb49-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="st">&quot;pt&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb49-13"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_cowplot</span>()</span>
-<span id="cb49-14"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-15"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-15" aria-hidden="true" tabindex="-1"></a>spp <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> SB<span class="sc">$</span>spatial, <span class="fu">aes</span>( <span class="at">fill =</span> nSpp)) <span class="sc">+</span></span>
-<span id="cb49-16"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>() <span class="sc">+</span></span>
-<span id="cb49-17"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Number of species&quot;</span>) <span class="sc">+</span></span>
-<span id="cb49-18"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">&quot;#56B1F7&quot;</span>,</span>
-<span id="cb49-19"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-19" aria-hidden="true" tabindex="-1"></a>                      <span class="at">high =</span> <span class="st">&quot;#132B43&quot;</span>,</span>
-<span id="cb49-20"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-20" aria-hidden="true" tabindex="-1"></a>                      <span class="at">na.value =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb49-21"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="st">&quot;pt&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb49-22"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_cowplot</span>()</span>
-<span id="cb49-23"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-24"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-24" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(vis, spp, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-1" tabindex="-1"></a><span class="fu">library</span>(cowplot)</span>
+<span id="cb40-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb40-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-3" tabindex="-1"></a><span class="fu">library</span>(colorRamps)</span>
+<span id="cb40-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-4" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
+<span id="cb40-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-5" tabindex="-1"></a></span>
+<span id="cb40-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-6" tabindex="-1"></a>vis <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> SB<span class="sc">$</span>spatial, <span class="fu">aes</span>( <span class="at">fill =</span> nVis)) <span class="sc">+</span></span>
+<span id="cb40-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-7" tabindex="-1"></a>  <span class="fu">geom_sf</span>() <span class="sc">+</span></span>
+<span id="cb40-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-8" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Visits&quot;</span>) <span class="sc">+</span></span>
+<span id="cb40-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-9" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">&quot;#56B1F7&quot;</span>,</span>
+<span id="cb40-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-10" tabindex="-1"></a>                      <span class="at">high =</span> <span class="st">&quot;#132B43&quot;</span>,</span>
+<span id="cb40-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-11" tabindex="-1"></a>                      <span class="at">na.value =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb40-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-12" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="st">&quot;pt&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb40-13"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-13" tabindex="-1"></a>  <span class="fu">theme_cowplot</span>()</span>
+<span id="cb40-14"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-14" tabindex="-1"></a></span>
+<span id="cb40-15"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-15" tabindex="-1"></a>spp <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> SB<span class="sc">$</span>spatial, <span class="fu">aes</span>( <span class="at">fill =</span> nSpp)) <span class="sc">+</span></span>
+<span id="cb40-16"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-16" tabindex="-1"></a>  <span class="fu">geom_sf</span>() <span class="sc">+</span></span>
+<span id="cb40-17"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-17" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Number of species&quot;</span>) <span class="sc">+</span></span>
+<span id="cb40-18"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-18" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">&quot;#56B1F7&quot;</span>,</span>
+<span id="cb40-19"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-19" tabindex="-1"></a>                      <span class="at">high =</span> <span class="st">&quot;#132B43&quot;</span>,</span>
+<span id="cb40-20"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-20" tabindex="-1"></a>                      <span class="at">na.value =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb40-21"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-21" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="st">&quot;pt&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb40-22"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-22" tabindex="-1"></a>  <span class="fu">theme_cowplot</span>()</span>
+<span id="cb40-23"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-23" tabindex="-1"></a></span>
+<span id="cb40-24"><a href="example-with-opportunistic-data-on-dragonflies.html#cb40-24" tabindex="-1"></a><span class="fu">grid.arrange</span>(vis, spp, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code></pre></div>
 <p><img src="r-tools-tutorial_files/figure-html/ggplot1-1.png" width="768" /></p>
-<div id="temporal-check" class="section level4" number="2.3.0.1">
-<h4><span class="header-section-number">2.3.0.1</span> Temporal check</h4>
+<div id="temporal-check" class="section level4 hasAnchor" number="2.3.0.1">
+<h4><span class="header-section-number">2.3.0.1</span> Temporal check<a href="example-with-opportunistic-data-on-dragonflies.html#temporal-check" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>We see that <code>SB</code> contains an element called <code>SB$temporal</code> that contains
 a daily time series with time-specific rows when there is information.
 <code>xts</code> also supports day time, but dating below day resolution is not yet
 implemented in the <code>BIRDS</code> package.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb50-1" aria-hidden="true" tabindex="-1"></a>sb.xts <span class="ot">&lt;-</span> SB<span class="sc">$</span>temporal</span>
-<span id="cb50-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sb.xts, <span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb41-1" tabindex="-1"></a>sb.xts <span class="ot">&lt;-</span> SB<span class="sc">$</span>temporal</span>
+<span id="cb41-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb41-2" tabindex="-1"></a><span class="fu">head</span>(sb.xts, <span class="dv">5</span>)</span></code></pre></div>
 <pre><code>##            nObs nVis nSpp
-## 2000-03-24    1    1    1
-## 2000-04-05    4    3    3
-## 2000-04-06   11    6    3
-## 2000-04-10    1    1    1
-## 2000-04-12    3    3    1</code></pre>
+## 2010-03-22    3    3    2
+## 2010-03-27    1    1    1
+## 2010-04-02    2    1    2
+## 2010-04-03    6    2    5
+## 2010-04-12    7    6    2</code></pre>
 <p>Sub-setting is convenient in <code>xts</code> as you can do it with its dates and
 with a <code>/</code> for a range of dates.</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-1" aria-hidden="true" tabindex="-1"></a>sb.xts[<span class="st">&quot;2010-09-07&quot;</span>] <span class="co">#a specific day</span></span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb43-1" tabindex="-1"></a>sb.xts[<span class="st">&quot;2010-09-07&quot;</span>] <span class="co">#a specific day</span></span></code></pre></div>
 <pre><code>##            nObs nVis nSpp
 ## 2010-09-07   19   10   12</code></pre>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb54-1" aria-hidden="true" tabindex="-1"></a>sb.xts[<span class="st">&quot;2010-09-01/2010-09-15&quot;</span>] <span class="co">#for a period</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb45-1" tabindex="-1"></a>sb.xts[<span class="st">&quot;2010-09-01/2010-09-15&quot;</span>] <span class="co">#for a period</span></span></code></pre></div>
 <pre><code>##            nObs nVis nSpp
 ## 2010-09-01   46   19   14
 ## 2010-09-02   28   14   12
 ## 2010-09-03   23   10   10
-## 2010-09-04   64   20   18
-## 2010-09-05   74   27   12
-## 2010-09-06   18    5   11
+## 2010-09-04   56   18   18
+## 2010-09-05   73   26   11
+## 2010-09-06   16    4    9
 ## 2010-09-07   19   10   12
 ## 2010-09-08   13    6    8
 ## 2010-09-09   32   12   14
-## 2010-09-10    1    1    1
+## 2010-09-10    2    2    1
 ## 2010-09-11   16    9    8
 ## 2010-09-12   20   10    8
 ## 2010-09-13   14    5    9
-## 2010-09-14    1    1    1
 ## 2010-09-15    3    3    2</code></pre>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb56-1" aria-hidden="true" tabindex="-1"></a>sb.xts[<span class="st">&quot;2010-09&quot;</span>] <span class="co">#a specific month</span></span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb47-1" tabindex="-1"></a>sb.xts[<span class="st">&quot;2010-09&quot;</span>] <span class="co">#a specific month</span></span></code></pre></div>
 <pre><code>##            nObs nVis nSpp
 ## 2010-09-01   46   19   14
 ## 2010-09-02   28   14   12
 ## 2010-09-03   23   10   10
-## 2010-09-04   64   20   18
-## 2010-09-05   74   27   12
-## 2010-09-06   18    5   11
+## 2010-09-04   56   18   18
+## 2010-09-05   73   26   11
+## 2010-09-06   16    4    9
 ## 2010-09-07   19   10   12
 ## 2010-09-08   13    6    8
 ## 2010-09-09   32   12   14
-## 2010-09-10    1    1    1
+## 2010-09-10    2    2    1
 ## 2010-09-11   16    9    8
 ## 2010-09-12   20   10    8
 ## 2010-09-13   14    5    9
-## 2010-09-14    1    1    1
 ## 2010-09-15    3    3    2
 ## 2010-09-17    3    2    3
 ## 2010-09-18    9    5    5
@@ -482,114 +426,119 @@ periods. Here we use <code>apply.monthly</code> to obtain the total number of
 observations and visits per month. The plot command for an object of
 calss <code>xts</code> provides a many features. This makes it fairly easy to
 customize your plots. Read more in <code>?plot.xts</code>.</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xts)</span>
-<span id="cb58-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-2" aria-hidden="true" tabindex="-1"></a>obs.m <span class="ot">&lt;-</span> <span class="fu">apply.monthly</span>(sb.xts<span class="sc">$</span>nObs, <span class="st">&quot;sum&quot;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb58-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-3" aria-hidden="true" tabindex="-1"></a>vis.m <span class="ot">&lt;-</span> <span class="fu">apply.monthly</span>(sb.xts<span class="sc">$</span>nVis, <span class="st">&quot;sum&quot;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb58-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(obs.m, </span>
-<span id="cb58-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">&quot;darkblue&quot;</span>, </span>
-<span id="cb58-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">grid.ticks.on =</span> <span class="st">&quot;month&quot;</span>, </span>
-<span id="cb58-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">major.ticks =</span> <span class="st">&quot;year&quot;</span>, </span>
-<span id="cb58-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">grid.col =</span> <span class="st">&quot;lightgrey&quot;</span>,  </span>
-<span id="cb58-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Total number of daily observations and visits per month&quot;</span>)</span>
-<span id="cb58-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb58-12" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(vis.m, <span class="at">col =</span> <span class="st">&quot;orange&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">on =</span> <span class="dv">1</span>)</span></code></pre></div>
-<p><img src="r-tools-tutorial_files/figure-html/unnamed-chunk-15-1.png" width="768" /></p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-1" tabindex="-1"></a><span class="fu">library</span>(xts)</span>
+<span id="cb49-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-2" tabindex="-1"></a>obs.m <span class="ot">&lt;-</span> <span class="fu">apply.monthly</span>(sb.xts<span class="sc">$</span>nObs, <span class="st">&quot;sum&quot;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb49-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-3" tabindex="-1"></a>vis.m <span class="ot">&lt;-</span> <span class="fu">apply.monthly</span>(sb.xts<span class="sc">$</span>nVis, <span class="st">&quot;sum&quot;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb49-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-4" tabindex="-1"></a></span>
+<span id="cb49-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-5" tabindex="-1"></a><span class="fu">plot</span>(obs.m, </span>
+<span id="cb49-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-6" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">&quot;darkblue&quot;</span>, </span>
+<span id="cb49-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-7" tabindex="-1"></a>     <span class="at">grid.ticks.on =</span> <span class="st">&quot;month&quot;</span>, </span>
+<span id="cb49-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-8" tabindex="-1"></a>     <span class="at">major.ticks =</span> <span class="st">&quot;year&quot;</span>, </span>
+<span id="cb49-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-9" tabindex="-1"></a>     <span class="at">grid.col =</span> <span class="st">&quot;lightgrey&quot;</span>,  </span>
+<span id="cb49-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-10" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Total number of daily observations and visits per month&quot;</span>)</span>
+<span id="cb49-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-11" tabindex="-1"></a></span>
+<span id="cb49-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb49-12" tabindex="-1"></a><span class="fu">lines</span>(vis.m, <span class="at">col =</span> <span class="st">&quot;orange&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">on =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img src="r-tools-tutorial_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
 </div>
 </div>
-<div id="species-trends" class="section level2" number="2.4">
-<h2><span class="header-section-number">2.4</span> Species trends</h2>
+<div id="species-trends" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Species trends<a href="example-with-opportunistic-data-on-dragonflies.html#species-trends" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>We can now look at some particular species and ask whether those have
 changed in occurrence over time:</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">speciesSummary</span>(SB)[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb50-1" tabindex="-1"></a><span class="fu">speciesSummary</span>(SB)[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span></code></pre></div>
 <pre><code>##                       species nCells nObs nVis
-## 1              Aeshna affinis      3   32   27
-## 2             Aeshna caerulea      5   12   12
-## 3               Aeshna cyanea    118  859  825
-## 4              Aeshna grandis    145 1691 1661
-## 5             Aeshna isoceles     14  102   99
-## 6               Aeshna juncea     93  334  321
-## 7                Aeshna mixta     72  645  614
-## 8              Aeshna serrata     13   39   38
-## 9           Aeshna subarctica     35  108   99
-## 10             Aeshna viridis     13   40   35
-## 11             Anax imperator     43  514  474
-## 12            Anax parthenope      2    5    5
-## 13        Brachytron pratense     82  434  421
-## 14       Calopteryx splendens    101  681  627
-## 15           Calopteryx virgo    122 1058 1004
-## 16         Coenagrion armatum     23   74   67
-## 17      Coenagrion hastulatum    116  930  897
-## 18      Coenagrion johanssoni     15   75   70
-## 19       Coenagrion lunulatum     42  111  104
-## 20          Coenagrion puella    113 1313 1258
-## 21      Coenagrion pulchellum    114 1364 1317
-## 22     Cordulegaster boltonii     75  500  493
-## 23             Cordulia aenea    116 1036 1017
-## 24      Enallagma cyathigerum    138 1547 1461
-## 25        Epitheca bimaculata     16   36   35
-## 26           Erythromma najas     92  760  727
-## 27       Erythromma viridulum     13  143  126
-## 28      Gomphus vulgatissimus     48  160  155
-## 29           Ischnura elegans    112 1210 1153
-## 30           Ischnura pumilio     18   99   85
-## 31               Lestes dryas     44  176  168
-## 32              Lestes sponsa    137 1366 1295
-## 33              Lestes virens     44  189  176
-## 34     Leucorrhinia albifrons     40  143  138
-## 35      Leucorrhinia caudalis     34  143  136
-## 36         Leucorrhinia dubia     85  338  320
-## 37    Leucorrhinia pectoralis     82  354  337
-## 38     Leucorrhinia rubicunda     93  434  421
-## 39         Libellula depressa    100  521  499
-## 40            Libellula fulva      9  101   90
-## 41   Libellula quadrimaculata    150 1971 1923
-## 42        Nehalennia speciosa      3   34   33
-## 43   Onychogomphus forcipatus     76  447  445
-## 44      Orthetrum cancellatum    118  924  872
-## 45     Orthetrum coerulescens     70  238  231
-## 46       Platycnemis pennipes     91  544  528
-## 47        Pyrrhosoma nymphula    124  967  938
-## 48       Somatochlora arctica     28   45   42
-## 49 Somatochlora flavomaculata     80  365  358
-## 50     Somatochlora metallica    100  560  551
-## 51             Sympecma fusca     40  179  174
-## 52            Sympetrum danae    127  777  742
-## 53        Sympetrum flaveolum     73  261  254
-## 54     Sympetrum fonscolombii      2    2    2
-## 55       Sympetrum sanguineum    124 1180 1136
-## 56       Sympetrum striolatum     73  270  258
-## 57         Sympetrum vulgatum    118 1028  972</code></pre>
+## 1              Aeshna affinis     11  166  154
+## 2             Aeshna caerulea     11   31   30
+## 3               Aeshna cyanea    186 3930 3804
+## 4              Aeshna grandis    197 6001 5896
+## 5             Aeshna isoceles     42  475  469
+## 6               Aeshna juncea    156 1302 1261
+## 7                Aeshna mixta    145 2693 2618
+## 8              Aeshna serrata     19  135  126
+## 9           Aeshna subarctica     63  329  318
+## 10             Aeshna viridis     59  225  194
+## 11            Anax ephippiger      6   15   15
+## 12             Anax imperator    103 2612 2470
+## 13            Anax parthenope     31  276  272
+## 14        Brachytron pratense    158 1668 1619
+## 15       Calopteryx splendens    145 2419 2279
+## 16           Calopteryx virgo    164 3742 3577
+## 17         Coenagrion armatum     54  235  216
+## 18      Coenagrion hastulatum    166 2532 2458
+## 19      Coenagrion johanssoni     28  136  129
+## 20       Coenagrion lunulatum    104  487  462
+## 21          Coenagrion puella    179 3725 3567
+## 22      Coenagrion pulchellum    177 3708 3586
+## 23     Cordulegaster boltonii    113 1178 1164
+## 24             Cordulia aenea    178 3579 3516
+## 25      Crocothemis erythraea      2   13   13
+## 26      Enallagma cyathigerum    193 5498 5190
+## 27        Epitheca bimaculata     56  290  277
+## 28           Erythromma najas    160 2438 2354
+## 29       Erythromma viridulum     37  546  505
+## 30      Gomphus vulgatissimus     99  770  752
+## 31           Ischnura elegans    171 3586 3456
+## 32           Ischnura pumilio     60  399  364
+## 33            Lestes barbarus      3   43   39
+## 34               Lestes dryas     90  614  584
+## 35              Lestes sponsa    184 4699 4457
+## 36              Lestes virens     90  683  651
+## 37     Leucorrhinia albifrons    131  747  712
+## 38      Leucorrhinia caudalis    116  464  444
+## 39         Leucorrhinia dubia    129 1109 1078
+## 40    Leucorrhinia pectoralis    140 1061 1035
+## 41     Leucorrhinia rubicunda    153 1488 1442
+## 42         Libellula depressa    174 2664 2574
+## 43            Libellula fulva     24  293  268
+## 44   Libellula quadrimaculata    198 6949 6837
+## 45        Nehalennia speciosa     11  108  103
+## 46   Onychogomphus forcipatus    100  937  919
+## 47       Ophiogomphus cecilia     11   13   13
+## 48      Orthetrum cancellatum    181 3806 3659
+## 49     Orthetrum coerulescens    113 1069 1020
+## 50       Platycnemis pennipes    128 1460 1404
+## 51        Pyrrhosoma nymphula    169 3146 3074
+## 52       Somatochlora arctica     61  192  180
+## 53 Somatochlora flavomaculata    133 1065 1050
+## 54     Somatochlora metallica    161 1718 1699
+## 55             Sympecma fusca    106  860  839
+## 56            Sympetrum danae    182 2998 2895
+## 57        Sympetrum flaveolum    146 1012  980
+## 58     Sympetrum fonscolombii     48  359  341
+## 59     Sympetrum pedemontanum      2  143  127
+## 60       Sympetrum sanguineum    189 4841 4644
+## 61       Sympetrum striolatum    146 1468 1417
+## 62         Sympetrum vulgatum    177 3431 3275</code></pre>
 <p>We pick two species and compare their trends in number of visits where
 the species where reported, relative to the total number of visits.</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb61-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-2" aria-hidden="true" tabindex="-1"></a>sppCount <span class="ot">&lt;-</span> <span class="fu">obsData</span>(OB) <span class="sc">|&gt;</span> </span>
-<span id="cb61-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(year, visitUID) <span class="sc">|&gt;</span> </span>
-<span id="cb61-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="st">&quot;focalCountLq&quot;</span> <span class="ot">=</span> <span class="fu">sum</span>(scientificName <span class="sc">==</span> <span class="st">&quot;Libellula quadrimaculata&quot;</span>),</span>
-<span id="cb61-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-5" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;focalCountSd&quot;</span> <span class="ot">=</span> <span class="fu">sum</span>(scientificName <span class="sc">==</span> <span class="st">&quot;Sympetrum sanguineum&quot;</span>),</span>
-<span id="cb61-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;sppLength&quot;</span> <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(scientificName)), </span>
-<span id="cb61-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb61-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb61-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span> </span>
-<span id="cb61-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="st">&quot;focalCountLq&quot;</span> <span class="ot">=</span> <span class="fu">sum</span>(focalCountLq),</span>
-<span id="cb61-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-11" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;focalCountSd&quot;</span> <span class="ot">=</span> <span class="fu">sum</span>(focalCountSd),</span>
-<span id="cb61-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-12" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;nVis&quot;</span> <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(visitUID)),</span>
-<span id="cb61-13"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-13" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;relCountLq&quot;</span> <span class="ot">=</span> focalCountLq <span class="sc">/</span> nVis,</span>
-<span id="cb61-14"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-14" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;relCountSd&quot;</span> <span class="ot">=</span> focalCountSd <span class="sc">/</span> nVis,</span>
-<span id="cb61-15"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">.groups =</span> <span class="cn">NULL</span>)</span>
-<span id="cb61-16"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-17"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-17" aria-hidden="true" tabindex="-1"></a>oldpar <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">no.readonly =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb61-18"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sppCount<span class="sc">$</span>year, sppCount<span class="sc">$</span>relCountLq, </span>
-<span id="cb61-19"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">xlab =</span> <span class="st">&quot;Year&quot;</span>, </span>
-<span id="cb61-20"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Relative number of visits with observations&quot;</span>, </span>
-<span id="cb61-21"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(sppCount<span class="sc">$</span>relCountLq)), </span>
-<span id="cb61-22"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxp =</span> <span class="fu">c</span>(<span class="dv">2000</span>, <span class="dv">2010</span>, <span class="dv">10</span>))</span>
-<span id="cb61-23"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-23" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(sppCount<span class="sc">$</span>year, sppCount<span class="sc">$</span>relCountSd, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">&quot;#78D2EB&quot;</span>)</span>
-<span id="cb61-24"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-24" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomright&quot;</span>, </span>
-<span id="cb61-25"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Libellula quadrimaculata&quot;</span>,<span class="st">&quot;Sympetrum sanguineum&quot;</span>), </span>
-<span id="cb61-26"><a href="example-with-opportunistic-data-on-dragonflies.html#cb61-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">text.font =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;#78D2EB&quot;</span>), <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb52-2"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-2" tabindex="-1"></a>sppCount <span class="ot">&lt;-</span> <span class="fu">obsData</span>(OB) <span class="sc">|&gt;</span> </span>
+<span id="cb52-3"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-3" tabindex="-1"></a>    <span class="fu">group_by</span>(year, visitUID) <span class="sc">|&gt;</span> </span>
+<span id="cb52-4"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-4" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="st">&quot;focalCountLq&quot;</span> <span class="ot">=</span> <span class="fu">sum</span>(scientificName <span class="sc">==</span> <span class="st">&quot;Libellula quadrimaculata&quot;</span>),</span>
+<span id="cb52-5"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-5" tabindex="-1"></a>              <span class="st">&quot;focalCountSd&quot;</span> <span class="ot">=</span> <span class="fu">sum</span>(scientificName <span class="sc">==</span> <span class="st">&quot;Sympetrum sanguineum&quot;</span>),</span>
+<span id="cb52-6"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-6" tabindex="-1"></a>              <span class="st">&quot;sppLength&quot;</span> <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(scientificName)), </span>
+<span id="cb52-7"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-7" tabindex="-1"></a>              <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb52-8"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-8" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb52-9"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-9" tabindex="-1"></a>    <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span> </span>
+<span id="cb52-10"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-10" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="st">&quot;focalCountLq&quot;</span> <span class="ot">=</span> <span class="fu">sum</span>(focalCountLq),</span>
+<span id="cb52-11"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-11" tabindex="-1"></a>              <span class="st">&quot;focalCountSd&quot;</span> <span class="ot">=</span> <span class="fu">sum</span>(focalCountSd),</span>
+<span id="cb52-12"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-12" tabindex="-1"></a>              <span class="st">&quot;nVis&quot;</span> <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">unique</span>(visitUID)),</span>
+<span id="cb52-13"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-13" tabindex="-1"></a>              <span class="st">&quot;relCountLq&quot;</span> <span class="ot">=</span> focalCountLq <span class="sc">/</span> nVis,</span>
+<span id="cb52-14"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-14" tabindex="-1"></a>              <span class="st">&quot;relCountSd&quot;</span> <span class="ot">=</span> focalCountSd <span class="sc">/</span> nVis,</span>
+<span id="cb52-15"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-15" tabindex="-1"></a>              <span class="at">.groups =</span> <span class="cn">NULL</span>)</span>
+<span id="cb52-16"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-16" tabindex="-1"></a></span>
+<span id="cb52-17"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-17" tabindex="-1"></a>oldpar <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">no.readonly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb52-18"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-18" tabindex="-1"></a><span class="fu">plot</span>(sppCount<span class="sc">$</span>year, sppCount<span class="sc">$</span>relCountLq, </span>
+<span id="cb52-19"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-19" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">xlab =</span> <span class="st">&quot;Year&quot;</span>, </span>
+<span id="cb52-20"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-20" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Relative number of visits with observations&quot;</span>, </span>
+<span id="cb52-21"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-21" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(sppCount<span class="sc">$</span>relCountLq)), </span>
+<span id="cb52-22"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-22" tabindex="-1"></a>     <span class="at">xaxp =</span> <span class="fu">c</span>(<span class="dv">2000</span>, <span class="dv">2010</span>, <span class="dv">10</span>))</span>
+<span id="cb52-23"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-23" tabindex="-1"></a><span class="fu">lines</span>(sppCount<span class="sc">$</span>year, sppCount<span class="sc">$</span>relCountSd, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">&quot;#78D2EB&quot;</span>)</span>
+<span id="cb52-24"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-24" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomright&quot;</span>, </span>
+<span id="cb52-25"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-25" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;Libellula quadrimaculata&quot;</span>,<span class="st">&quot;Sympetrum sanguineum&quot;</span>), </span>
+<span id="cb52-26"><a href="example-with-opportunistic-data-on-dragonflies.html#cb52-26" tabindex="-1"></a>       <span class="at">text.font =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;#78D2EB&quot;</span>), <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
 <p><img src="r-tools-tutorial_files/figure-html/trends-1.png" width="768" /></p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(oldpar)</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="example-with-opportunistic-data-on-dragonflies.html#cb53-1" tabindex="-1"></a><span class="fu">par</span>(oldpar)</span></code></pre></div>
 
 </div>
 </div>

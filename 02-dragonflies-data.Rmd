@@ -19,47 +19,32 @@ species within the order Odonata (dragonflies) and nothing else, so
 let's search for "odonata":
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE, error=FALSE, include=FALSE}
-library(SBDI4R)
+library(sbdi4r2)
 library(sf)
 library(BIRDS)
 ```
 
 ```{r search1, echo=TRUE, eval=FALSE}
-sx <- search_fulltext("odonata")
-sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
+sx <- sbdi_call() |> 
+    sbdi_identify("Odonata") |> 
+    group_by(species) |> 
+    atlas_counts()
 ```
 
 ```{r search1eval, echo=FALSE}
-sx <- search_fulltext("odonata")
-sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
+sx <- sbdi_call() |> 
+    sbdi_identify("Odonata") |> 
+    group_by(species) |> 
+    atlas_counts()
 ```
 
-We quickly see there that other taxonomic levels appear too, and also
-species that look suspiciously as not belonging to dragonflies. But
-there is only one order. Let's refine the search. To know which search
-fields we can use to filter the search we use the function
-`sbdi_fields(fields_type = "general")`. The search field we are looking
-for is "order_s".
-
-```{r search2,  echo=TRUE, eval=FALSE}
-sx <- search_fulltext(fq = "order_s:Odonata", page_size = 10)
-sx$data[, c("scientificName", "rank", "occurrenceCount")]
-```
-
-```{r search2eval, echo=FALSE}
-sx <- search_fulltext(fq = "order_s:Odonata", page_size = 10)
-sx$data[, c("guid", "scientificName", "rank", "occurrenceCount")]
-```
-
-Now we can download the taxonomic data (note that the search is
-case-sensitive):
+Now we can download the taxonomic data (note that the search is case-sensitive):
 
 ```{r, message=FALSE, results=FALSE}
-tx <- taxinfo_download("order_s:Odonata", 
-                       fields = c("guid", "order_s","genus_s", "specificEpithet_s", 
-                                  "scientificName",  "canonicalName_s", "rank"), 
-                       verbose = FALSE)
-tx <- tx[tx$rank == "species" & tx$genusS != "",] ## restrict to species and not hybrids
+tx <- sbdi_call() |> 
+  sbdi_identify("Odonata") |> 
+  atlas_species() |> 
+  select("taxon_concept_id", "species_name", "taxon_rank","order", "family","genus", "vernacular_name")
 ```
 
 You can save the `tx` object as the complete species list for later use.
@@ -76,37 +61,21 @@ resources, spatial layers, and curated species lists).
 fq_str <- pick_filter("resource") 
 ```
 
-Follow the instructions. Your choices here would have been "in3" --\>
-"dr5". Your variable `fq_str` will now contain a string
-"data_resource_uid:dr5".
+Follow the instructions. Your choices here would have been "in3" --> "dr5". 
+Your variable `fq_str` will now contain a string "data_resource_uid:dr5".
 
-```{r filter2.2, echo=FALSE, eval=TRUE}
-# we cant do it interactive here so we force it
-fq_str <- "data_resource_uid:dr5"
-```
+*NOTE:* the function pick_filter() is temporarily disabled until it could be adapted to the new galah framework.
 
-We only want to look at data from year 2000 to 2010:
-
-```{r filter2.3}
-y1 <- 2000
-y2 <- 2010
-fq_str <- c(fq_str, paste0("year:[", y1, " TO ", y2,"]"))
-# Note the square brackets are hard limits
-```
-
-We also want to filter spatially for Southern Sweden
-([Götaland](https://en.wikipedia.org/wiki/G%C3%B6taland)).
+We also want to filter spatially for Southern Sweden ([Götaland](https://en.wikipedia.org/wiki/G%C3%B6taland)).
 
 Vector spatial layers (eg. polygons) can be imported in a number of
 different ways. SBDI APIs take as search input polygons in the so-called
-WKT [Well Known
-Text](https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html)
+WKT [Well Known Text](https://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html)
 format. So the first step is to load a vector layer and transform it
-into a WKT string. You could instead use the data we provid in the
-SBDI4R package `data("swe")`.
+into a WKT string. You could instead use the data we provided in the sbdi4r2 package `data("swe")`.
 
 ```{r sweshape}
-data("swe",package = "SBDI4R")
+data("swe",package = "sbdi4r2")
 wGotaland <- swe$Counties$LnNamn %in% c("Blekinge", "Gotlands", "Hallands", 
                                         "Jönköpings", "Kalmar", "Kronobergs", 
                                         "Östergötlands", "Skåne", "Västra Götalands")
@@ -131,11 +100,6 @@ gotaland <- st_union(gotaland_c)
 # reduce the length of the WKT string
 gotaland_ch <- st_convex_hull(gotaland)
 
-# cast it as MULTIPOLYGON as this is what SBDIs API need
-# NOTE: as of today, the SBDI APIs will only work properly if the polygon is 
-# submitted as a MULTIPOLYGON
-gotaland_ch <- st_cast(gotaland_ch, to = "MULTIPOLYGON")
-
 # create WKT string
 wkt <- st_as_text(gotaland_ch)
 
@@ -158,35 +122,27 @@ legend("bottomleft", inset = c(0,0.05),
        legend = c("counties", "Götaland", "search polygon"),
        col = c("blue","black", "red"),
        lwd = c(1,2,1),
-       title = NULL,bty = "n")
+       title = NULL, bty = "n")
 suppressWarnings(par(oldpar))
 ```
 
-Next, we download the observations using the command `occurrences()`,
-but be aware that the search fields may not be the same as those used to
-search for taxa. We therefore recommend using the function
-`sbdi_fields("occurrence")` to find out which search fields we can use
-to filter for occurrences. Here we see that the field we need this time
-is "order".
+Next, we download the observations using the command `sbdi_call()`,
+but this time using `sbdi_geolocate()` to pass the search area.
 
-```{r getData, cache=TRUE}
-xf <- occurrences(taxon = "order:Odonata", 
-                  fq = fq_str,
-                  wkt = wkt,
-                  extra = "collector",
-                  email = "sbdi4r-test@biodiversitydata.se", 
-                  download_reason_id = 10)
+```{r getData, cache=FALSE}
+xf <- sbdi_call() |>
+  sbdi_identify("Odonata") |>
+  sbdi_geolocate(wkt, type = "polygon") |>
+  filter(dataResourceUid == "dr5",
+         year >= 2010, year <= 2020) |>
+  select(locality, recordedBy, taxonRank, group = "basic") |> 
+  atlas_occurrences()
 ```
 
 ```{r localtmp, echo=FALSE, eval=FALSE}
 save(xf, file = "data/tmp_occdata2_for compile.rdata")
 load(file = "data/tmp_occdata2_for compile.rdata")
 ```
-
-We have now downloaded the data locally and depending on your
-configuration this will be cached on your computer. However, as the
-search and download could take long time, we recommend to save the data
-locally. appropriate
 
 ```{r save2, eval=FALSE}
 save(xf, file = "an_appropriate_name.rdata")
@@ -202,7 +158,7 @@ visits i.e. occasions at which an observer has sampled observations. We
 reconstruct field visits (that is, assign each observation a visitUID)
 using using the package [BIRDS](https://greensway.github.io/BIRDS/).
 Additionally we want the data to be summarized over a grid of 25 km
-(provided through the SBDI4R package). The following functions will
+(provided through the sbdi4r2 package). The following functions will
 perform many different summaries at the same time. Please refer to the
 BIRDS package documentation for more detail.
 
@@ -212,13 +168,13 @@ library(BIRDS)
 ```
 
 ```{r organisebirds, eval=FALSE}
-OB <- organiseBirds(xf$data, sppCol = "species" , 
+OB <- organiseBirds(xf, sppCol = "scientificName" , 
                     # We only want observations identified at the species level
-                    taxonRankCol = "rank", taxonRank = "species", 
+                    taxonRankCol = "taxonRank", taxonRank = "species", 
                     # the visits are defined by collector and named locality
-                    idCols = c("locality", "collector"), 
-                    timeCols = c("year", "month", "day"), 
-                    xyCols = c("longitude","latitude") )
+                    idCols = c("locality", "recordedBy"), 
+                    timeCols = "eventDate", 
+                    xyCols = c("decimalLongitude","decimalLatitude") )
 
 # We don't need the whole grid, just the piece that overlaps our searching polygon
 wInt <- unlist(st_intersects(gotaland, Sweden_Grid_25km_Wgs84))
@@ -228,7 +184,7 @@ SB <- summariseBirds(OB, grid = gotaland_grid25, spillOver = "unique")
 ```
 
 ```{r save_birds, eval=FALSE, include=FALSE}
-save(list=c("OB", "SB"), file = "data/BIRDS_summary.rdata")
+save(list = c("OB", "SB"), file = "data/BIRDS_summary.rdata")
 ```
 ```{r load_birds, include=FALSE}
 load(file = "data/BIRDS_summary.rdata")
@@ -258,26 +214,27 @@ yearlySp <- exportBirds(SB,
                         variable = "nObs", 
                         method = "sum")
 
-maxC <- max(yearlySp$'2005', na.rm = TRUE)
+maxC <- max(yearlySp$'2010', na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
 
-plot(yearlySp$geometry, col=palBW(yearlySp$'2005'), 
-     border = "grey",main="2005")
+plot(yearlySp$geometry, col = palBW(yearlySp$'2010'), 
+     border = "grey",main = "2010")
 legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
        border = "grey",
-       title = "Number of \nobservations", pch = 15, bty="n")
+       title = "Number of \nobservations", 
+       pch = 15, bty = "n")
 
-maxC <- max(yearlySp'2010', na.rm = TRUE)
+maxC <- max(yearlySp$'2020', na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
 
-plot(yearlySp$geometry, col=palBW(yearlySp$'2010'), 
-     border = "grey",main="2010")
+plot(yearlySp$geometry, col = palBW(yearlySp$'2020'), 
+     border = "grey",main = "2020")
 legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),
@@ -307,26 +264,26 @@ yearlySp <- exportBirds(SB,
                         variable = "nObs", 
                         method = "sum")
 
-maxC <- max(yearlySp$'2005', na.rm = TRUE)
-palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
-                               c(0, maxC), 
-                               na.color = "transparent")
-
-plot(yearlySp$geometry, col = palBW(yearlySp$'2005'), 
-     border = "grey", main = "2005")
-legend("bottomleft", inset = c(0,0.05),
-       legend = round(seq(0, maxC, length.out = 5)),
-       col = palBW(seq(0, maxC, length.out = 5)),
-       border = "grey",
-       title = "Number of \nobservations", pch = 15, bty = "n")
-
 maxC <- max(yearlySp$'2010', na.rm = TRUE)
 palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
                                c(0, maxC), 
                                na.color = "transparent")
 
 plot(yearlySp$geometry, col = palBW(yearlySp$'2010'), 
-     border = "grey",main = "2010")
+     border = "grey", main = "2010")
+legend("bottomleft", inset = c(0,0.05),
+       legend = round(seq(0, maxC, length.out = 5)),
+       col = palBW(seq(0, maxC, length.out = 5)),
+       border = "grey",
+       title = "Number of \nobservations", pch = 15, bty = "n")
+
+maxC <- max(yearlySp$'2020', na.rm = TRUE)
+palBW <- leaflet::colorNumeric(c("white", "navyblue"), 
+                               c(0, maxC), 
+                               na.color = "transparent")
+
+plot(yearlySp$geometry, col = palBW(yearlySp$'2020'), 
+     border = "grey",main = "2020")
 legend("bottomleft", inset = c(0,0.05),
        legend = round(seq(0, maxC, length.out = 5)),
        col = palBW(seq(0, maxC, length.out = 5)),

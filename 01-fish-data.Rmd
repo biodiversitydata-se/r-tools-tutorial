@@ -2,44 +2,39 @@
 
 In this example we are interested in exploring data from a specific data resource -- the Swedish Electrofishing Registry - SERS (Department of Aquatic Resources, SLU Aqua). This database has 2.8 M observations starting in the 1950's.
 
+```{r start, message=FALSE, eval=FALSE}
+library(sbdi4r2)
+library(sf)
+library(dplyr)
+library(lubridate)
+```
+
 SBDI is a collection of many biodiversity databases. We start by searching for the data resource we are interested in by using the function `pick_filter()`. This is an interactive query guiding you through the many resources available to filtering your query (data resources, spatial layers, and curated species lists).
 
 ```{r filter1, message=FALSE, eval=FALSE}
-library(SBDI4R)
 fq_str <- pick_filter("resource") 
 # follow the instructions 
 ```
 
 Follow the instructions. Your choices here would have been "in3" :arrow_right: "dr10" (data resource 10 = SERS). Your variable `fq_str` will now contain a string "data_resource_uid:dr10".
 
-```{r filter2, echo=FALSE, eval=TRUE}
-# we can't do it interactive here so we force it
-fq_str <- "data_resource_uid:dr10"
-```
+**Note: the function pick_filter() is temporarily disabled until it could be adapted to the new galah framework.**
 
-But we are not interested in the complete database, we only want to look at the data from the last 10 years. For this we concatenate (add to a vector) another filter string. Both filter strings (for data resource and for time period) will be treated as AND factors.
+But we are not interested in the complete database, we only want to look at the data from the last 10 years. For this we add another filter string. Both filter strings (for data resource and for time period) will be treated as AND factors.
 
-```{r filter3}
-y1 <- 2008
-y2 <- 2012
-fq_str <- c(fq_str, paste0("year:[", y1, " TO ", y2,"]"))
-# Note the square brackets are hard limits
-```
+Using the function `sbdi_call()` we can now query for the observations fulfilling our filter.
 
-For references on how to use the filters see the SBDI APIs [documentation](https://api.biodiversitydata.se/?lang=en-US#ws3).
+```{r getOcc, cache=FALSE, message=FALSE}
+xf <- sbdi_call() |> 
+  filter(dataResourceUid == "dr10",
+         year >= 2014, year <= 2024) |>
+  atlas_occurrences()
 
-Using the function `occurrences()` we can now query for the observations fulfilling our filter. If you haven't specified your email and the download reason in the `sbdi_config()` before, you need to pass this here.
-
-```{r getOcc, cache=TRUE, message=FALSE}
-xf <- occurrences(fq = fq_str,
-                  email = "sbdi4r-test@biodiversitydata.se", 
-                  download_reason_id = 10)
-
-# Remove what is not a species
-xf$data <- xf$data[xf$data$rank == "species",]
-
-# Simply summarise all records by data source 
-table(xf$data$dataResourceName)
+xf |> 
+  pull(dataResourceName) |> 
+  table() |> 
+  as.data.frame() |> 
+  rename("Source" = Var1)
 ```
 
 ```{r save, echo=FALSE, include=FALSE, eval=FALSE}
@@ -52,34 +47,13 @@ load(file = "data/tmp_occdata_for compile.rdata")
 
 ## Plotting data on a map
 
-You can quickly plot all the observations as a PDF file with the function `ocurrence_plot()`, one page per species:
+There are many other ways of producing spatial plots in R, for example you can quickly plot all the observations with `plot()`:
 
-```{r pdf_plot, eval=FALSE}
-occurrences_plot(xf, "obsPlot.pdf", 
-                 grouped = FALSE, 
-                 taxon_level = "species", 
-                 pch='.')
-```
+```{r pdf_plot}
+data("swe_wgs84", package = "sbdi4r2", envir = environment())
 
-**Note** that the plot is saved to a .pdf file in the current working directory. You can find that with `getwd()`.
-
-There are many other ways of producing spatial plots in R. The leaflet package provides a simple method of producing browser-based maps with panning, zooming, and background layers:
-
-```{r leaflet, message=FALSE, warning=FALSE}
-library(leaflet)
-# drop any records with missing lat/lon values
-xfl <- xf$data[!is.na(xf$data$longitude) | !is.na(xf$data$latitude),] 
-marker_colour <- rep("#d95f02", nrow(xfl))
-# blank map, with imagery background
-leaflet(width = "100%") %>% 
-  addProviderTiles("Esri.WorldImagery") %>%
-  # add markers
-  addCircleMarkers(xfl$longitude, xfl$latitude,  
-                   radius = 1, 
-                   fillOpacity = .5, 
-                   opacity = 1,
-                   col = marker_colour,
-                   clusterOptions = markerClusterOptions())
+plot(swe_wgs84[["Border"]]$geometry, col = "grey", border = NA) 
+  points(xf$decimalLongitude, xf$decimalLatitude, pch = ".", col = "black")
 ```
 
 ## Temporal summary
@@ -87,29 +61,23 @@ leaflet(width = "100%") %>%
 A quick summary over the years reveals a drop in number of records over time.
 
 ```{r timeTable}
-table(xf$data$year)
+xf$year <- year(xf$eventDate)
+table(xf$year)
 ```
 
 ```{r timeHist}
-hist(xf$data$year, 
-     breaks = seq(y1, y2), 
+hist(xf$year, 
+     breaks = seq(2014, 2024), 
      xlab = "Year", 
      main = "")
 ```
 
 ## Species summary
 
-In the same way we can summarise the number of observations for each species, by common or scientific name.
+In the same way we can summarise the number of observations for each species.
 
 ```{r nObsTab, paged.print=TRUE}
-sppTab <- table(xf$data$commonName)
-sppDF <- as.data.frame(sppTab)
-colnames(sppDF)[1] <- "species"
-head(sppDF)
-```
-
-```{r nObsTab2, paged.print=TRUE}
-sppTab <- table(xf$data$scientificName)
+sppTab <- table(xf$scientificName)
 sppDF <- as.data.frame(sppTab)
 colnames(sppDF)[1] <- "species"
 head(sppDF)
@@ -118,7 +86,7 @@ head(sppDF)
 Perhaps, you want to send this table as a .CSV file to a colleague. Save the table:
 
 ```{r savesummary, eval=FALSE}
-write.csv(sppDF, "SERS_species_summary.csv")
+write.csv(sppDF, "data/SERS_species_summary.csv")
 # NOTE: again this will be saved on your working directory
 ```
 
@@ -126,14 +94,14 @@ write.csv(sppDF, "SERS_species_summary.csv")
 
 Let's now ask: How does the species richness vary across Sweden?
 
-For this we want to summarise occurrences species-wise over a defined grid instead of plotting every observation point. First we need to overlay the observations with a grid. Here we are using the standard Swedish grids with grid square size of 50, 25, 10 or 5 km provided as data in the SBDI4R package (with Coordinate Reference System = WGS84, EPSG:4326).
+For this we want to summarise occurrences species-wise over a defined grid instead of plotting every observation point. First we need to overlay the observations with a grid. Here we are using the standard Swedish grids with grid square size of 50, 25, 10 or 5 km provided as data in the sbdi4r2 package (with Coordinate Reference System = WGS84, EPSG:4326).
 
 ```{r overlay, warning=FALSE, message=FALSE}
 library(sf) # the function coordinates() and proj4string() are in sp
 # load some shapes over Sweden's political borders
-data("swe_wgs84", package = "SBDI4R", envir = environment())
+data("swe_wgs84", package = "sbdi4r2", envir = environment())
 # a standard 50 km grid
-data("Sweden_Grid_50km_Wgs84", package = "SBDI4R", envir = environment())
+data("Sweden_Grid_50km_Wgs84", package = "sbdi4r2", envir = environment())
 
 grid <- Sweden_Grid_50km_Wgs84
 
@@ -141,8 +109,8 @@ grid <- Sweden_Grid_50km_Wgs84
 # NOTE: make sure there are no NAs in the columns defining the coordinates
 # xf$data[!is.na(xf$data$longitude) | !is.na(xf$data$latitude),]
 
-obs <- st_as_sf(as.data.frame(xf$data),
-                coords = c("longitude","latitude"),
+obs <- st_as_sf(as.data.frame(xf),
+                coords = c("decimalLongitude","decimalLatitude"),
                 crs = st_crs(4326))
 
 # overlay the occurrence data with the grid
@@ -219,27 +187,27 @@ We may now ask whether species richness varies across latitude. So we go further
 ```{r sppLatitude, warning=FALSE, message=FALSE}
 library(dplyr)
 library(tidyr)
-xgridded <- xf$data %>%
-    mutate(longitude = round(longitude * 4)/4, 
-           latitude = round(latitude * 4)/4) %>%
-    group_by(longitude,latitude) %>%
+xgridded <- xf |>
+    mutate(longitude = round(decimalLongitude * 4)/4, 
+           latitude = round(decimalLatitude * 4)/4) |>
+    group_by(longitude,latitude) |>
     ## subset to vars of interest
-    select(longitude, latitude, species) %>%
+    select(longitude, latitude, scientificName) |>
     ## take one row per cell per species (presence)
-    distinct() %>%
+    distinct() |>
     ## calculate species richness
-    mutate(richness = n()) %>%
+    mutate(richness = n()) |>
     ## convert to wide format (sites by species)
-    mutate(present = 1) %>%
+    mutate(present = 1) |>
     do(tidyr::pivot_wider(data = .,  
-                          names_from = species, 
+                          names_from = scientificName, 
                           values_from = present, 
-                          values_fill = 0)) %>%
+                          values_fill = 0)) |>
     ungroup()
 ## where a species was not present, it will have NA: convert these to 0
 sppcols <- setdiff(names(xgridded),
                    c("longitude", "latitude", "richness"))
-xgridded <- xgridded %>% 
+xgridded <- xgridded |> 
   mutate_at(sppcols, function(z) ifelse(is.na(z), 0, z))
 ```
 
