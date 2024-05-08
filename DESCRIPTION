@@ -3,21 +3,19 @@ Type: Book
 Title: Examples for biodiversity data analysis using SBDI4R.
 Version: 0.0.1
 Imports: 
-    BIRDS,
     bookdown,
     ggplot2, 
     jpeg, 
     leaflet,
     maps, 
     mapdata,
-    maptools,
-    rgeos, sp,
     tidyr,
     tidyverse,
     vegan
 Suggests:
 Remotes: 
-    biodiversitydata-se/SBDI4R,
+    biodiversitydata-se/sbdi4r2,
+    Greensway/BIRDS,
     rstudio/bookdown,
     rstudio/rmarkdown
 Encoding: UTF-8
